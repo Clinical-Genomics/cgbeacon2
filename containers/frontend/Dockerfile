@@ -1,4 +1,4 @@
-FROM northwestwitch/cgbeacon2:latest
+FROM northwestwitch/cgbeacon2
 
 EXPOSE 5000
 
