@@ -73,9 +73,7 @@ def authlevel(request, oauth2_settings):
         decoded_token.validate()  # validate the token contents
 
         LOG.info("Auth Token validated.")
-        LOG.info(
-            f'Identified as {decoded_token["sub"]} user by {decoded_token["iss"]}.'
-        )
+        LOG.info(f'Identified as {decoded_token["sub"]} user by {decoded_token["iss"]}.')
 
         # retrieve Elixir AAI passports associated to the user described by the auth token
         all_passports = ga4gh_passports(decoded_token, token, oauth2_settings)

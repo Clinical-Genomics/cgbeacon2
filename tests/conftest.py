@@ -344,11 +344,7 @@ def bona_fide_passport_info(header, pem):
                 "value": "https://doi.org/10.1038/s41431-018-0219-y",
             }
         },
-        {
-            "ga4gh_visa_v1": {
-                "type": "ResearcherStatus",
-            }
-        },
+        {"ga4gh_visa_v1": {"type": "ResearcherStatus",}},
     ]
     passport_info = [jwt.encode(header, passport, pem).decode("utf-8") for passport in passports]
 

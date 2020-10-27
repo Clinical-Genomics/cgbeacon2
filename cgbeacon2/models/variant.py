@@ -6,21 +6,15 @@ class Variant:
     """A variant object"""
 
     def __init__(self, parsed_variant, dataset_ids, genome_assembly="GRCh37"):
-        self.referenceName = parsed_variant[
-            "chromosome"
-        ]  # Accepting values 1-22, X, Y, MT
+        self.referenceName = parsed_variant["chromosome"]  # Accepting values 1-22, X, Y, MT
         if parsed_variant.get("mate_name"):
             self.mateName = parsed_variant["mate_name"]
         self.start = parsed_variant[
             "start"
         ]  # int, Precise start coordinate position, allele locus (0-based, inclusive)
         self.end = parsed_variant["end"]  # int
-        self.referenceBases = "".join(
-            parsed_variant["reference_bases"]
-        )  # str, '^([ACGT]+|N)$'
-        self.alternateBases = "".join(
-            parsed_variant["alternate_bases"]
-        )  # str, '^([ACGT]+|N)$'
+        self.referenceBases = "".join(parsed_variant["reference_bases"])  # str, '^([ACGT]+|N)$'
+        self.alternateBases = "".join(parsed_variant["alternate_bases"])  # str, '^([ACGT]+|N)$'
         if parsed_variant.get("variant_type"):
             self.variantType = parsed_variant[
                 "variant_type"

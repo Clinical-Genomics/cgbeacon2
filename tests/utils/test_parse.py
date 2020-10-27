@@ -6,10 +6,11 @@ from cgbeacon2.utils.parse import (
     extract_variants,
     bnd_mate_name,
     sv_end,
-    genes_to_bedtool
+    genes_to_bedtool,
 )
 
 ALT = "G]17:198982]"
+
 
 def test_genes_to_bedtool_no_genes(database):
     """Test function that created Bedtool filter file from a list of genes, without providing any gene ID"""
@@ -19,6 +20,7 @@ def test_genes_to_bedtool_no_genes(database):
     bt = genes_to_bedtool(database["gene"], hgnc_ids, ensembl_ids)
     # THEN the function should return no Bedtool Object (None)
     assert bt is None
+
 
 def test_genes_to_bedtool_hgnc_ids(database, gene_objects_build37, build="GRCh37"):
     """Test function that created Bedtool filter file from a list of genes, providing hgnc ids"""
@@ -34,6 +36,7 @@ def test_genes_to_bedtool_hgnc_ids(database, gene_objects_build37, build="GRCh37
     # With 3 gene intervals
     assert len(bt) == 3
 
+
 def test_genes_to_bedtool_ensembl_ids(database, gene_objects_build37):
     """Test function that created Bedtool filter file from a list of genes, providing ensembl ids"""
     # Given a populated gene collection
@@ -47,6 +50,7 @@ def test_genes_to_bedtool_ensembl_ids(database, gene_objects_build37):
     assert isinstance(bt, pybedtools.bedtool.BedTool)
     # With 3 gene intervals
     assert len(bt) == 3
+
 
 def test_bnd_mate_name():
     """Test the function that extract mate name from a variant ALT field"""

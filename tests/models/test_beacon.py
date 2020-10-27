@@ -14,6 +14,4 @@ def test_beacon_model_no_db_connection(mock_app, public_dataset):
     assert beacon.id == config_options["id"]
     assert beacon.name == config_options["name"]
     assert beacon.datasets == []
-    assert beacon.datasets_by_auth_level == dict(
-        public={}, registered={}, controlled={}
-    )
+    assert beacon.datasets_by_auth_level == dict(public={}, registered={}, controlled={})

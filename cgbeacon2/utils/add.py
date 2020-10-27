@@ -27,15 +27,11 @@ def add_dataset(database, dataset_dict, update=False):
 
         if old_dataset is None:
             LOG.fatal(
-                "Couldn't find any dataset with id '{}' in the database".format(
-                    dataset_dict["_id"]
-                )
+                "Couldn't find any dataset with id '{}' in the database".format(dataset_dict["_id"])
             )
             return
         dataset_dict["created"] = old_dataset["created"]
-        result = database[collection].replace_one(
-            {"_id": dataset_dict["_id"]}, dataset_dict
-        )
+        result = database[collection].replace_one({"_id": dataset_dict["_id"]}, dataset_dict)
         if result.modified_count > 0:
             return dataset_dict["_id"]
         else:
@@ -86,9 +82,7 @@ def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
                 continue
 
             # Check if variant was called in provided samples
-            sample_calls = variant_called(
-                vcf_samples, gt_positions, vcf_variant.gt_types
-            )
+            sample_calls = variant_called(vcf_samples, gt_positions, vcf_variant.gt_types)
 
             if sample_calls == {}:
                 continue  # variant was not called in samples of interest
@@ -127,9 +121,7 @@ def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
             variant = Variant(parsed_variant, dataset_dict, assembly)
 
             # Load variant into database or update an existing one with new samples and dataset
-            result = add_variant(
-                database=database, variant=variant, dataset_id=dataset_id
-            )
+            result = add_variant(database=database, variant=variant, dataset_id=dataset_id)
             if result is not None:
                 inserted_vars += 1
 
