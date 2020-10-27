@@ -3,10 +3,13 @@
 
 ### Fixed
 - Broken github actions test
+### Changed
+- Removed Codecov and master workflow github action
 ### Added
 - Codecov and CodeFactor github actions
 - Created deployment WSGI file
 - Dockerfiles for backend and frontend
+- Flake8, Coveralls and Black github actions
 
 
 ## [1.2] - 2020.10.19
