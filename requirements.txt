@@ -18,6 +18,4 @@ PyJWT
 # utils
 cyvcf2
 pybedtools
-pysam<0.16 #Avoid ImportError: libchtslib.cpython-35m-x86_64-linux-gnu.so
 jsonschema
-cython

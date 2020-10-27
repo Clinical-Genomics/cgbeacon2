@@ -8,24 +8,51 @@ An updated beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
 This README only gives a brief overview of the tool, for a more complete reference, please check out our docs: www.clinicalgenomics.se/cgbeacon2
 
 Table of Contents:
-1. [ Prerequisites ](#prerequisites)
-2. [ Installation ](#installation)
+1. [ Running the app using Docker ](#docker)
+2. [ Installation using pip in a virtual environment](#installation)
 3. [ Loading demo data into the database ](#Loading)
 4. [ Server endpoints ](#endpoints)
     - [ Obtaining beacon info ](#info)
     - [ Running queries ](#query)
 5. [ Web interface ](#webform)
 
-<a name="prerequisites"></a>
-## Prerequisites
-- Python 3.6+
+
+<a name="docker"></a>
+## Installing and running the app using Docker
+
+A demo instance of the app containing test data can be started from the docker-compose file using this command:
+```
+docker-compose up -d
+```
+The command will create 3 containers:
+- mongodb: starting a mongodb server
+- beacon-cli: the a command-line app, which will connect to the server and populates it with demo data
+- beacon-web: a web server running on localhost and port 27017.
+
+The server will be running and accepting requests sent from outside the containers (another terminal or a web browser). Read further down to find out about request types and queries.
+
+To stop the containers (and the server), run:
+```
+docker-compose down
+```
+
+To instantiate a server without demo data just remove the line:
+`command: bash -c 'cgbeacon2 add demo'`
+from the docker-compose.yml file.
+
+More info on how to set up a server containing app backend and frontend is available in the [docs](www.clinicalgenomics.se/cgbeacon2/)
+
+<a name="installation"></a>
+## Installation
+
+### Prerequisites
+Python 3.6+
 - A working instance of **MongoDB**. From the mongo shell you can create a database using this syntax:
 ```
 use cgbeacon2-test
 ```
 
-<a name="installation"></a>
-## Installation
+It is recommended to install the app inside a virtual environment containing python >3.6
 
 Clone this repository from github using this command:
 ```
@@ -34,6 +61,7 @@ git clone https://github.com/Clinical-Genomics/cgbeacon2.git
 
 Change directory to the cloned folder and from there, install the software using the following command:
 ```
+pip install -r requirements.txt
 pip install -e .
 ```
 

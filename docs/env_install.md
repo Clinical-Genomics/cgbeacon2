@@ -2,14 +2,15 @@
 ## Beacon setup
 
 1. [ Prerequisites ](#prerequisites)
-1. [ Installation ](#installation)
+1. [ Installation - on a virtual environment using pip](#installation-pip)
 1. [ Server settings ](#settings)
 1. [ Running the server](#running)
 
 
-<a name="prerequisites"></a>
-## Prerequisites
-- Python 3.6+ installed
+<a name="installation-pip"></a>
+
+### Prerequisites
+- A virtual environment containing Python 3.6+
 - A working instance of **MongoDB**. From the mongo shell you can create a database using this syntax:
 ```
 use <name_of_database>
@@ -17,12 +18,9 @@ use <name_of_database>
 
 Database name can be customized. If you don't have any preferences`cgbeacon2` will work just fine.
 
-
-
-<a name="installation"></a>
 ## Installation
 
-Clone this repository from github using this command:
+Once activated the virtual environment, clone this repository from github using this command:
 ```
 git clone https://github.com/Clinical-Genomics/cgbeacon2.git
 ```

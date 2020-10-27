@@ -1,11 +1,12 @@
+
 ## [] -
 
 ### Fixed
-- Broken githut actions test
+- Broken github actions test
 ### Added
 - Codecov and CodeFactor github actions
 - Created deployment WSGI file
-- Cython requirement
+- Dockerfiles for backend and frontend
 
 
 ## [1.2] - 2020.10.19

@@ -2,7 +2,8 @@ site_name: cgbeacon2 docs
 
 nav:
     - Home: index.md
-    - Installation: install.md
+    - Running the app in Docker: docker_run.md
+    - Installation on a virtual environment: env-install.md
     - Loading datasets and variants: loading.md
     - Removing datasets and variants: removing.md
     - Queries: queries.md

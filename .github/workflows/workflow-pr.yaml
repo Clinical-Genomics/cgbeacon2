@@ -5,8 +5,6 @@ jobs:
   qa:
     name: Quality check
     runs-on: ubuntu-18.04
-    env:
-      CGBEACON2_CONFIG: ../instance/config.py
     steps:
       - uses: actions/checkout@v2
       - name: Install missing linux libraries
@@ -24,6 +22,7 @@ jobs:
           pip install pytest
           pytest
         env:
+          CGBEACON2_CONFIG: ../instance/config.py
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Wemake Python Stylguide
         uses: wemake-services/wemake-python-styleguide@0.13.4
