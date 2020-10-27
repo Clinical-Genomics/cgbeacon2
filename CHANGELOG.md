@@ -1,3 +1,7 @@
+## [] -
+### Fixed
+- Broken link in the docs
+
 
 ## [1.3] - 2020.10.27
 
