@@ -32,7 +32,7 @@ def test_update_genes_build_38(mock_app, database):
         b"ENSG00000171314\tHGNC:8888\tPGAM1\t10\t97426191\t97433444\n"
         b"ENSG00000121236\tHGNC:16277\tTRIM6\t11\t5596109\t5612958\n"
         b"ENSG00000016391\tHGNC:24288\tCHDH\t3\t53812335\t53846419\n"
-		b"ENSG00000232218\t\t\t22\t32386668\t32386868\n"
+        b"ENSG00000232218\t\t\t22\t32386668\t32386868\n"
         b"[success]"
     )
     responses.add(responses.GET, url, body=response, status=200, stream=True)

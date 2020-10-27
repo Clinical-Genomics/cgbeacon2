@@ -89,10 +89,7 @@ def query_form():
                 flash("Allele could not be found", "secondary")
 
     return render_template(
-        "queryform.html",
-        chromosomes=CHROMOSOMES,
-        dsets=all_dsets,
-        form=dict(request.form),
+        "queryform.html", chromosomes=CHROMOSOMES, dsets=all_dsets, form=dict(request.form),
     )
 
 

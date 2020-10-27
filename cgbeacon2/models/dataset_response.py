@@ -43,9 +43,7 @@ class DatasetAlleleResponse:
         for variant_obj in variants:
             if dataset_id in variant_obj.get("datasetIds"):
                 if variant_obj["datasetIds"][dataset_id].get("samples"):
-                    n_samples += len(
-                        variant_obj["datasetIds"][dataset_id]["samples"].keys()
-                    )
+                    n_samples += len(variant_obj["datasetIds"][dataset_id]["samples"].keys())
                 n_variants += 1
                 n_calls += variant_obj["call_count"]
         return n_samples, n_calls, n_variants

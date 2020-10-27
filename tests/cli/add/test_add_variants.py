@@ -20,16 +20,7 @@ def test_add_variants_no_dataset(mock_app):
     # When invoking the add variants with a random dataset ID
     result = runner.invoke(
         cli,
-        [
-            "add",
-            "variants",
-            "-ds",
-            "a_dataset",
-            "-vcf",
-            test_snv_vcf_path,
-            "-sample",
-            "a_sample",
-        ],
+        ["add", "variants", "-ds", "a_dataset", "-vcf", test_snv_vcf_path, "-sample", "a_sample",],
     )
 
     # Then the command should return error
@@ -80,16 +71,7 @@ def test_add_variants_wrong_samples(mock_app, public_dataset, database):
     # When invoking the add variants for a sample not in the VCF file
     result = runner.invoke(
         cli,
-        [
-            "add",
-            "variants",
-            "-ds",
-            dataset["_id"],
-            "-vcf",
-            test_snv_vcf_path,
-            "-sample",
-            "foo",
-        ],
+        ["add", "variants", "-ds", dataset["_id"], "-vcf", test_snv_vcf_path, "-sample", "foo",],
     )
     # Then the command should return error
     assert result.exit_code == 1
@@ -112,16 +94,7 @@ def test_add_variants_snv_vcf_panel(mock_app, public_dataset, database):
     # filtering using one gene panel
     result = runner.invoke(
         cli,
-        [
-            "add",
-            "variants",
-            "-ds",
-            dataset["_id"],
-            "-vcf",
-            test_snv_vcf_path,
-            "-sample",
-            sample,
-        ],
+        ["add", "variants", "-ds", dataset["_id"], "-vcf", test_snv_vcf_path, "-sample", sample,],
     )
 
     # Then the command should NOT return error
@@ -352,12 +325,12 @@ def test_add_same_variant_different_datasets(
     test_variant = database["variant"].find_one({"$and": [hit_dset1, hit_dset2]})
 
     # Variant should countain callCount for each sample
-    callCount1 = test_variant["datasetIds"][public_dataset["_id"]]["samples"][
-        samples[0]
-    ]["allele_count"]
-    callCount2 = test_variant["datasetIds"][registered_dataset["_id"]]["samples"][
-        samples[1]
-    ]["allele_count"]
+    callCount1 = test_variant["datasetIds"][public_dataset["_id"]]["samples"][samples[0]][
+        "allele_count"
+    ]
+    callCount2 = test_variant["datasetIds"][registered_dataset["_id"]]["samples"][samples[1]][
+        "allele_count"
+    ]
 
     # And a cumulative call count as well
     assert test_variant["call_count"] == callCount1 + callCount2
@@ -384,16 +357,7 @@ def test_add_sv_variants(mock_app, public_dataset, database):
     # When invoking the add variants from a SV VCF file
     result = runner.invoke(
         cli,
-        [
-            "add",
-            "variants",
-            "-ds",
-            dataset["_id"],
-            "-vcf",
-            test_sv_vcf_path,
-            "-sample",
-            sample,
-        ],
+        ["add", "variants", "-ds", dataset["_id"], "-vcf", test_sv_vcf_path, "-sample", sample,],
     )
 
     # Then a number of variants should have been saved to database
@@ -420,16 +384,7 @@ def test_add_BND_SV_variants(mock_app, public_dataset, database):
     # When invoking the add variants from a SV VCF file containing BNDs
     result = runner.invoke(
         cli,
-        [
-            "add",
-            "variants",
-            "-ds",
-            dataset["_id"],
-            "-vcf",
-            test_bnd_vcf_path,
-            "-sample",
-            sample,
-        ],
+        ["add", "variants", "-ds", dataset["_id"], "-vcf", test_bnd_vcf_path, "-sample", sample,],
     )
 
     # Then a number of variants should have been saved to database
@@ -440,9 +395,7 @@ def test_add_BND_SV_variants(mock_app, public_dataset, database):
         # ALL of them should have a valid SV variant type
         assert var["variantType"] == "BND"
         # AND a mateName (end chromosome)
-        assert (
-            var["mateName"] != var["referenceName"]
-        )  # just for the variants in the demo file
+        assert var["mateName"] != var["referenceName"]  # just for the variants in the demo file
 
 
 def test_add_snv_sv_variants(mock_app, public_dataset, database):
@@ -482,16 +435,7 @@ def test_add_snv_sv_variants(mock_app, public_dataset, database):
     # WHEN variants from a another VCF file containing SVs are added
     result = runner.invoke(
         cli,
-        [
-            "add",
-            "variants",
-            "-ds",
-            dataset["_id"],
-            "-vcf",
-            test_sv_vcf_path,
-            "-sample",
-            sample,
-        ],
+        ["add", "variants", "-ds", dataset["_id"], "-vcf", test_sv_vcf_path, "-sample", sample,],
     )
 
     # THEN more variants should have been added to the database

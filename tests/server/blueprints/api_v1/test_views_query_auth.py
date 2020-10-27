@@ -112,9 +112,7 @@ def test_post_request_expired_token(mock_app, expired_token, pem, monkeypatch):
     assert data == EXPIRED_TOKEN_SIGNATURE
 
 
-def test_post_request_wrong_issuers_token(
-    mock_app, wrong_issuers_token, pem, monkeypatch
-):
+def test_post_request_wrong_issuers_token(mock_app, wrong_issuers_token, pem, monkeypatch):
     """test receiving a POST request containing a token with wrong issuers"""
 
     # Monkeypatch Elixir JWT server public key
@@ -157,9 +155,7 @@ def test_post_request_missing_claims_token(mock_app, no_claims_token, pem, monke
     assert data == MISSING_TOKEN_CLAIMS
 
 
-def test_post_request_missing_public_key(
-    mock_app, test_token, monkeypatch, mock_oauth2
-):
+def test_post_request_missing_public_key(mock_app, test_token, monkeypatch, mock_oauth2):
     """test receiving a post request with a token when the public key to decode it is available"""
 
     headers = copy.deepcopy(HEADERS)
@@ -180,9 +176,7 @@ def test_post_request_invalid_token_signature(mock_app, pem, monkeypatch, basic_
     """test receiving a POST request containing a token that triggers the InvalidTokenError"""
 
     # generate a random token not using the test public key
-    wrong_token = jwt.encode({"alg": "HS256"}, {"aud": ["foo", "bar"]}, "k").decode(
-        "utf-8"
-    )
+    wrong_token = jwt.encode({"alg": "HS256"}, {"aud": ["foo", "bar"]}, "k").decode("utf-8")
     assert wrong_token
 
     # Monkeypatch Elixir JWT server public key
@@ -235,9 +229,7 @@ def test_post_request_token_no_oidc(
     assert data == NO_GA4GH_USERDATA
 
 
-def test_post_request_token_passports_error(
-    mock_app, test_token, pem, monkeypatch, mock_oauth2
-):
+def test_post_request_token_passports_error(mock_app, test_token, pem, monkeypatch, mock_oauth2):
     """Test receiving POST request with valid token but in the absence of a valid server returning valid passport JWTs"""
 
     # Monkeypatch Elixir JWT server public key
@@ -310,9 +302,7 @@ def test_post_query_registered_dataset_no_token(
     database["dataset"].insert_one(registered_dataset)
 
     # And a variant from the same dataset
-    test_snv["datasetIds"] = {
-        registered_dataset["_id"]: {"samples": registered_dataset["samples"]}
-    }
+    test_snv["datasetIds"] = {registered_dataset["_id"]: {"samples": registered_dataset["samples"]}}
     database["variant"].insert_one(test_snv)
 
     # When a POST request is sent without auth token
@@ -357,9 +347,7 @@ def test_post_query_registered_dataset_registered_token(
     database["dataset"].insert_one(registered_dataset)
 
     # And a variant from the same dataset
-    test_snv["datasetIds"] = {
-        registered_dataset["_id"]: {"samples": registered_dataset["samples"]}
-    }
+    test_snv["datasetIds"] = {registered_dataset["_id"]: {"samples": registered_dataset["samples"]}}
     database["variant"].insert_one(test_snv)
 
     # When a POST request with a valid token is sent
@@ -389,9 +377,7 @@ def test_post_query_controlled_dataset_no_token(
     database["dataset"].insert_one(controlled_dataset)
 
     # And a variant from the same dataset
-    test_snv["datasetIds"] = {
-        controlled_dataset["_id"]: {"samples": controlled_dataset["samples"]}
-    }
+    test_snv["datasetIds"] = {controlled_dataset["_id"]: {"samples": controlled_dataset["samples"]}}
     database["variant"].insert_one(test_snv)
 
     # When a POST request is sent without auth token
@@ -436,9 +422,7 @@ def test_post_query_controlled_dataset_bona_fide_token(
     database["dataset"].insert_one(controlled_dataset)
 
     # And a variant from the same dataset
-    test_snv["datasetIds"] = {
-        controlled_dataset["_id"]: {"samples": controlled_dataset["samples"]}
-    }
+    test_snv["datasetIds"] = {controlled_dataset["_id"]: {"samples": controlled_dataset["samples"]}}
     database["variant"].insert_one(test_snv)
 
     # When a POST request with a valid token is sent

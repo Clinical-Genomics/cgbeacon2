@@ -22,9 +22,7 @@ def test_delete_variant_non_existing_dataset(mock_app):
     runner = mock_app.test_cli_runner()
 
     # When invoking the command with a dataset not present in database
-    result = runner.invoke(
-        cli, ["delete", "variants", "-ds", "foo", "-sample", "bar"], input="y\n"
-    )
+    result = runner.invoke(cli, ["delete", "variants", "-ds", "foo", "-sample", "bar"], input="y\n")
 
     assert result.exit_code == 1
     assert "Couldn't find any dataset with id 'foo' in the database" in result.output
@@ -41,15 +39,11 @@ def test_delete_variants_non_existing_sample(mock_app, public_dataset, database)
 
     # When invoking the command without a sample not present in dataset samples
     result = runner.invoke(
-        cli,
-        ["delete", "variants", "-ds", public_dataset["_id"], "-sample", "bar"],
-        input="y\n",
+        cli, ["delete", "variants", "-ds", public_dataset["_id"], "-sample", "bar"], input="y\n",
     )
 
     assert result.exit_code == 1
-    assert (
-        "Couldn't find any sample 'bar' in the sample list of dataset" in result.output
-    )
+    assert "Couldn't find any sample 'bar' in the sample list of dataset" in result.output
 
 
 def test_delete_variants(mock_app, public_dataset, database):
@@ -91,32 +85,20 @@ def test_delete_variants(mock_app, public_dataset, database):
     test_variant = database["variant"].find_one(
         {
             "$and": [
-                {
-                    ".".join(
-                        ["datasetIds", dataset["_id"], "samples", sample]
-                    ): condition
-                },
-                {
-                    ".".join(
-                        ["datasetIds", dataset["_id"], "samples", sample2]
-                    ): condition
-                },
+                {".".join(["datasetIds", dataset["_id"], "samples", sample]): condition},
+                {".".join(["datasetIds", dataset["_id"], "samples", sample2]): condition},
             ]
         }
     )
     assert test_variant is not None
     samples = test_variant["datasetIds"][dataset["_id"]]["samples"]
     # Whose allele count contribute to the general variant call count
-    cumulative_allele_count = (
-        samples[sample]["allele_count"] + samples[sample2]["allele_count"]
-    )
+    cumulative_allele_count = samples[sample]["allele_count"] + samples[sample2]["allele_count"]
     assert test_variant["call_count"] == cumulative_allele_count
 
     # When one of the samples is removed using the command line
     result = runner.invoke(
-        cli,
-        ["delete", "variants", "-ds", public_dataset["_id"], "-sample", sample],
-        input="y\n",
+        cli, ["delete", "variants", "-ds", public_dataset["_id"], "-sample", sample], input="y\n",
     )
 
     # Then there should be less variants left in the database

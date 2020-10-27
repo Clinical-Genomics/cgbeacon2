@@ -39,10 +39,7 @@ def test_claims_no_aud(mock_app):
     claims_options = claims(mock_app.config.get("ELIXIR_OAUTH2"))
     # The function should contain the mandatory keys
 
-    assert (
-        claims_options["iss"]["values"]
-        == mock_app.config["ELIXIR_OAUTH2"]["issuers"][0]
-    )
+    assert claims_options["iss"]["values"] == mock_app.config["ELIXIR_OAUTH2"]["issuers"][0]
     assert claims_options["iss"]["essential"] == True
     assert claims_options["aud"]["values"] == ""
     assert claims_options["aud"]["essential"] == False
@@ -54,9 +51,7 @@ def test_claims_with_aud_and_issuers():
 
     # When creating the web tokens claim
     mock_oauth2_settings = dict(
-        issuers=["issuer1", "issuer2"],
-        audience=["aud1", "aud2", "aud3"],
-        verify_aud=True,
+        issuers=["issuer1", "issuer2"], audience=["aud1", "aud2", "aud3"], verify_aud=True,
     )
 
     # The function should contain the mandatory keys, with values
