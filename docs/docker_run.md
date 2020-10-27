@@ -65,6 +65,11 @@ Run the containers and open an interactive shell for the backend by typing:
 docker-compose run beacon-cli /bin/bash
 ```
 
+To populate the database with demo data (dataset + case variants) type:
+```
+cgbeacon2 add demo
+```
+
 Exit from the execution of the images by typing `exit`
 
 ## Starting an app server connected to the database
