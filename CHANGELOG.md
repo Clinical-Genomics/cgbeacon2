@@ -1,5 +1,5 @@
 
-## [] -
+## [1.3] - 2020.10.27
 
 ### Fixed
 - Broken github actions test
@@ -8,7 +8,7 @@
 ### Added
 - Codecov and CodeFactor github actions
 - Created deployment WSGI file
-- Dockerfiles for backend and frontend
+- Dockerfile and docker-compose files
 - Flake8, Coveralls and Black github actions
 
 
