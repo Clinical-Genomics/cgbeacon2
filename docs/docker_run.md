@@ -17,7 +17,7 @@ api_v1.query       GET, POST  /apiv1.0/query
 api_v1.query_form  GET, POST  /apiv1.0/query_form
 ```
 
-A Docker image for creating both backend and frontend containers is available on [Docker Hub](https://hub.docker.com/repository/docker/northwestwitch/cgbeacon2).
+A Docker image for creating both backend and frontend containers is available on [Docker Hub](https://hub.docker.com/repository/docker/clinicalgenomics/cgbeacon2).
 Alternatively the Dockerfile used for creating the image is available in this repositiory.
 
 A local image of the repository can be created by moving the Dockerfile in the root folder of the app and from the same location, in a terminal, running the following command:
@@ -52,7 +52,7 @@ services:
   beacon-cli:
     environment:
       MONGODB_HOST: mongodb
-    image: northwestwitch/cgbeacon2
+    image: clinicalgenomics/cgbeacon2
     container_name: beacon-cli
     links:
       - mongodb
@@ -93,7 +93,7 @@ services:
   beacon-web:
     environment:
       MONGODB_HOST: mongodb
-    image: northwestwitch/cgbeacon2
+    image: clinicalgenomics/cgbeacon2
     container_name: beacon-web
     links:
       - mongodb

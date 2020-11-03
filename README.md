@@ -40,7 +40,7 @@ To instantiate a server without demo data just remove the line:
 `command: bash -c 'cgbeacon2 add demo'`
 from the docker-compose.yml file.
 
-More info on how to set up a server containing app backend and frontend is available in the [docs](www.clinicalgenomics.se/cgbeacon2/)
+More info on how to set up a server containing app backend and frontend is available in the [docs](http://www.clinicalgenomics.se/cgbeacon2)
 
 <a name="installation"></a>
 ## Installation

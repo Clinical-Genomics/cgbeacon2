@@ -14,7 +14,7 @@ services:
   beacon-cli:
     environment:
       MONGODB_HOST: mongodb
-    image: northwestwitch/cgbeacon2
+    image: clinicalgenomics/cgbeacon2
     container_name: beacon-cli
     links:
       - mongodb
@@ -23,7 +23,7 @@ services:
   beacon-web:
     environment:
       MONGODB_HOST: mongodb
-    image: northwestwitch/cgbeacon2
+    image: clinicalgenomics/cgbeacon2
     container_name: beacon-web
     links:
       - mongodb
