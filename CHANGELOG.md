@@ -1,4 +1,6 @@
 ## [] -
+### Added
+- Github action to build and publish Docker image
 ### Changed
 - Docker reference to image point to clinicalgenomics Docker Hub
 ### Fixed

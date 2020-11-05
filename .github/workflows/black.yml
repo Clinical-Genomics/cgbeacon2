@@ -3,9 +3,9 @@ name: Black check
 on: [pull_request]
 
 jobs:
-  flake8-lint:
+  black-check:
     runs-on: ubuntu-18.04
-    name: Flake8
+    name: Black
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
