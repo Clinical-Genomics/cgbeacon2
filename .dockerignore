@@ -5,5 +5,4 @@
 mkdocs.yml
 docs
 tests
-Dockerfile
 docker-compose.yml
