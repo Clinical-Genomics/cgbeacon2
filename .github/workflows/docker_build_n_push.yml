@@ -1,4 +1,4 @@
-name: Publish to PyPI and Docker Hub
+name: Publish to Docker Hub
 
 on:
  release:
@@ -13,6 +13,8 @@ jobs:
     - name: Get release version
       id: get_version
       run: echo ::set-output name=release_version::$(echo ${GITHUB_REF:10})
+    - name: Check out the repo
+       uses: actions/checkout@v2
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
