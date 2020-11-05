@@ -1,9 +1,8 @@
 FROM python:3.8-alpine3.12
 
-LABEL version="1"
 LABEL about.license="MIT License (MIT)"
-LABEL software.version="1.3"
 LABEL about.home="https://github.com/Clinical-Genomics/cgbeacon2"
+LABEL about.documentation="http://www.clinicalgenomics.se/cgbeacon2"
 LABEL maintainer="Chiara Rasi <chiara.rasi@scilifelab.se>"
 
 RUN apk update
