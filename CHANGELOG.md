@@ -1,4 +1,4 @@
-## [] -
+## [1.4] - 2020.11.05
 ### Added
 - Github action to build and publish Docker image
 ### Changed
