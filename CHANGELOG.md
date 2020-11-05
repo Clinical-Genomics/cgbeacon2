@@ -1,4 +1,6 @@
 ## [] -
+### Added
+- Github action to build and publish Docker image
 ### Fixed
 - Broken link in the docs
 
