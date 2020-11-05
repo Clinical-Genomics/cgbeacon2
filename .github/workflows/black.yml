@@ -3,7 +3,7 @@ name: Black check
 on: [pull_request]
 
 jobs:
-  flake8-lint:
+  black-check:
     runs-on: ubuntu-18.04
     name: Black
     steps:
