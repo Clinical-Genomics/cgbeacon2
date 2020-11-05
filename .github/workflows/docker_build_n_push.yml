@@ -10,14 +10,13 @@ jobs:
    name: Docker Image CI
    runs-on: ubuntu-latest
    steps:
-
     - name: Check out git repository
       uses: actions/checkout@v2
 
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: clinicalgenomics/scout
+        name: clinicalgenomics/cgbeacon2
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: "latest,${{ github.event.release.tag_name }}"
