@@ -226,7 +226,7 @@ def test_add_other_sample_variants(mock_app, public_dataset, database):
     sample2 = "ADM1059A2"
 
     # When invoking the add variants from a VCF file for the first time
-    result = runner.invoke(
+    runner.invoke(
         cli,
         [
             "add",
@@ -252,7 +252,7 @@ def test_add_other_sample_variants(mock_app, public_dataset, database):
     assert dataset_obj["allele_count"] > 0
 
     # WHEN the variants for the other sample are added
-    result = runner.invoke(
+    runner.invoke(
         cli,
         [
             "add",
@@ -270,11 +270,6 @@ def test_add_other_sample_variants(mock_app, public_dataset, database):
 
     # Then the number of total variants in the database should increase
     assert saved_vars < sum(1 for i in database["variant"].find())
-
-    # There should be variants called for both samples
-    shared_var = database["variant"].find_one(
-        {".".join(["datasetIds", dataset["_id"]]): [sample, sample2]}
-    )
 
     # variantCount, sampleCount and callCount should be increased
     updated_dataset = database["dataset"].find_one()
@@ -355,7 +350,7 @@ def test_add_sv_variants(mock_app, public_dataset, database):
     sample = "ADM1059A1"
 
     # When invoking the add variants from a SV VCF file
-    result = runner.invoke(
+    runner.invoke(
         cli,
         ["add", "variants", "-ds", dataset["_id"], "-vcf", test_sv_vcf_path, "-sample", sample,],
     )

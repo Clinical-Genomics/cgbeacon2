@@ -6,7 +6,6 @@ import datetime
 from flask.cli import with_appcontext, current_app
 
 from cgbeacon2.constants import CONSENT_CODES
-from cgbeacon2.resources import test_snv_vcf_path, test_sv_vcf_path
 from cgbeacon2.utils.add import add_dataset, add_variants
 from cgbeacon2.utils.parse import (
     extract_variants,
@@ -133,7 +132,7 @@ def dataset(id, name, build, authlevel, desc, version, url, cc, update):
         # register the event in the event collection
         update_event(current_app.db, id, "dataset", True)
     else:
-        click.echo(f"An error occurred while updating dataset collection")
+        click.echo("An error occurred while updating dataset collection")
 
 
 @add.command()
@@ -185,7 +184,7 @@ def variants(ds, vcf, sample, panel):
 
     nr_variants = count_variants(vcf_obj)
     if nr_variants == 0:
-        click.echo(f"Provided VCF file doesn't contain any variant")
+        click.echo("Provided VCF file doesn't contain any variant")
         raise click.Abort()
 
     vcf_obj = extract_variants(vcf_file=vcf, samples=custom_samples, filter=filter_intervals)

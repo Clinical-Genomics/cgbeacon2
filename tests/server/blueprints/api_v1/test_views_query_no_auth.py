@@ -217,7 +217,7 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
     resp_data = json.loads(response.data)
 
     # And the variant should be found
-    assert resp_data["datasetAlleleResponses"][0]["exists"] == True
+    assert resp_data["datasetAlleleResponses"][0]["exists"]
 
 
 def test_beacon_entrypoint(mock_app, registered_dataset):
@@ -359,7 +359,7 @@ def test_get_request_exact_position_snv_return_HIT(
     # And only the dataset with hits should be returned
     assert len(data["datasetAlleleResponses"]) == 1
     assert data["datasetAlleleResponses"][0]["datasetId"] == public_dataset["_id"]
-    assert data["datasetAlleleResponses"][0]["exists"] == True
+    assert data["datasetAlleleResponses"][0]["exists"]
 
 
 def test_get_request_exact_position_snv_return_MISS(
@@ -390,7 +390,7 @@ def test_get_request_exact_position_snv_return_MISS(
     # And only the dataset with NO hits should be returned
     assert len(data["datasetAlleleResponses"]) == 1
     assert data["datasetAlleleResponses"][0]["datasetId"] == public_dataset_no_variants["_id"]
-    assert data["datasetAlleleResponses"][0]["exists"] == False
+    assert data["datasetAlleleResponses"][0]["exists"] is False
 
 
 def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):

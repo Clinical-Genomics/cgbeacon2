@@ -97,7 +97,7 @@ def test_delete_variants(mock_app, public_dataset, database):
     assert test_variant["call_count"] == cumulative_allele_count
 
     # When one of the samples is removed using the command line
-    result = runner.invoke(
+    runner.invoke(
         cli, ["delete", "variants", "-ds", public_dataset["_id"], "-sample", sample], input="y\n",
     )
 

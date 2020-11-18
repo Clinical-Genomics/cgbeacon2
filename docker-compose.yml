@@ -1,8 +1,7 @@
 version: '3'
 # usage:
-# sudo docker-compose build
-# sudo docker-compose up
-#
+# (sudo) docker-compose up
+# (sudo) docker-compose down
 services:
   mongodb:
     image: mvertes/alpine-mongo

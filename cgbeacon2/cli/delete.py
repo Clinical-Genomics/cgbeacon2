@@ -67,6 +67,4 @@ def variants(ds, sample):
 
     if updated + removed > 0:
         # remove sample(s) from dataset
-        result = update_dataset(
-            database=current_app.db, dataset_id=ds, samples=list(sample), add=False
-        )
+        update_dataset(database=current_app.db, dataset_id=ds, samples=list(sample), add=False)
