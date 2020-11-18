@@ -1,6 +1,7 @@
 ## [] -
 ### Fixed
 - Docker action that didn't push 2 tags for a new release, just the "latest"
+- Dockerfile faster to build and cleaner code
 
 
 ## [1.4] - 2020.11.05
