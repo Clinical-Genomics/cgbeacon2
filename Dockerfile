@@ -12,12 +12,12 @@ RUN conda update -n base -c defaults conda && conda install -c bioconda bedtools
 # Install required libs
 RUN apk update \
 	&& apk --no-cache add gcc g++ curl libcurl curl-dev zlib-dev bzip2-dev xz-dev \
-    bash python3 
+    bash python3
 
 WORKDIR /home/worker/app
 COPY . /home/worker/app
 
-# Install Chanjo requirements
+# Install requirements
 RUN pip install -r requirements.txt
 
 # Install the app
