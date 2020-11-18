@@ -198,7 +198,7 @@ def test_query_get_request_missing_mandatory_params(mock_app):
     assert response.status_code == 400
     data = json.loads(response.data)
     assert data["message"]["error"] == NO_MANDATORY_PARAMS
-    assert data["message"]["exists"] == None
+    assert data["message"]["exists"] is None
     assert data["message"]["datasetAlleleResponses"] == []
     assert data["message"]["beaconId"]
     assert data["message"]["apiVersion"] == "1.0.0"

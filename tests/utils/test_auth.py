@@ -40,10 +40,10 @@ def test_claims_no_aud(mock_app):
     # The function should contain the mandatory keys
 
     assert claims_options["iss"]["values"] == mock_app.config["ELIXIR_OAUTH2"]["issuers"][0]
-    assert claims_options["iss"]["essential"] == True
+    assert claims_options["iss"]["essential"]
     assert claims_options["aud"]["values"] == ""
-    assert claims_options["aud"]["essential"] == False
-    assert claims_options["exp"]["essential"] == True
+    assert claims_options["aud"]["essential"] is False
+    assert claims_options["exp"]["essential"]
 
 
 def test_claims_with_aud_and_issuers():
@@ -58,7 +58,7 @@ def test_claims_with_aud_and_issuers():
     claims_options = claims(mock_oauth2_settings)
 
     assert claims_options["iss"]["values"] == ",".join(mock_oauth2_settings["issuers"])
-    assert claims_options["iss"]["essential"] == True
+    assert claims_options["iss"]["essential"]
     assert claims_options["aud"]["values"] == ",".join(mock_oauth2_settings["audience"])
-    assert claims_options["aud"]["essential"] == True
-    assert claims_options["exp"]["essential"] == True
+    assert claims_options["aud"]["essential"]
+    assert claims_options["exp"]["essential"]

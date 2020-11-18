@@ -7,7 +7,6 @@ from flask import (
     request,
     render_template,
     flash,
-    redirect,
 )
 from flask_negotiate import consumes
 from cgbeacon2.constants import CHROMOSOMES
@@ -73,20 +72,19 @@ def query_form():
             resp_obj["error"] = None
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
-            if resp_obj["exists"] == False:
-                flash_color = "secondary"
+            flash_color = "secondary" if resp_obj["exists"] is False else "success"
 
             if len(resp_obj.get("datasetAlleleResponses", [])) > 0:
                 # flash response from single datasets:
                 for resp in resp_obj["datasetAlleleResponses"]:
                     if resp["exists"] is True:
-                        flash(resp, "success")
+                        flash(resp, flash_color)
                     else:
-                        flash(resp, "secondary")
+                        flash(resp, flash_color)
             elif resp_obj["exists"] is True:
-                flash("Allele was found in this beacon", "success")
+                flash("Allele was found in this beacon", flash_color)
             else:
-                flash("Allele could not be found", "secondary")
+                flash("Allele could not be found", flash_color)
 
     return render_template(
         "queryform.html", chromosomes=CHROMOSOMES, dsets=all_dsets, form=dict(request.form),

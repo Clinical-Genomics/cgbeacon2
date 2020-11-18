@@ -1,34 +1,48 @@
 version: '3'
 # usage:
-# sudo docker-compose build
-# sudo docker-compose up
+# (sudo) docker-compose up
+# (sudo) docker-compose down
 services:
   mongodb:
     image: mvertes/alpine-mongo
     container_name: mongodb
+    networks:
+      - beacon-net
     ports:
       - '27017:27017'
     expose:
       - '27017'
 
   beacon-cli:
+    container_name: beacon-cli
     environment:
       MONGODB_HOST: mongodb
     image: clinicalgenomics/cgbeacon2
-    container_name: beacon-cli
-    links:
+    depends_on:
       - mongodb
-    command: bash -c 'cgbeacon2 add demo'
+    networks:
+      - beacon-net
+    command: add demo
 
   beacon-web:
+    container_name: beacon-web
     environment:
       MONGODB_HOST: mongodb
     image: clinicalgenomics/cgbeacon2
-    container_name: beacon-web
-    links:
+    depends_on:
       - mongodb
+    networks:
+      - beacon-net
     expose:
       - '5000'
     ports:
       - '5000:5000'
-    command: bash -c 'cgbeacon2 run --host 0.0.0.0'
+    command: run --host 0.0.0.0
+
+networks:
+  beacon-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/24

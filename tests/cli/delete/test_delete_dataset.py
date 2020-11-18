@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import click
-
 from cgbeacon2.cli.commands import cli
 
 

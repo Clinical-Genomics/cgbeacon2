@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from flask import request, current_app, jsonify
+from flask import current_app, jsonify
 from cgbeacon2.constants import (
     NO_MANDATORY_PARAMS,
     NO_SECONDARY_PARAMS,
@@ -75,9 +75,7 @@ def delete_variants(req):
 
     updated, removed = variant_deleter(current_app.db, dataset_id, samples)
     if updated + removed > 0:
-        result = update_dataset(
-            database=current_app.db, dataset_id=dataset_id, samples=samples, add=False
-        )
+        update_dataset(database=current_app.db, dataset_id=dataset_id, samples=samples, add=False)
     message = {
         "message": f"Number of updated variants:{updated}. Number of deleted variants:{removed}"
     }
@@ -109,7 +107,7 @@ def add_variants(req):
         message = {"message": f"Provided dataset '{dataset_id}' was not found on the server"}
     # Check if provided file can be parsed
     elif vcf_samples == []:
-        message = {"message": f"Error extracting info from VCF file, please check path to VCF"}
+        message = {"message": "Error extracting info from VCF file, please check path to VCF"}
     # Chech that eventual samples provided by user are present in the VCF file
     elif samples and all(samplen in vcf_samples for samplen in samples) is False:
         message = {
@@ -140,7 +138,7 @@ def add_variants(req):
         if (
             filter_intervals is None
         ):  # No valid genes genes for filtering the VCF, do not insert any variant
-            message = {"message": f"Could not create a gene filter using the provided gene list"}
+            message = {"message": "Could not create a gene filter using the provided gene list"}
             resp = jsonify(message)
             resp.status_code = 200
             return resp
@@ -181,7 +179,6 @@ def create_allele_query(resp_obj, req):
     """
     customer_query = {}
     mongo_query = {}
-    exists = False
     data = None
 
     if req.method == "GET":
@@ -456,7 +453,7 @@ def create_ds_allele_response(response_type, req_dsets, variants):
 
     for ds in req_dsets:
         # check if database contains a dataset with provided ID:
-        if not ds in all_dsets:
+        if ds not in all_dsets:
             LOG.info(f"Provided dataset {ds} could not be found in database")
             continue
 

@@ -182,7 +182,7 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
 
     # AND a number of BND variants
     runner = mock_app.test_cli_runner()
-    result = runner.invoke(
+    runner.invoke(
         cli,
         [
             "add",
@@ -217,7 +217,7 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
     resp_data = json.loads(response.data)
 
     # And the variant should be found
-    assert resp_data["datasetAlleleResponses"][0]["exists"] == True
+    assert resp_data["datasetAlleleResponses"][0]["exists"]
 
 
 def test_beacon_entrypoint(mock_app, registered_dataset):
@@ -359,7 +359,7 @@ def test_get_request_exact_position_snv_return_HIT(
     # And only the dataset with hits should be returned
     assert len(data["datasetAlleleResponses"]) == 1
     assert data["datasetAlleleResponses"][0]["datasetId"] == public_dataset["_id"]
-    assert data["datasetAlleleResponses"][0]["exists"] == True
+    assert data["datasetAlleleResponses"][0]["exists"]
 
 
 def test_get_request_exact_position_snv_return_MISS(
@@ -390,7 +390,7 @@ def test_get_request_exact_position_snv_return_MISS(
     # And only the dataset with NO hits should be returned
     assert len(data["datasetAlleleResponses"]) == 1
     assert data["datasetAlleleResponses"][0]["datasetId"] == public_dataset_no_variants["_id"]
-    assert data["datasetAlleleResponses"][0]["exists"] == False
+    assert data["datasetAlleleResponses"][0]["exists"] is False
 
 
 def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):
@@ -479,7 +479,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
     # No error should be returned
     assert response.status_code == 200
     # And the beacon should answer exists=True (variant found)
-    assert data["exists"] == True
+    assert data["exists"] is True
 
 
 def test_query_form_get(mock_app):
@@ -545,7 +545,7 @@ def test_post_query(mock_app, test_snv, public_dataset):
 
     # Including the hit result
     assert resp_data["datasetAlleleResponses"][0]["datasetId"] == public_dataset["_id"]
-    assert resp_data["datasetAlleleResponses"][0]["exists"] == True
+    assert resp_data["datasetAlleleResponses"][0]["exists"] is True
 
 
 ################### TESTS FOR HANDLING POST REQUESTS FROM THE WEB INTERFACE ################
