@@ -60,7 +60,7 @@ def test_delete_variants(mock_app, public_dataset, database):
     sample2 = "ADM1059A2"
 
     # When the load command is invoked with the right params
-    result = runner.invoke(
+    runner.invoke(
         cli,
         [
             "add",

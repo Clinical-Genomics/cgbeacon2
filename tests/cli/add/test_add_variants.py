@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from copy import deepcopy
-import pytest
 from cgbeacon2.resources import (
     test_snv_vcf_path,
     test_sv_vcf_path,
@@ -26,7 +24,7 @@ def test_add_variants_no_dataset(mock_app):
     # Then the command should return error
     assert result.exit_code == 1
     # And a specific error message
-    assert f"Couldn't find any dataset with id 'a_dataset'" in result.output
+    assert "Couldn't find any dataset with id 'a_dataset'" in result.output
 
 
 def test_add_variants_empty_vcf(mock_app, public_dataset, database):
@@ -56,7 +54,7 @@ def test_add_variants_empty_vcf(mock_app, public_dataset, database):
     # Then the command should return error
     assert result.exit_code == 1
     # And a specific error message
-    assert f"Provided VCF file doesn't contain any variant" in result.output
+    assert "Provided VCF file doesn't contain any variant" in result.output
 
 
 def test_add_variants_wrong_samples(mock_app, public_dataset, database):
@@ -76,7 +74,7 @@ def test_add_variants_wrong_samples(mock_app, public_dataset, database):
     # Then the command should return error
     assert result.exit_code == 1
     # And a specific error message
-    assert f"One or more provided sample was not found in the VCF file" in result.output
+    assert "One or more provided sample was not found in the VCF file" in result.output
 
 
 def test_add_variants_snv_vcf_panel(mock_app, public_dataset, database):
@@ -147,7 +145,7 @@ def test_add_variants_snv_vcf_panel(mock_app, public_dataset, database):
 
     # Then the command should NOT return error
     assert result.exit_code == 0
-    assert f"variants loaded into the database" in result.output
+    assert "variants loaded into the database" in result.output
 
 
 def test_add_variants_twice(mock_app, public_dataset, database):

@@ -182,7 +182,7 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
 
     # AND a number of BND variants
     runner = mock_app.test_cli_runner()
-    result = runner.invoke(
+    runner.invoke(
         cli,
         [
             "add",
@@ -479,7 +479,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
     # No error should be returned
     assert response.status_code == 200
     # And the beacon should answer exists=True (variant found)
-    assert data["exists"] == True
+    assert data["exists"] is True
 
 
 def test_query_form_get(mock_app):
@@ -545,7 +545,7 @@ def test_post_query(mock_app, test_snv, public_dataset):
 
     # Including the hit result
     assert resp_data["datasetAlleleResponses"][0]["datasetId"] == public_dataset["_id"]
-    assert resp_data["datasetAlleleResponses"][0]["exists"] == True
+    assert resp_data["datasetAlleleResponses"][0]["exists"] is True
 
 
 ################### TESTS FOR HANDLING POST REQUESTS FROM THE WEB INTERFACE ################

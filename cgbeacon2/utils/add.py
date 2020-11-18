@@ -61,7 +61,6 @@ def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
 
     """
     LOG.info("Parsing variants..\n")
-    new_samples = set()
 
     # Collect position to check genotypes for (only samples provided by user)
     gt_positions = []
