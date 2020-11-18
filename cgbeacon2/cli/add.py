@@ -6,7 +6,8 @@ import datetime
 from flask.cli import with_appcontext, current_app
 
 from cgbeacon2.constants import CONSENT_CODES
-from cgbeacon2.utils.add import add_dataset, add_variants
+from cgbeacon2.models.user import User
+from cgbeacon2.utils.add import add_dataset, add_variants, add_user
 from cgbeacon2.utils.parse import (
     extract_variants,
     count_variants,
@@ -20,6 +21,23 @@ from cgbeacon2.utils.update import update_dataset, update_event
 def add():
     """Add items to database using the CLI"""
     pass
+
+
+@add.command()
+@click.option("-id", type=click.STRING, nargs=1, required=True, help="User ID")
+@click.option("-name", type=click.STRING, nargs=1, required=True, help="User name")
+@click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
+@click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
+@with_appcontext
+def user(id, name, desc, url):
+    """Creates a new user for adding/removing variants using the REST API"""
+
+    if " " in id:
+        click.echo("User ID should not contain any space")
+        return
+    user_info = dict(_id=id, name=name, description=desc, url=url, created=datetime.datetime.now())
+    user = User(user_info)
+    add_user(current_app.db, user)
 
 
 @add.command()

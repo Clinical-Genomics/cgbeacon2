@@ -9,6 +9,27 @@ from cgbeacon2.utils.parse import variant_called, bnd_mate_name, sv_end
 LOG = logging.getLogger(__name__)
 
 
+def add_user(database, user):
+    """Adds a user to the database
+
+    Accepts:
+        database(pymongo.database.Database)
+        user(cgbeacon2.models.User)
+
+    Returns
+        inserted_id(str): the _id of the added user
+    """
+    collection = "user"
+    user_exists = database[collection].find_one(user._id)
+    if user_exists:
+        LOG.error("User already exists in database")
+        return
+    result = database[collection].insert_one(user.__dict__)
+    if result:
+        LOG.info(f"User with name '{user.name}' was saved to database.")
+    return result.inserted_id
+
+
 def add_dataset(database, dataset_dict, update=False):
     """Add/modify a dataset
 

@@ -11,6 +11,13 @@ GA4GH_SCOPES = ["openid", "ga4gh_passport_v1"]
 
 
 @pytest.fixture(scope="function")
+def mock_user(request):
+    """Define a mock user to be used when testing REST API services"""
+    user = dict(id="test_id", name="User Name", description="I'm a test user", url="someurl",)
+    return user
+
+
+@pytest.fixture(scope="function")
 def pymongo_client(request):
     """Get a client to the mongo database"""
     mock_client = mongomock.MongoClient()
