@@ -91,13 +91,13 @@ def authlevel(request, oauth2_settings):
         if auth_level == PASSPORTS_ERROR:
             return PASSPORTS_ERROR
 
-    except MissingClaimError as ex:
+    except MissingClaimError:
         return MISSING_TOKEN_CLAIMS
-    except InvalidClaimError as ex:
+    except InvalidClaimError:
         return INVALID_TOKEN_CLAIMS
-    except InvalidTokenError as ex:
+    except InvalidTokenError:
         return INVALID_TOKEN_AUTH
-    except ExpiredTokenError as ex:
+    except ExpiredTokenError:
         return EXPIRED_TOKEN_SIGNATURE
     except Exception as ex:
         return {"errorCode": 403, "errorMessage": str(ex)}
@@ -118,7 +118,7 @@ def elixir_key(server):
         r = requests.get(server)
         return r.json()
 
-    except Exception as ex:
+    except Exception:
         return MISSING_PUBLIC_KEY
 
 
@@ -171,7 +171,7 @@ def check_passports(passports, bona_fide_terms):
             # possible bona fide passport
             if type in ["AcceptedTermsAndPolicies", "ResearcherStatus"]:
                 bona_fide_passports.append((passport, header, payload))
-    except Exception as ex:
+    except Exception:
         return PASSPORTS_ERROR
 
     # validate controlled passports and retrieve datasets user has access to
@@ -339,7 +339,7 @@ def ga4gh_userdata(token, elixir_oidc):
         resp = requests.get(elixir_oidc, headers=headers)
         data = resp.json()
         passport_info = data.get("ga4gh_passport_v1")
-    except Exception as ex:
+    except Exception:
         return NO_GA4GH_USERDATA
 
     return passport_info
