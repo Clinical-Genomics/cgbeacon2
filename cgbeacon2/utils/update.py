@@ -128,7 +128,7 @@ def update_dataset_samples(dataset_obj, samples, add=True):
     """
     datasets_samples = set(dataset_obj.get("samples", []))
 
-    for sample in samples:  # add new samples to dataset
+    for sample in samples:  # add or remove samples from dataset object
         if add is True:
             datasets_samples.add(sample)
         else:
