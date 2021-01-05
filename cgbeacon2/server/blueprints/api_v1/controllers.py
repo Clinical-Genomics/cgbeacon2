@@ -57,19 +57,17 @@ def delete_variants(req):
 
     dataset_id = req_data.get("dataset_id")
     dataset = db["dataset"].find_one({"_id": dataset_id})
+    samples = req_data.get("samples")
 
     # Invalid dataset
     if dataset is None:
         message = {"message": "Invalid request. Please specify a valid dataset ID"}
 
-    samples = req_data.get("samples")
-
-    # Invalid
-    if isinstance(samples, list) is False or len(samples) == 0:
+    # Invalid samples
+    elif isinstance(samples, list) is False or len(samples) == 0:
         message = {"message": "Please provide a valid list of samples"}
-        return resp
 
-    if overlapping_samples(dataset.get("samples", []), samples) is False:
+    elif overlapping_samples(dataset.get("samples", []), samples) is False:
         message = {"message": "One or more provided samples was not found in the dataset"}
 
     if message != {}:
