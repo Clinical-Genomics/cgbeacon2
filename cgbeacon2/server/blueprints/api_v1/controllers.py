@@ -37,7 +37,7 @@ def overlapping_samples(dataset_samples, request_samples):
     """
     ds_sampleset = set(dataset_samples)
     sampleset = set(request_samples)
-    # return False if not all samples in sample set are in dataset
+    # return False if not all samples in provided samples list are found in dataset
     return all(sample in ds_sampleset for sample in sampleset)
 
 
@@ -52,9 +52,6 @@ def delete_variants(req):
     """
     resp = None
     message = {}
-    resp = jsonify(message)
-    resp.status_code = 422
-
     db = current_app.db
     req_data = req.json
 
@@ -63,26 +60,30 @@ def delete_variants(req):
 
     # Invalid dataset
     if dataset is None:
-        resp.message = {"message": "Invalid request. Please specify a valid dataset ID"}
-        return resp
+        message = {"message": "Invalid request. Please specify a valid dataset ID"}
 
     samples = req_data.get("samples")
 
     # Invalid
     if isinstance(samples, list) is False or len(samples) == 0:
-        resp.message = {"message": "Please provide a valid list of samples"}
+        message = {"message": "Please provide a valid list of samples"}
         return resp
 
     if overlapping_samples(dataset.get("samples", []), samples) is False:
-        resp.message = {"message": "None of the provided samples was found in the dataset"}
+        message = {"message": "One or more provided samples was not found in the dataset"}
+
+    if message != {}:
+        resp = jsonify(message)
+        resp.status_code = 422
         return resp
 
     updated, removed = variant_deleter(current_app.db, dataset_id, samples)
     if updated + removed > 0:
         update_dataset(database=current_app.db, dataset_id=dataset_id, samples=samples, add=False)
-    resp.message = {
+    message = {
         "message": f"Number of updated variants:{updated}. Number of deleted variants:{removed}"
     }
+    resp = jsonify(message)
     resp.status_code = 200
     return resp
 
