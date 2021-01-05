@@ -36,7 +36,7 @@ def test_delete_invalid_dataset(mock_app):
     assert response.status_code == 422
     # With a proper error message
     resp_data = json.loads(response.data)
-    assert resp_data["message"] == "Provided dataset 'FOO' was not found on the server"
+    assert resp_data["message"] == "Invalid request. Please specify a valid dataset ID"
 
 
 def test_delete_invalid_sample_format(mock_app, public_dataset, database):
@@ -69,7 +69,7 @@ def test_delete_samples_not_found(mock_app, public_dataset, database):
     assert response.status_code == 422
     # With a proper error message
     resp_data = json.loads(response.data)
-    assert resp_data["message"] == "None of the provided samples was found in the dataset"
+    assert resp_data["message"] == "One or more provided samples was not found in the dataset"
 
 
 def test_add_no_dataset(mock_app):
