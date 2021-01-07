@@ -4,6 +4,7 @@
 ### Fixed
 - Docker action that didn't push 2 tags for a new release, just the "latest"
 - Dockerfile faster to build and cleaner code
+- Modified jwt.decode params to be compliant to PyJWT v2.0
 
 
 ## [1.4] - 2020.11.05

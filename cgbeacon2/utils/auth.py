@@ -283,7 +283,7 @@ def decode_passport(encoded):
     LOG.debug("Decoding a GA4GH passport")
 
     header = jwt.get_unverified_header(encoded)
-    payload = jwt.decode(encoded, verify=False)
+    payload = jwt.decode(encoded, options={"verify_signature": False})
 
     return header, payload
 
