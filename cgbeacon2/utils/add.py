@@ -179,7 +179,7 @@ def add_variant(database, variant, dataset_id):
         )  # dictionary where dataset ids are keys
         allele_count = 0
         if dataset_id in updated_datasets:  # variant was already found in this dataset
-            updated_samples = updated_datasets[dataset_id]["samples"]
+            updated_samples = updated_datasets[dataset_id].get("samples", {})
             for sample, value in current_samples.items():
                 if sample not in updated_samples:
                     updated_samples[sample] = value
