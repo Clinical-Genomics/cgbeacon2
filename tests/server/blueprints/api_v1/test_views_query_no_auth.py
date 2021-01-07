@@ -465,7 +465,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
     ref = test_sv["referenceBases"]
     base_sv_coords = f"query?assemblyId={build}&referenceName={chrom}&referenceBases={ref}"
 
-    type = f"variantType={test_sv['variantType']}"
+    vtype = f"variantType={test_sv['variantType']}"
 
     # When providing range coordinates
     start_min = test_sv["start"] - 5
@@ -474,7 +474,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
     end_max = test_sv["end"] + 5
     range_coords = f"startMin={start_min}&startMax={start_max}&endMin={end_min}&endMax={end_max}"
 
-    query_string = "&".join([base_sv_coords, range_coords, type])
+    query_string = "&".join([base_sv_coords, range_coords, vtype])
 
     response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
 

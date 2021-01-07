@@ -221,7 +221,7 @@ def gene_objects_build37():
 @pytest.fixture
 def test_gene():
     """A test gene object in the same format as it's saved in the database"""
-    test_gene = {
+    gene = {
         "_id": "5f8815f638049161e6ee429c",
         "ensembl_id": "ENSG00000128513",
         "hgnc_id": 17284,
@@ -231,7 +231,7 @@ def test_gene():
         "start": 124462440,
         "end": 124570037,
     }
-    return test_gene
+    return gene
 
 
 ########### Security-related fixtures ###########
