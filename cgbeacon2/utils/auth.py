@@ -58,7 +58,7 @@ def authlevel(request, oauth2_settings):
         return MISSING_TOKEN
     if scheme != "Bearer":
         return WRONG_SCHEME
-    elif token == "":
+    if token == "":
         return MISSING_TOKEN
 
     public_key = elixir_key(oauth2_settings["server"])
@@ -80,7 +80,7 @@ def authlevel(request, oauth2_settings):
 
         if all_passports == NO_GA4GH_USERDATA:
             return NO_GA4GH_USERDATA
-        elif all_passports is None:
+        if all_passports is None:
             return ([], False)
 
         # collect bona fide requirements from app config file
@@ -164,12 +164,12 @@ def check_passports(passports, bona_fide_terms):
             # Decode encoded passport
             header, payload = decode_passport(passport)
             # get passport passport type
-            type = payload.get("ga4gh_visa_v1", {}).get("type")
+            access_type = payload.get("ga4gh_visa_v1", {}).get("type")
             # has access to controlled access datasets
-            if type == "ControlledAccessGrants":
+            if access_type == "ControlledAccessGrants":
                 registered_passports.append((passport, header))
             # possible bona fide passport
-            if type in ["AcceptedTermsAndPolicies", "ResearcherStatus"]:
+            if access_type in ["AcceptedTermsAndPolicies", "ResearcherStatus"]:
                 bona_fide_passports.append((passport, header, payload))
     except Exception:
         return PASSPORTS_ERROR
@@ -283,7 +283,7 @@ def decode_passport(encoded):
     LOG.debug("Decoding a GA4GH passport")
 
     header = jwt.get_unverified_header(encoded)
-    payload = jwt.decode(encoded, verify=False)
+    payload = jwt.decode(encoded, options={"verify_signature": False})
 
     return header, payload
 
