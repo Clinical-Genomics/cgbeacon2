@@ -37,7 +37,8 @@ def overlapping_samples(dataset_samples, request_samples):
     """
     ds_sampleset = set(dataset_samples)
     sampleset = set(request_samples)
-    return bool(sampleset.intersection(ds_sampleset))
+    # return False if not all samples in provided samples list are found in dataset
+    return all(sample in ds_sampleset for sample in sampleset)
 
 
 def delete_variants(req):
@@ -50,25 +51,26 @@ def delete_variants(req):
         resp(json object): A json response from the server, containing a message and a status_code
     """
     resp = None
-    message = None
+    message = {}
     db = current_app.db
     req_data = req.json
+
     dataset_id = req_data.get("dataset_id")
     dataset = db["dataset"].find_one({"_id": dataset_id})
     samples = req_data.get("samples")
 
-    # Check that request params contain a valid dataset id
-    if dataset_id is None or dataset_id == "":
+    # Invalid dataset
+    if dataset is None:
         message = {"message": "Invalid request. Please specify a valid dataset ID"}
-    # Check that dataset exists on the server
-    elif dataset is None:
-        message = {"message": f"Provided dataset '{dataset_id}' was not found on the server"}
-    # Check that request params contain a valid list of samples
-    elif isinstance(samples, list) is False or samples == []:
+
+    # Invalid samples
+    elif isinstance(samples, list) is False or len(samples) == 0:
         message = {"message": "Please provide a valid list of samples"}
+
     elif overlapping_samples(dataset.get("samples", []), samples) is False:
-        message = {"message": "None of the provided samples was found in the dataset"}
-    if message:
+        message = {"message": "One or more provided samples was not found in the dataset"}
+
+    if message != {}:
         resp = jsonify(message)
         resp.status_code = 422
         return resp

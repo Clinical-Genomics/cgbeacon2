@@ -218,6 +218,22 @@ def gene_objects_build37():
     return [gene1, gene2, gene3]
 
 
+@pytest.fixture
+def test_gene():
+    """A test gene object in the same format as it's saved in the database"""
+    gene = {
+        "_id": "5f8815f638049161e6ee429c",
+        "ensembl_id": "ENSG00000128513",
+        "hgnc_id": 17284,
+        "symbol": "POT1",
+        "build": "GRCh37",
+        "chromosome": "7",
+        "start": 124462440,
+        "end": 124570037,
+    }
+    return gene
+
+
 ########### Security-related fixtures ###########
 # https://github.com/mpdavis/python-jose/blob/master/tests/test_jwt.py
 

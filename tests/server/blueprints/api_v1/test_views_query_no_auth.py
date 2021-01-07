@@ -12,23 +12,46 @@ COORDS_ARGS = "start=235826381&end=235826383"
 ALT_ARG = "alternateBases=T"
 
 
-def test_delete_variants_api(mock_app, public_dataset, database):
+def test_delete_variants_wrong_sample(mock_app, public_dataset, database, test_gene):
+    """Test the API that deletes variants when a wrong sample is provided for a given dataset"""
+    # GIVEN a database containing a public dataset
+    database["dataset"].insert_one(public_dataset)
+    # And a test gene
+    database["gene"].insert_one(test_gene)
+
+    right_sample = "ADM1059A2"
+
+    # And some variants for a sample
+    data = {
+        "dataset_id": public_dataset["_id"],
+        "vcf_path": test_snv_vcf_path,
+        "assemblyId": "GRCh37",
+        "samples": [right_sample],
+        "genes": {"ids": [17284], "id_type": "HGNC"},
+    }
+    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=HEADERS)
+    n_inserted = len(list(database["variant"].find()))
+    assert n_inserted > 0
+    updated_ds = database["dataset"].find_one()
+    assert updated_ds["samples"] == [right_sample]
+
+    # WHEN the delete variants API is used to remove variants for a sample that is not among dataset samples
+    data = {"dataset_id": public_dataset["_id"], "samples": ["WRONG_SAMPLE"]}
+    response = mock_app.test_client().post("/apiv1.0/delete", json=data, headers=HEADERS)
+
+    # It should return an error
+    assert response.status_code == 422
+    resp_data = json.loads(response.data)
+    # With a pertinent message
+    assert "One or more provided samples was not found in the dataset" in resp_data["message"]
+
+
+def test_delete_variants_api(mock_app, public_dataset, database, test_gene):
     """Test the API that deletes variants according to params specified in user's request"""
 
     # GIVEN a database containing a public dataset
     database["dataset"].insert_one(public_dataset)
-
-    test_gene = {
-        "_id": "5f8815f638049161e6ee429c",
-        "ensembl_id": "ENSG00000128513",
-        "hgnc_id": 17284,
-        "symbol": "POT1",
-        "build": "GRCh37",
-        "chromosome": "7",
-        "start": 124462440,
-        "end": 124570037,
-    }
-    # A test gene
+    # And a test gene
     database["gene"].insert_one(test_gene)
 
     # And some variants for a couple of samples
@@ -87,22 +110,12 @@ def test_add_variants_api_empty_gene_collection(mock_app, public_dataset, databa
     assert "Could not create a gene filter using the provided gene list" in resp_data["message"]
 
 
-def test_add_variants_api_hgnc_genes(mock_app, public_dataset, database):
+def test_add_variants_api_hgnc_genes(mock_app, public_dataset, database, test_gene):
     """Test receiving a variants add API with valid parameters"""
 
     # GIVEN a database containing a public dataset
     database["dataset"].insert_one(public_dataset)
 
-    test_gene = {
-        "_id": "5f8815f638049161e6ee429c",
-        "ensembl_id": "ENSG00000128513",
-        "hgnc_id": 17284,
-        "symbol": "POT1",
-        "build": "GRCh37",
-        "chromosome": "7",
-        "start": 124462440,
-        "end": 124570037,
-    }
     # And a test gene:
     database["gene"].insert_one(test_gene)
 
@@ -122,22 +135,12 @@ def test_add_variants_api_hgnc_genes(mock_app, public_dataset, database):
     assert "inserted variants for samples" in resp_data["message"]
 
 
-def test_add_variants_api_ensembl_genes(mock_app, public_dataset, database):
+def test_add_variants_api_ensembl_genes(mock_app, public_dataset, database, test_gene):
     """Test receiving a variants add API with valid parameters"""
 
     # GIVEN a database containing a public dataset
     database["dataset"].insert_one(public_dataset)
 
-    test_gene = {
-        "_id": "5f8815f638049161e6ee429c",
-        "ensembl_id": "ENSG00000128513",
-        "hgnc_id": 17284,
-        "symbol": "POT1",
-        "build": "GRCh37",
-        "chromosome": "7",
-        "start": 124462440,
-        "end": 124570037,
-    }
     # And a test gene:
     database["gene"].insert_one(test_gene)
 
@@ -462,7 +465,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
     ref = test_sv["referenceBases"]
     base_sv_coords = f"query?assemblyId={build}&referenceName={chrom}&referenceBases={ref}"
 
-    type = f"variantType={test_sv['variantType']}"
+    vtype = f"variantType={test_sv['variantType']}"
 
     # When providing range coordinates
     start_min = test_sv["start"] - 5
@@ -471,7 +474,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
     end_max = test_sv["end"] + 5
     range_coords = f"startMin={start_min}&startMax={start_max}&endMin={end_min}&endMax={end_max}"
 
-    query_string = "&".join([base_sv_coords, range_coords, type])
+    query_string = "&".join([base_sv_coords, range_coords, vtype])
 
     response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
 
