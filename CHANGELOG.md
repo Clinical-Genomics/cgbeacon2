@@ -7,6 +7,8 @@
 - Modified jwt.decode params to be compliant to PyJWT v2.0
 - Bug when trying to delete variants for samples not in dataset
 - Bug when variant samples do not correspond to dataset samples
+### Changed
+- `add` and `delete` API are returning async responsess
 
 
 ## [1.4] - 2020.11.05
