@@ -13,7 +13,14 @@ from cgbeacon2.constants import CHROMOSOMES
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel
 from cgbeacon2.utils.parse import validate_add_params
-from .controllers import create_allele_query, dispatch_query, validate_add_data, add_variants_task
+from .controllers import (
+    create_allele_query,
+    dispatch_query,
+    validate_add_data,
+    validate_delete_data,
+    add_variants_task,
+    delete_variants_task,
+)
 from threading import Thread
 
 API_VERSION = "1.0.0"
@@ -110,16 +117,16 @@ def add():
     """
     resp = None
     # Check that request contains the required params
-    validate_res = validate_add_params(request)
-    if isinstance(validate_res, str):  # Validation failed
-        resp = jsonify({"message": validate_res})
+    validate_req = validate_add_params(request)
+    if isinstance(validate_req, str):  # Validation failed
+        resp = jsonify({"message": validate_req})
         resp.status_code = 422
         return resp
 
     # Check that request params are valid
-    validate_data_res = validate_add_data(request)
-    if isinstance(validate_data_res, str):  # Validation failed
-        resp = jsonify({"message": validate_data_res})
+    validate_req_data = validate_add_data(request)
+    if isinstance(validate_req_data, str):  # Validation failed
+        resp = jsonify({"message": validate_req_data})
         resp.status_code = 422
         return resp
 
@@ -132,47 +139,33 @@ def add():
     return resp
 
 
-"""
-@consumes("application/json")
-@api1_bp.route("/apiv1.0/add", methods=["POST"])
-def add():
-    Endpoint accepting json data from POST requests. Save variants from a VCF file according to params specified in the request.
-    Example:
-    ########### POST request ###########
-    curl -X POST \
-    -H 'Content-Type: application/json' \
-    -d '{"dataset_id": "test_public",
-    "vcf_path": "path/to/cgbeacon2/resources/demo/test_trio.vcf.gz",
-    "samples" : ["ADM1059A1", "ADM1059A2"],
-    "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
-
-
-    resp = None
-    # validate request content:
-    validate_request = validate_add_request(request)
-
-    # Validation of request is OK, load eventual variants to db
-
-    resp = add_variants(request)
-    return resp
-"""
-
-"""
 @consumes("application/json")
 @api1_bp.route("/apiv1.0/delete", methods=["POST"])
 def delete():
-    Endpoint accepting json data from POST requests. Delete from database variants from one or more dataset samples according user request.
-    Example:
+    """
+    Endpoint accepting json data from POST requests. If request params are OK returns 200 (success).
+    Then start a Thread that will delete variants from database.
     ########### POST request ###########
     curl -X POST \
     -H 'Content-Type: application/json' \
     -d '{"dataset_id": "test_public",
     "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:5000/apiv1.0/delete
+    """
+    resp = None
+    # Check that request params are valid
+    validate_req_data = validate_delete_data(request)
+    if isinstance(validate_req_data, str):  # Validation failed
+        resp = jsonify({"message": validate_req_data})
+        resp.status_code = 422
+        return resp
 
-    resp = delete_variants(request)
+    # Start deleting variants thread
+    Thread(target=delete_variants_task(request)).start()
+
+    # Return success response
+    resp = jsonify({"message": "Deleting variants from Beacon"})
+    resp.status_code = 200
     return resp
-
-"""
 
 
 @api1_bp.route("/apiv1.0/query", methods=["GET", "POST"])

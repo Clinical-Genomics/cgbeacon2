@@ -37,28 +37,6 @@ def validate_add_params(req):
     return True
 
 
-def validate_add_data(req):
-    """Validate the data specified in the paramaters of an add request received via the API.
-
-    Accepts:
-        req(flask.request): POST request received by server
-
-    Returns:
-        validate_request: True if validated, a dictionary with specific error message if not validated
-    """
-    db = current_app.db
-    req_data = req.json
-
-    dataset_id = req_data.get("dataset_id")
-    dataset = db["dataset"].find_one({"_id": dataset_id})
-
-    # Invalid dataset
-    if dataset is None:
-        return "Invalid request. Please specify a valid dataset ID"
-
-    return True
-
-
 def get_vcf_samples(vcf_file):
     """Returns a list of samples contained in the VCF
 

@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 from cgbeacon2.resources import test_snv_vcf_path
 import json
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
 
 
-def test_add_no_dataset(mock_app):
+def test_variants_add_no_dataset(mock_app):
     """Test receiving a variant add request missing one of the required params"""
     data = dict(vcf_path="path/to/vcf", assemblyId="GRCh37")
     # When a POST add request is missing dataset id param:
@@ -16,7 +15,7 @@ def test_add_no_dataset(mock_app):
     assert resp_data["message"] == "'dataset_id' is a required property"
 
 
-def test_add_no_vcf_path(mock_app):
+def test_variants_add_no_vcf_path(mock_app):
     """Test receiving a variant add request missing one of the required params"""
     data = dict(dataset_id="test_id", assemblyId="GRCh37")
     # When a POST add request is missing dataset path to vcf file
@@ -27,7 +26,7 @@ def test_add_no_vcf_path(mock_app):
     assert resp_data["message"] == "'vcf_path' is a required property"
 
 
-def test_add_wrong_assembly(mock_app):
+def test_variants_add_wrong_assembly(mock_app):
     """Test receiving a variant add request with non-valid genome assembly"""
     data = dict(dataset_id="test_id", vcf_path="path/to/vcf", assemblyId="FOO")
     # When a POST add request is sent with a non valid assembly id
@@ -38,7 +37,7 @@ def test_add_wrong_assembly(mock_app):
     assert resp_data["message"] == "'FOO' is not one of ['GRCh37', 'GRCh38']"
 
 
-def test_add_wrong_dataset(mock_app):
+def test_variants_add_wrong_dataset(mock_app):
     """Test receiving a variant add request with non-valid dataset id"""
     data = dict(dataset_id="FOO", vcf_path="path/to/vcf", assemblyId="GRCh37")
     # When a POST add request is sent with a non valid assembly id
@@ -50,7 +49,7 @@ def test_add_wrong_dataset(mock_app):
     assert data["message"] == "Invalid request. Please specify a valid dataset ID"
 
 
-def test_add_invalid_vcf_path(mock_app, public_dataset, database):
+def test_variants_add_invalid_vcf_path(mock_app, public_dataset, database):
     """Test receiving a variant add request with non-valid vcf path"""
 
     # GIVEN a database containing a public dataset
@@ -66,7 +65,7 @@ def test_add_invalid_vcf_path(mock_app, public_dataset, database):
     assert data["message"] == "Error extracting info from VCF file, please check path to VCF"
 
 
-def test_add_invalid_samples(mock_app, public_dataset, database):
+def test_variants_add_invalid_samples(mock_app, public_dataset, database):
     """Test receiving a variant add request with non-valid samples (samples not in provided VCF file)"""
 
     # GIVEN a database containing a public dataset
@@ -87,7 +86,7 @@ def test_add_invalid_samples(mock_app, public_dataset, database):
     assert "One or more provided samples were not found in VCF" in data["message"]
 
 
-def test_add_add_variants_api_invalid_gene_list(mock_app, public_dataset, database):
+def test_variants_add_invalid_gene_list(mock_app, public_dataset, database):
     """Test receiving a variant add request with non-valid genes object"""
 
     # GIVEN a database containing a public dataset
@@ -109,7 +108,7 @@ def test_add_add_variants_api_invalid_gene_list(mock_app, public_dataset, databa
     assert "Please provide id_type (HGNC or Ensembl) for the given list of genes" in data["message"]
 
 
-def test_add_variants_api_hgnc_genes(mock_app, public_dataset, database, test_gene):
+def test_variants_add_hgnc_genes(mock_app, public_dataset, database, test_gene):
     """Test receiving a request to add variants with valid parameters, hgnc genes"""
 
     # GIVEN a database containing a public dataset
@@ -143,7 +142,7 @@ def test_add_variants_api_hgnc_genes(mock_app, public_dataset, database, test_ge
     assert updated_dataset["samples"] == samples
 
 
-def test_add_variants_api_ensembl_genes(mock_app, public_dataset, database, test_gene):
+def test_variants_add_ensembl_genes(mock_app, public_dataset, database, test_gene):
     """Test receiving a request to add variants with valid parameters, hgnc genes"""
 
     # GIVEN a database containing a public dataset
