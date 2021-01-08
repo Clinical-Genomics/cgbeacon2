@@ -42,7 +42,7 @@ def add_dataset(database, dataset_dict, update=False):
     """
     collection = "dataset"
 
-    if update is True:  # update an existing dataset
+    if update:  # update an existing dataset
         # LOG.info(f"Updating dataset collection with dataset id: {id}..")
         old_dataset = database[collection].find_one({"_id": dataset_dict["_id"]})
 
@@ -55,16 +55,13 @@ def add_dataset(database, dataset_dict, update=False):
         result = database[collection].replace_one({"_id": dataset_dict["_id"]}, dataset_dict)
         if result.modified_count > 0:
             return dataset_dict["_id"]
-        else:
-            return
-    try:
-        result = database[collection].insert_one(dataset_dict)
-
-    except Exception as err:
-        LOG.error(err)
         return
 
-    return result.inserted_id
+    try:
+        result = database[collection].insert_one(dataset_dict)
+        return result.inserted_id
+    except Exception as err:
+        LOG.error(err)
 
 
 def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
