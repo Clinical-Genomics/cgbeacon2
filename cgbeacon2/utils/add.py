@@ -42,7 +42,7 @@ def add_dataset(database, dataset_dict, update=False):
     """
     collection = "dataset"
 
-    if update is True:  # update an existing dataset
+    if update:  # update an existing dataset
         # LOG.info(f"Updating dataset collection with dataset id: {id}..")
         old_dataset = database[collection].find_one({"_id": dataset_dict["_id"]})
 
@@ -55,16 +55,13 @@ def add_dataset(database, dataset_dict, update=False):
         result = database[collection].replace_one({"_id": dataset_dict["_id"]}, dataset_dict)
         if result.modified_count > 0:
             return dataset_dict["_id"]
-        else:
-            return
-    try:
-        result = database[collection].insert_one(dataset_dict)
-
-    except Exception as err:
-        LOG.error(err)
         return
 
-    return result.inserted_id
+    try:
+        result = database[collection].insert_one(dataset_dict)
+        return result.inserted_id
+    except Exception as err:
+        LOG.error(err)
 
 
 def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
@@ -173,33 +170,31 @@ def add_variant(database, variant, dataset_id):
         result = database["variant"].insert_one(variant.__dict__)
         return result.inserted_id
 
-    else:  # update pre-existing variant
-        updated_datasets = old_variant.get(
-            "datasetIds", {}
-        )  # dictionary where dataset ids are keys
-        allele_count = 0
-        if dataset_id in updated_datasets:  # variant was already found in this dataset
-            updated_samples = updated_datasets[dataset_id]["samples"]
-            for sample, value in current_samples.items():
-                if sample not in updated_samples:
-                    updated_samples[sample] = value
-                    allele_count += value["allele_count"]
-            updated_datasets[dataset_id] = updated_samples
-        else:
-            updated_datasets[dataset_id] = {"samples": current_samples}
-            allele_count = cumulative_allele_count(current_samples)
+    # update pre-existing variant
+    updated_datasets = old_variant.get("datasetIds", {})  # dictionary where dataset ids are keys
+    allele_count = 0
+    if dataset_id in updated_datasets:  # variant was already found in this dataset
+        updated_samples = updated_datasets[dataset_id].get("samples", {})
+        for sample, value in current_samples.items():
+            if sample not in updated_samples:
+                updated_samples[sample] = value
+                allele_count += value["allele_count"]
+        updated_datasets[dataset_id] = updated_samples
+    else:
+        updated_datasets[dataset_id] = {"samples": current_samples}
+        allele_count = cumulative_allele_count(current_samples)
 
-        if allele_count > 0:  # changes in sample, allele count dictionary must be saved
-            result = database["variant"].find_one_and_update(
-                {"_id": old_variant["_id"]},
-                {
-                    "$set": {
-                        "datasetIds": updated_datasets,  # this is actually updated now
-                        "call_count": old_variant["call_count"] + allele_count,
-                    }
-                },
-            )
-            return allele_count
+    if allele_count > 0:  # changes in sample, allele count dictionary must be saved
+        result = database["variant"].find_one_and_update(
+            {"_id": old_variant["_id"]},
+            {
+                "$set": {
+                    "datasetIds": updated_datasets,  # this is actually updated now
+                    "call_count": old_variant["call_count"] + allele_count,
+                }
+            },
+        )
+        return allele_count
 
 
 def cumulative_allele_count(samples_obj):

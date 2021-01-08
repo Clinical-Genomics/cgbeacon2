@@ -26,14 +26,14 @@ LOG = logging.getLogger(__name__)
 
 
 def overlapping_samples(dataset_samples, request_samples):
-    """Check that at least one sample in a list is contained in a dataset
+    """Check that samples provided by user are contained in either VCF of dataset object
 
     Accepts:
-        dataset_samples(list): the list of samples contained in the dataset
+        dataset_samples(list): the list of samples contained in the dataset or the VCF
         request_samples(list): the list of samples provided by user
 
     Returns:
-        bool: True if there is at least a shared samples in the 2 lists, else False
+        bool: True if all samples in the request are contained in the dataset or the VCF
     """
     ds_sampleset = set(dataset_samples)
     sampleset = set(request_samples)
@@ -96,12 +96,11 @@ def add_variants(req):
         resp(json object): A json response from the server, containing a message and a status_code
     """
     resp = None
-    message = None
     req_data = req.json
     assembly = req_data.get("assemblyId")
     dataset_id = req_data.get("dataset_id")
     vcf_samples = get_vcf_samples(req_data.get("vcf_path"))
-    samples = req_data.get("samples")
+    samples = req_data.get("samples", [])
     # Check if provided dataset exists on the server
     db = current_app.db
     dataset = db["dataset"].find_one({"_id": dataset_id, "assembly_id": assembly})
@@ -111,10 +110,12 @@ def add_variants(req):
     elif vcf_samples == []:
         message = {"message": "Error extracting info from VCF file, please check path to VCF"}
     # Chech that eventual samples provided by user are present in the VCF file
-    elif samples and all(samplen in vcf_samples for samplen in samples) is False:
+    elif overlapping_samples(vcf_samples, samples) is False:
         message = {
             "message": f"One or more provided samples were not found in VCF. VCF samples:{vcf_samples}"
         }
+    else:
+        message = None
     if message:
         resp = jsonify(message)
         resp.status_code = 422
