@@ -4,6 +4,7 @@ import logging
 from cyvcf2 import VCF
 import os
 import re
+from flask import current_app
 from pybedtools.bedtool import BedTool
 from jsonschema import validate, ValidationError
 from tempfile import NamedTemporaryFile
@@ -16,7 +17,7 @@ CHR_PATTERN = re.compile(r"(chr)?(.*)", re.IGNORECASE)
 LOG = logging.getLogger(__name__)
 
 
-def validate_add_request(req):
+def validate_add_params(req):
     """Validated the parameters in the request sent to add new variants into the database
 
     Accepts:
@@ -32,7 +33,29 @@ def validate_add_request(req):
         try:
             validate(req.json, schema)
         except ValidationError as ve:
-            return {"message": ve.message}
+            return ve.message
+    return True
+
+
+def validate_add_data(req):
+    """Validate the data specified in the paramaters of an add request received via the API.
+
+    Accepts:
+        req(flask.request): POST request received by server
+
+    Returns:
+        validate_request: True if validated, a dictionary with specific error message if not validated
+    """
+    db = current_app.db
+    req_data = req.json
+
+    dataset_id = req_data.get("dataset_id")
+    dataset = db["dataset"].find_one({"_id": dataset_id})
+
+    # Invalid dataset
+    if dataset is None:
+        return "Invalid request. Please specify a valid dataset ID"
+
     return True
 
 
@@ -105,6 +128,28 @@ def sv_end(pos, alt, svend=None, svlen=None):
             end = pos + svlen
 
     return end - 1  # coordinate should be zero-based
+
+
+def compute_filter_intervals(req_data):
+    """Compute filter intervals from a list of genes
+
+    Accepts:
+        req_data(dict): a dictionary with add request data
+        db()
+
+    Returns:
+        filter_intervals(list) a lits of genomic intervals to filter VCF with
+    """
+    db = current_app.db
+    hgnc_ids = None
+    ensembl_ids = None
+    assembly = req_data.get("assemblyId")
+    if req_data["genes"]["id_type"] == "HGNC":
+        hgnc_ids = req_data["genes"]["ids"]
+    else:
+        ensembl_ids = req_data["genes"]["ids"]
+    filter_intervals = genes_to_bedtool(db["gene"], hgnc_ids, ensembl_ids, assembly)
+    return filter_intervals
 
 
 def genes_to_bedtool(gene_collection, hgnc_ids=None, ensembl_ids=None, build="GRCh37"):

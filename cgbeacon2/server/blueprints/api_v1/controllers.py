@@ -15,7 +15,7 @@ from cgbeacon2.utils.delete import delete_variants as variant_deleter
 from cgbeacon2.utils.update import update_dataset
 from cgbeacon2.utils.parse import (
     get_vcf_samples,
-    genes_to_bedtool,
+    compute_filter_intervals,
     extract_variants,
     count_variants,
 )
@@ -23,6 +23,81 @@ from cgbeacon2.utils.md5 import md5_key
 
 RANGE_COORDINATES = ("startMin", "startMax", "endMin", "endMax")
 LOG = logging.getLogger(__name__)
+
+
+def validate_add_data(req):
+    """Validate the data specified in the paramaters of an add request received via the API.
+
+    Accepts:
+        req(flask.request): POST request received by server
+
+    Returns:
+        validate_request: True if validated, a string describing errong if not validated
+    """
+    db = current_app.db
+    req_data = req.json
+
+    dataset_id = req_data.get("dataset_id")
+    dataset = db["dataset"].find_one({"_id": dataset_id})
+
+    # Invalid dataset
+    if dataset is None:
+        return "Invalid request. Please specify a valid dataset ID"
+
+    vcf_samples = get_vcf_samples(req_data.get("vcf_path"))
+    if not vcf_samples:
+        return "Error extracting info from VCF file, please check path to VCF"
+
+    samples = req_data.get("samples", [])
+    if overlapping_samples(vcf_samples, samples) is False:
+        return f"One or more provided samples were not found in VCF. VCF samples:{vcf_samples}"
+
+    genes = req_data.get("genes")
+    if genes is None:  # Return validated OK and then load the entire VCF
+        return
+
+    if genes.get("id_type") not in ["HGNC", "Ensembl"]:
+        return "Please provide id_type (HGNC or Ensembl) for the given list of genes"
+
+    filter_intervals = compute_filter_intervals(req_data)
+    if filter_intervals is None:
+        return "Could not create a gene filter using the provided gene list"
+
+
+def add_variants_task(req):
+    """Perform the actual task of adding variants to the database after receiving an add request
+    Accepts:
+        req(flask.request): POST request received by server
+    """
+    db = current_app.db
+    req_data = req.json
+    dataset_id = req_data.get("dataset_id")
+    samples = req_data.get("samples", [])
+    assembly = req_data.get("assemblyId")
+    filter_intervals = None
+    genes = req_data.get("genes")
+    if genes:
+        filter_intervals = compute_filter_intervals(req_data)
+
+    vcf_obj = extract_variants(
+        vcf_file=req_data.get("vcf_path"), samples=samples, filter=filter_intervals
+    )
+    nr_variants = count_variants(vcf_obj)
+    vcf_obj = extract_variants(
+        vcf_file=req_data.get("vcf_path"), samples=samples, filter=filter_intervals
+    )
+    added = variants_loader(
+        database=db,
+        vcf_obj=vcf_obj,
+        samples=set(samples),
+        assembly=assembly,
+        dataset_id=dataset_id,
+        nr_variants=nr_variants,
+    )
+    if added > 0:
+        # Update dataset object accordingly
+        update_dataset(database=db, dataset_id=dataset_id, samples=samples, add=True)
+    LOG.info(f"Number of inserted variants for samples:{samples}:{added}")
 
 
 def overlapping_samples(dataset_samples, request_samples):
@@ -41,15 +116,15 @@ def overlapping_samples(dataset_samples, request_samples):
     return all(sample in ds_sampleset for sample in sampleset)
 
 
+"""
 def delete_variants(req):
-    """Delete variants for one or more sample according to parameters specified in request data.
+    Delete variants for one or more sample according to parameters specified in request data.
 
     Accepts:
         req(flask.request): request received by server
 
     Returns:
         resp(json object): A json response from the server, containing a message and a status_code
-    """
     resp = None
     message = {}
     db = current_app.db
@@ -87,14 +162,14 @@ def delete_variants(req):
 
 
 def add_variants(req):
-    """Add variants from a VCF file according to parameters specified in request data.
+    Add variants from a VCF file according to parameters specified in request data.
 
     Accepts:
         req(flask.request): request received by server
 
     Returns:
         resp(json object): A json response from the server, containing a message and a status_code
-    """
+
     resp = None
     req_data = req.json
     assembly = req_data.get("assemblyId")
@@ -170,6 +245,7 @@ def add_variants(req):
     resp = jsonify(message)
     resp.status_code = 200
     return resp
+"""
 
 
 def create_allele_query(resp_obj, req):
