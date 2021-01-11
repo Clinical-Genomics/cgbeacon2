@@ -11,7 +11,8 @@ The default procedure to add variants to the beacon is always the following:
 ## How to add:
 1. [ Demo data ](#demodata)
 1. [ A new dataset (custom data)](#dataset)
-1. [ Variants (custom data)](#variants)
+1. [ Variants (custom data) using the command line](#variants_cli)
+1. [ Variants (custom data) using the REST API](#variants_api)
 
 
 <a name="demodata"></a>
@@ -48,8 +49,8 @@ Other optional parameters that can be provided to improve the dataset descriptio
 The `--update` flag will allow to modify the information for a dataset that is already existing in the database.
 
 
-<a name="variants"></a>
-## Adding variant data
+<a name="variants_cli"></a>
+## Adding variant data using the command line
 Variant data can be loaded to the database using the following command:
 
 ```
@@ -66,3 +67,52 @@ ds (dataset id) and vcf (path to the VCF file containing the variants) are manda
 VCF files might as well be filtered by genomic intervals prior to variant uploading. To upload variants filtered by multiple panels use the options -panel panelA -panel panelB, providing the path to a [bed file](http://genome.ucsc.edu/FAQ/FAQformat#format1) containing the genomic intervals of interest.
 
 Additional variants for the same sample(s) and the same dataset might be added any time by running the same `beacon add variants` specifying another VCF file. Whenever the variant is already found for the same sample and the same dataset it will not be saved twice.
+
+<a name="variants_api"></a>
+## Adding variant data using the REST API
+Variant data can be alternatively loaded to the Beacon by sending a request to the /apiv1.0/add endpoint.
+This Endpoint is accepting json data from POST requests. If the request parameters are correct it will return a response with code 200 (success) and message "Saving variants to Beacon", whole it will start the actual thread that will save variants to database.
+
+### Creating an authorized user for using the APIs
+One or more API users can be created using the command:
+```
+beacon add user
+
+
+Options:
+  -id TEXT    User ID  [required]
+  -name TEXT  User name  [required]
+  -desc TEXT  User description
+  -url TEXT   User url
+  --help      Show this message and exit.
+```
+Once a user is created, a random user token will be created in the database for this user.
+
+
+The request to the add API should contain the following header parameters:
+- **Content-Type**: application/json
+- **X-Auth-Token**: auth_token
+
+Where the auth_token is the token created for the user in the step described above.
+
+### Sending an add a POST request to the API
+Apart from the header, an add request should contain the following parameters:
+- **dataset_id** (mandatory): string dentifier for a dataset)
+- **vcf_path** (mandatory): path to variants VCF file
+- **assemblyId** (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
+- **samples** (mandatory): list of samples to extract variants from in VCF file
+- **genes** (optional): an object containing two keys:
+  - **ids**: list of genes ids to be used to filter VCF file (only variants included in these genes will be saved to database).
+  - **id_type**: either "HGNC" or "Ensembl", to specify which type of ID format `ids` refers to. All genes in the list must be of the same type (for example all Ensembl IDs).
+
+Example of a valid POST request to the add endpoint:
+```
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'X-Auth-Token: auth_token' \
+  -d '{"dataset_id": "test_public",
+  "vcf_path": "path/to/cgbeacon2/cgbeacon2/resources/demo/test_trio.vcf.gz",
+  "samples" : ["ADM1059A1", "ADM1059A2"],
+  "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
+  "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
+```
