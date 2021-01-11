@@ -110,6 +110,7 @@ def add():
     ########### POST request ###########
     curl -X POST \
     -H 'Content-Type: application/json' \
+    -H 'X-Auth-Token: auth_token' \
     -d '{"dataset_id": "test_public",
     "vcf_path": "path/to/cgbeacon2/resources/demo/test_trio.vcf.gz",
     "samples" : ["ADM1059A1", "ADM1059A2"],
@@ -155,6 +156,7 @@ def delete():
     ########### POST request ###########
     curl -X POST \
     -H 'Content-Type: application/json' \
+    -H 'X-Auth-Token: auth_token' \
     -d '{"dataset_id": "test_public",
     "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:5000/apiv1.0/delete
     """
