@@ -1,6 +1,7 @@
 ## [] -
 ### Added
 - Create users with randomly generated tokens to use the REST API
+- Auth token validation in `add` and `delete` requests
 ### Fixed
 - Docker action that didn't push 2 tags for a new release, just the "latest"
 - Dockerfile faster to build and cleaner code

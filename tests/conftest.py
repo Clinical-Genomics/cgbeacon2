@@ -282,6 +282,31 @@ def pem():
 
 
 @pytest.fixture
+def api_req_headers(api_user):
+    """returns request headers for using the add and delete api with a valid token"""
+    headers = {
+        "Content-type": "application/json",
+        "Accept": "application/json",
+        "X-Auth-Token": api_user["token"],
+    }
+    return headers
+
+
+@pytest.fixture
+def api_user():
+    """returns a test api user containing an auth token"""
+    user = {
+        "_id": "test_user",
+        "name": "Test API user",
+        "description": "Test API user description",
+        "url": "https://testuser.se/",
+        "created": "2021-01-11T09:31:15.450Z",
+        "token": "6a7cbc6c-17d5-46bb-8671-709a186498f7",
+    }
+    return user
+
+
+@pytest.fixture
 def header():
     """Token header"""
     header = {
