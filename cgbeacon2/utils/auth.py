@@ -27,10 +27,35 @@ from cgbeacon2.constants import (
 LOG = logging.getLogger(__name__)
 GA4GH_SCOPES = ["openid", "ga4gh_passport_v1"]
 
+
+def validate_token(request, database):
+    """Validate an auth token contained in the request header.
+
+    Accepts:
+        request(flask.request) request received by server
+        database(pymongo.database.Database)
+
+    Returns:
+        validated(bool): return True if token is valid
+    """
+    validated = False
+    if "X-Auth-Token" not in request.headers:
+        return validated
+    token = request.headers.get("X-Auth-Token")
+    query = {"token": token}
+    authorized_user = database["user"].find_one(query)
+    validated = bool(authorized_user)
+    if validated:
+        LOG.info(
+            'Authorized user with id "{0}" submits a {1} request'.format(
+                authorized_user["_id"], request.method
+            )
+        )
+    return validated
+
+
 # Authentication code is based on:
 # https://elixir-europe.org/services/compute/aai
-
-
 def authlevel(request, oauth2_settings):
     """Returns auth level from a request object
 

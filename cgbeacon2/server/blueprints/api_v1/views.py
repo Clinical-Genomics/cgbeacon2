@@ -9,9 +9,9 @@ from flask import (
     flash,
 )
 from flask_negotiate import consumes
-from cgbeacon2.constants import CHROMOSOMES
+from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
-from cgbeacon2.utils.auth import authlevel
+from cgbeacon2.utils.auth import authlevel, validate_token
 from cgbeacon2.utils.parse import validate_add_params
 from .controllers import (
     create_allele_query,
@@ -116,6 +116,13 @@ def add():
     "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
     """
     resp = None
+    # Check request auth token
+    valid_token = validate_token(request, current_app.db)
+    if valid_token is False:
+        resp = jsonify({"message": INVALID_TOKEN_AUTH["errorMessage"]})
+        resp.status_code = INVALID_TOKEN_AUTH["errorCode"]
+        return resp
+
     # Check that request contains the required params
     validate_req = validate_add_params(request)
     if isinstance(validate_req, str):  # Validation failed
@@ -152,6 +159,13 @@ def delete():
     "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:5000/apiv1.0/delete
     """
     resp = None
+    # Check request auth token
+    valid_token = validate_token(request, current_app.db)
+    if valid_token is False:
+        resp = jsonify({"message": INVALID_TOKEN_AUTH["errorMessage"]})
+        resp.status_code = INVALID_TOKEN_AUTH["errorCode"]
+        return resp
+
     # Check that request params are valid
     validate_req_data = validate_delete_data(request)
     if isinstance(validate_req_data, str):  # Validation failed
