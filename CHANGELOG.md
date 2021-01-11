@@ -8,7 +8,8 @@
 - Bug when trying to delete variants for samples not in dataset
 - Bug when variant samples do not correspond to dataset samples
 ### Changed
-- `add` and `delete` API are returning async responsess
+- `add` and `delete` API are returning async responses
+- Renamed entry point command `cgbeacon2` to `beacon`
 
 
 ## [1.4] - 2020.11.05

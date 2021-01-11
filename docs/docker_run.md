@@ -6,7 +6,7 @@ The beacon app is consisting of a **backend** that is used for:
 - Loading demo data (not used in production, just in a test server)
 - Updating the genes in the database
 
-At the same time, the command `cgbeacon run` starts a **frontend** server with the following API endpoints:
+At the same time, the command `beacon run` starts a **frontend** server with the following API endpoints:
 ```
 Endpoint           Methods    Rule
 -----------------  ---------  ------------------------------
@@ -67,7 +67,7 @@ docker-compose run beacon-cli /bin/bash
 
 To populate the database with demo data (dataset + case variants) type:
 ```
-cgbeacon2 add demo
+beacon add demo
 ```
 
 Exit from the execution of the images by typing `exit`

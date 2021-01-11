@@ -28,4 +28,4 @@ RUN adduser -D worker
 RUN chown worker:worker -R /home/worker
 USER worker
 
-ENTRYPOINT ["cgbeacon2"]
+ENTRYPOINT ["beacon"]

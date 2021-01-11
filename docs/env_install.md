@@ -16,7 +16,7 @@
 use <name_of_database>
 ```
 
-Database name can be customized. If you don't have any preferences`cgbeacon2` will work just fine.
+Database name can be customized. If you don't have any preferences, `cgbeacon2` will work just fine.
 
 ## Installation
 
@@ -30,7 +30,7 @@ Change directory to the cloned folder and from there, install the software using
 pip install -e .
 ```
 
-To make sure the software is installed, from the terminal, you can run the following command: `cgbeacon2 --version`
+To make sure the software is installed, from the terminal, you can run the following command: `beacon --version`
 
 
 <a name="settings"></a>
@@ -97,5 +97,5 @@ ELIXIR_OAUTH2 = dict(
 ## Running the server
 To run the server, from the command line, you can use the following command:
 ```
-cgbeacon2 run
+beacon run
 ```
