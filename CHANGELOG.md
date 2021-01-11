@@ -1,5 +1,11 @@
 ## [] -
 ### Added
+### Fixed
+### Changed
+
+
+## [2.0] - 2021.01.11
+### Added
 - Create users with randomly generated tokens to use the REST API
 - Auth token validation in `add` and `delete` requests
 - Updated documentation to add and delete variants using the APIs
