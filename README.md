@@ -14,6 +14,8 @@ Table of Contents:
 4. [ Server endpoints ](#endpoints)
     - [ Obtaining beacon info ](#info)
     - [ Running queries ](#query)
+    - [ Adding variants ](#add)
+    - [ Removing variants ](#delete)
 5. [ Web interface ](#webform)
 
 
@@ -124,6 +126,33 @@ The Beacon reply to a query of this type would be a json object where the "exist
 ```
 {"allelRequest":{"alternateBases":"A","assemblyId":"GRCh37","datasetIds":[],"includeDatasetResponses":"NONE","referenceBases":"C","referenceName":"1","start":"156146085"},"apiVersion":"1.0.0","beaconId":"SciLifeLab-beacon","datasetAlleleResponses":[],"error":null,"exists":true}
 ```
+
+<a name="add"></a>
+- **/add**.
+Example of a valid POST request to the add endpoint:
+```
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'X-Auth-Token: auth_token' \
+  -d '{"dataset_id": "test_public",
+  "vcf_path": "path/to/cgbeacon2/cgbeacon2/resources/demo/test_trio.vcf.gz",
+  "samples" : ["ADM1059A1", "ADM1059A2"],
+  "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
+  "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
+```
+Note that only authenticated users will be able to use this endpoint by including the user's auth_token in the request headers. [Additional info](www.clinicalgenomics.se/cgbeacon2/loading.md) on how to use this endpoint.
+
+<a name="delete"></a>
+- **/delete**.
+Endpoint that can be used by authenticated users to remove variants by sending a POST request like this:
+```
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'X-Auth-Token: auth_token' \
+  -d '{"dataset_id": "test_public",
+  "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:5000/apiv1.0/delete
+```
+Additional info is available [here](www.clinicalgenomics.se/cgbeacon2/removing.md)
 
 
 <a name="webform"></a>

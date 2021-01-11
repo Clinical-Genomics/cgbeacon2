@@ -112,7 +112,7 @@ curl -X POST \
   -H 'X-Auth-Token: auth_token' \
   -d '{"dataset_id": "test_public",
   "vcf_path": "path/to/cgbeacon2/cgbeacon2/resources/demo/test_trio.vcf.gz",
-  "samples" : ["ADM1059A2"],
-  "genes" : {"ids": [17284], "id_type":"HGNC"},
+  "samples" : ["ADM1059A1", "ADM1059A2"],
+  "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
   "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
 ```
