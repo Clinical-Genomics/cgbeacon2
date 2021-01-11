@@ -3,7 +3,7 @@
 To remove all variants from one or more samples of a dataset you can use the following command:
 
 ```
-cgbeacon2 delete variants
+beacon delete variants
 
 -ds TEXT      dataset ID  [required]
 -sample TEXT  one or more samples to remove variants for  [required]
@@ -16,6 +16,6 @@ Note that dataset ID (-ds) and sample are mandatory parameters. To specify multi
 
 Use the command to remove a dataset from the database:
 ```
-cgbeacon2 delete dataset -id <dataset_id>
+beacon delete dataset -id <dataset_id>
 
 ```

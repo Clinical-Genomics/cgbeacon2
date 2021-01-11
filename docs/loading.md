@@ -1,7 +1,7 @@
 
 ## Adding data to the database
 
-Dataset and variant data can be loaded into the database using specific the specific command line. To visualize command line options, from the terminal you can user the following command: `cgbeacon2 --help`.
+Dataset and variant data can be loaded into the database using specific the specific command line. To visualize command line options, from the terminal you can user the following command: `beacon --help`.
 
 The default procedure to add variants to the beacon is always the following:
 
@@ -18,14 +18,14 @@ The default procedure to add variants to the beacon is always the following:
 ## Demo data
 Demo data consisting in a test dataset with public access and a set of variants (SNVs and structural variants of different type) is available under the cgbeacon2/resources/demo folder. You don't need to load this data manually since the following command will take care of everything:
 ```
-cgbeacon2 add demo
+beacon add demo
 ```
 
 <a name="dataset"></a>
 ## Adding a new dataset
 A new dataset can be created with the following command:
 ```
-cgbeacon2 add dataset -id <dataset_id> -name <"A dataset name"> -build <GRCh37|GRCh38> -authlevel <public|registered|controlled>
+beacon add dataset -id <dataset_id> -name <"A dataset name"> -build <GRCh37|GRCh38> -authlevel <public|registered|controlled>
 ```
 The above parameters (id, name, build, authlevel) are mandatory. If user doesn't specify any genome build then the default build used is GRCh37. One dataset can be associated to variants called using only one genome build.
 `authlevel` parameter will be used in queries to return results according to the request authentication level.
@@ -53,7 +53,7 @@ The `--update` flag will allow to modify the information for a dataset that is a
 Variant data can be loaded to the database using the following command:
 
 ```
-cgbeacon2 add variants
+beacon add variants
 
 Options:
   -ds TEXT      dataset ID  [required]
@@ -65,4 +65,4 @@ ds (dataset id) and vcf (path to the VCF file containing the variants) are manda
 
 VCF files might as well be filtered by genomic intervals prior to variant uploading. To upload variants filtered by multiple panels use the options -panel panelA -panel panelB, providing the path to a [bed file](http://genome.ucsc.edu/FAQ/FAQformat#format1) containing the genomic intervals of interest.
 
-Additional variants for the same sample(s) and the same dataset might be added any time by running the same `cgbeacon2 add variants` specifying another VCF file. Whenever the variant is already found for the same sample and the same dataset it will not be saved twice.
+Additional variants for the same sample(s) and the same dataset might be added any time by running the same `beacon add variants` specifying another VCF file. Whenever the variant is already found for the same sample and the same dataset it will not be saved twice.
