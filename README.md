@@ -37,7 +37,7 @@ docker-compose down
 ```
 
 To instantiate a server without demo data just remove the line:
-`command: bash -c 'cgbeacon2 add demo'`
+`command: bash -c 'beacon add demo'`
 from the docker-compose.yml file.
 
 More info on how to set up a server containing app backend and frontend is available in the [docs](http://www.clinicalgenomics.se/cgbeacon2)
@@ -70,7 +70,7 @@ For testing purposes you can keep the default configuration values as they are, 
 
 To start the server run this command:
 ```
-cgbeacon2 run -h custom_host -p custom_port
+beacon run -h custom_host -p custom_port
 ```
 Omitting custom_host and custom_port parameters will make the server run on default host=localhost (127.0.0.1) and default port 5000.
 
@@ -80,7 +80,7 @@ Please note that this code is NOT guaranteed to be bug-free and it must be adapt
 ## Loading demo data into the database
 In order to test how the software works and run test queries, a demo dataset and variants can be loaded into the database by running the following command:
 ```
-cgbeacon2 add demo
+beacon add demo
 ```
 This command will create 2 collections: "dataset" and "variant". Dataset collection will contain a public dataset named "test_public". "variant" collection will be populated with several hundreds variants, both single nucleotide variants, indels and structural variants.
 
