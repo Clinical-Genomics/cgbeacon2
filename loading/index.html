@@ -177,16 +177,16 @@ Options:
 </code></pre>
 <p>Once a user is created, a random user token will be created in the database for this user.</p>
 <p>The request to the add API should contain the following header parameters:
-- <strong>Content-Type</strong>: application/json
-- <strong>X-Auth-Token</strong>: auth_token</p>
+ - <strong>Content-Type</strong>: application/json
+ - <strong>X-Auth-Token</strong>: auth_token</p>
 <p>Where the auth_token is the token created for the user in the step described above.</p>
-<h3 id="sending-an-add-a-post-request-to-the-api">Sending an add a POST request to the API</h3>
+<h3 id="sending-an-add-request-to-the-api">Sending an add request to the API</h3>
 <p>Apart from the header, an add request should contain the following parameters:
-- <strong>dataset_id</strong> (mandatory): string dentifier for a dataset)
-- <strong>vcf_path</strong> (mandatory): path to variants VCF file
-- <strong>assemblyId</strong> (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
-- <strong>samples</strong> (mandatory): list of samples to extract variants from in VCF file
-- <strong>genes</strong> (optional): an object containing two keys:
+ - <strong>dataset_id</strong> (mandatory): string dentifier for a dataset)
+ - <strong>vcf_path</strong> (mandatory): path to variants VCF file
+ - <strong>assemblyId</strong> (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
+ - <strong>samples</strong> (mandatory): list of samples to extract variants from in VCF file
+ - <strong>genes</strong> (optional): an object containing two keys:
   - <strong>ids</strong>: list of genes ids to be used to filter VCF file (only variants included in these genes will be saved to database).
   - <strong>id_type</strong>: either "HGNC" or "Ensembl", to specify which type of ID format <code>ids</code> refers to. All genes in the list must be of the same type (for example all Ensembl IDs).</p>
 <p>Example of a valid POST request to the add endpoint:</p>
