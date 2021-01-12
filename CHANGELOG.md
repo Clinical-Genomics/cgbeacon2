@@ -1,6 +1,7 @@
 ## [] -
 ### Added
 ### Fixed
+- Links in docs pages
 ### Changed
 
 

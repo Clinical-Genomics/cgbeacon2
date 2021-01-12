@@ -90,18 +90,18 @@ Once a user is created, a random user token will be created in the database for 
 
 
 The request to the add API should contain the following header parameters:
-- **Content-Type**: application/json
-- **X-Auth-Token**: auth_token
+ - **Content-Type**: application/json
+ - **X-Auth-Token**: auth_token
 
 Where the auth_token is the token created for the user in the step described above.
 
-### Sending an add a POST request to the API
+### Sending an add request to the API
 Apart from the header, an add request should contain the following parameters:
-- **dataset_id** (mandatory): string dentifier for a dataset)
-- **vcf_path** (mandatory): path to variants VCF file
-- **assemblyId** (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
-- **samples** (mandatory): list of samples to extract variants from in VCF file
-- **genes** (optional): an object containing two keys:
+ - **dataset_id** (mandatory): string dentifier for a dataset)
+ - **vcf_path** (mandatory): path to variants VCF file
+ - **assemblyId** (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
+ - **samples** (mandatory): list of samples to extract variants from in VCF file
+ - **genes** (optional): an object containing two keys:
   - **ids**: list of genes ids to be used to filter VCF file (only variants included in these genes will be saved to database).
   - **id_type**: either "HGNC" or "Ensembl", to specify which type of ID format `ids` refers to. All genes in the list must be of the same type (for example all Ensembl IDs).
 
