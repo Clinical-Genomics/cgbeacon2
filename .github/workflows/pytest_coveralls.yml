@@ -25,3 +25,5 @@ jobs:
       run: |
         pytest --cov=cgbeacon2 tests/
         coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
