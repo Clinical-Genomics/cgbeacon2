@@ -101,7 +101,7 @@ services:
       - '5000'
     ports:
       - '5000:5000'
-    command: bash -c 'cgbeacon2 run --host 0.0.0.0'
+    command: bash -c 'beacon run --host 0.0.0.0'
 ```
 
 Run the server as a service (detached mode) by typing

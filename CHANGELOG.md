@@ -1,7 +1,9 @@
 ## [] -
 ### Added
 ### Fixed
+- Links in docs pages
 ### Changed
+- Switch to codecov in gihub actions
 
 
 ## [2.0] - 2021.01.11

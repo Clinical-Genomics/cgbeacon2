@@ -140,7 +140,7 @@ curl -X POST \
   "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
   "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
 ```
-Note that only authenticated users will be able to use this endpoint by including the user's auth_token in the request headers. [Additional info](www.clinicalgenomics.se/cgbeacon2/loading.md) on how to use this endpoint.
+Note that only authenticated users will be able to use this endpoint by including the user's auth_token in the request headers. [Additional info](http://www.clinicalgenomics.se/cgbeacon2/loading/) on how to use this endpoint.
 
 <a name="delete"></a>
 - **/delete**.
@@ -152,7 +152,7 @@ curl -X POST \
   -d '{"dataset_id": "test_public",
   "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:5000/apiv1.0/delete
 ```
-Additional info is available [here](www.clinicalgenomics.se/cgbeacon2/removing.md)
+Additional info available [here](http://www.clinicalgenomics.se/cgbeacon2/removing/).
 
 
 <a name="webform"></a>
