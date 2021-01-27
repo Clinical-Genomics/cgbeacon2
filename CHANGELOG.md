@@ -2,6 +2,7 @@
 ### Added
 ### Fixed
 - Links in docs pages
+- Added instructions on how to install bedtools in documentation and readme file
 ### Changed
 - Switch to codecov in gihub actions
 
