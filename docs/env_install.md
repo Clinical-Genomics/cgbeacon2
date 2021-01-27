@@ -11,6 +11,10 @@
 
 ### Prerequisites
 - A virtual environment containing Python 3.6+
+- Bedtools installed in the virtual environment. To install it using the bioconda channel type:
+```
+conda install -n your_beacon_environment -c bioconda bedtools
+```
 - A working instance of **MongoDB**. From the mongo shell you can create a database using this syntax:
 ```
 use <name_of_database>
