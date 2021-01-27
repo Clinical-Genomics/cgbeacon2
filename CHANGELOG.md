@@ -4,6 +4,7 @@
 - Links in docs pages
 ### Changed
 - Switch to codecov in gihub actions
+- Switched coveralls badge with codecov badge
 
 
 ## [2.0] - 2021.01.11

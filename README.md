@@ -1,7 +1,7 @@
 # cgbeacon2
 
 [![Build Status](https://travis-ci.org/Clinical-Genomics/MIP.svg?branch=master)](https://travis-ci.org/Clinical-Genomics/MIP)
-[![Coverage Status](https://coveralls.io/repos/github/Clinical-Genomics/cgbeacon2/badge.svg?branch=master)](https://coveralls.io/github/Clinical-Genomics/cgbeacon2?branch=master)
+[![codecov](https://codecov.io/gh/Clinical-Genomics/cgbeacon2/branch/master/graph/badge.svg?token=C7JSM0UKCQ)](https://codecov.io/gh/Clinical-Genomics/cgbeacon2)
 
 An updated beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
 
