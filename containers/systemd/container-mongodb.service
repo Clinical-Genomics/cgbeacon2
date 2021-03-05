@@ -10,7 +10,7 @@ After=network-online.target
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-Restart=on-failure
+Restart=no
 ExecStart=/usr/bin/podman start mongodb
 ExecStop=/usr/bin/podman stop -t 10 mongodb
 ExecStopPost=/usr/bin/podman stop -t 10 mongodb
