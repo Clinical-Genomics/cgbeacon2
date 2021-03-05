@@ -1,7 +1,7 @@
 # cgbeacon2
 
 [![Build Status](https://travis-ci.org/Clinical-Genomics/MIP.svg?branch=master)](https://travis-ci.org/Clinical-Genomics/MIP)
-[![Coverage Status](https://coveralls.io/repos/github/Clinical-Genomics/cgbeacon2/badge.svg?branch=master)](https://coveralls.io/github/Clinical-Genomics/cgbeacon2?branch=master)
+[![codecov](https://codecov.io/gh/Clinical-Genomics/cgbeacon2/branch/master/graph/badge.svg?token=C7JSM0UKCQ)](https://codecov.io/gh/Clinical-Genomics/cgbeacon2)
 
 An updated beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
 
@@ -48,15 +48,18 @@ More info on how to set up a server containing app backend and frontend is avail
 ## Installation
 
 ### Prerequisites
+- It is recommended to install the app inside a virtual environment containing python >3.6
+- Bedtools should be installed in the virtual environment. To install it using the bioconda channel type:
+```
+conda install -n your_beacon_environment -c bioconda bedtools
+```
 Python 3.6+
 - A working instance of **MongoDB**. From the mongo shell you can create a database using this syntax:
 ```
 use cgbeacon2-test
 ```
 
-It is recommended to install the app inside a virtual environment containing python >3.6
-
-Clone this repository from github using this command:
+Activate the virtual environment and clone this repository from github using this command:
 ```
 git clone https://github.com/Clinical-Genomics/cgbeacon2.git
 ```
