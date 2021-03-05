@@ -1,5 +1,6 @@
 ## [] -
 ### Added
+- Instructions to run the Beacon cli and web server connected to mongo as a service via Podman
 ### Fixed
 - Links in docs pages
 - Added instructions on how to install bedtools in documentation and readme file

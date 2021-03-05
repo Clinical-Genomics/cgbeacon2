@@ -2,8 +2,9 @@ site_name: cgbeacon2 docs
 
 nav:
     - Home: index.md
-    - Running the app in Docker: docker_run.md
-    - Installation on a virtual environment: env_install.md
+    - Running the demo with Docker: docker_run.md
+    - Deploying the app as a service using systemd and podman: systemd.md
+    - Deploying on a virtual environment: env_install.md
     - Loading datasets and variants: loading.md
     - Removing datasets and variants: removing.md
     - Queries: queries.md
