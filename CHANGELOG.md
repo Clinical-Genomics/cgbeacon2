@@ -7,6 +7,7 @@
 - Added instructions on how to install bedtools in documentation and readme file
 - Build badge link in README page
 - Fixed test no longer working after the release of Flask 2.0
+- Replaced old docs link www.clinicalgenomics.se/cgbeacon2 with new https://clinical-genomics.github.io/cgbeacon2
 ### Changed
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge

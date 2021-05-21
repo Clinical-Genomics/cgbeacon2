@@ -5,7 +5,7 @@
 
 An updated beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
 
-This README only gives a brief overview of the tool, for a more complete reference, please check out our docs: www.clinicalgenomics.se/cgbeacon2
+This README only gives a brief overview of the tool, for a more complete reference, please check out our docs: https://clinical-genomics.github.io
 
 Table of Contents:
 1. [ Running the app using Docker ](#docker)
@@ -42,7 +42,7 @@ To instantiate a server without demo data just remove the line:
 `command: bash -c 'beacon add demo'`
 from the docker-compose.yml file.
 
-More info on how to set up a server containing app backend and frontend is available in the [docs](http://www.clinicalgenomics.se/cgbeacon2)
+More info on how to set up a server containing app backend and frontend is available in the [docs](https://clinical-genomics.github.io/cgbeacon2)
 
 <a name="installation"></a>
 ## Installation
@@ -143,7 +143,7 @@ curl -X POST \
   "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
   "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
 ```
-Note that only authenticated users will be able to use this endpoint by including the user's auth_token in the request headers. [Additional info](http://www.clinicalgenomics.se/cgbeacon2/loading/) on how to use this endpoint.
+Note that only authenticated users will be able to use this endpoint by including the user's auth_token in the request headers. [Additional info](http://clinical-genomics.github.io/cgbeacon2/loading/) on how to use this endpoint.
 
 <a name="delete"></a>
 - **/delete**.
@@ -155,7 +155,7 @@ curl -X POST \
   -d '{"dataset_id": "test_public",
   "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:5000/apiv1.0/delete
 ```
-Additional info available [here](http://www.clinicalgenomics.se/cgbeacon2/removing/).
+Additional info available [here](http://clinical-genomics.github.io/cgbeacon2/removing/).
 
 
 <a name="webform"></a>

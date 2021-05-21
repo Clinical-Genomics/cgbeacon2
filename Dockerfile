@@ -3,7 +3,7 @@ FROM frolvlad/alpine-miniconda3
 LABEL base_image="frolvlad/alpine-miniconda3"
 LABEL about.license="MIT License (MIT)"
 LABEL about.home="https://github.com/Clinical-Genomics/cgbeacon2"
-LABEL about.documentation="http://www.clinicalgenomics.se/cgbeacon2"
+LABEL about.documentation="https://clinical-genomics.github.io/cgbeacon2"
 LABEL about.tags="beacon,Rare diseases,VCF,variants,SNP,NGS"
 
 # Install bedtools using conda
