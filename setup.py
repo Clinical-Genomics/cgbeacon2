@@ -99,7 +99,11 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: Unix",
     ],
-    entry_points={"console_scripts": ["beacon = cgbeacon2.cli.commands:cli"],},
+    entry_points={
+        "console_scripts": ["beacon = cgbeacon2.cli.commands:cli"],
+    },
     # $ setup.py publish support.
-    cmdclass={"upload": UploadCommand,},
+    cmdclass={
+        "upload": UploadCommand,
+    },
 )

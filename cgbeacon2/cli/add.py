@@ -1,26 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import click
 import datetime
-from flask.cli import with_appcontext, current_app
 
+import click
 from cgbeacon2.constants import CONSENT_CODES
 from cgbeacon2.models.user import User
-from cgbeacon2.utils.add import add_dataset, add_variants, add_user
-from cgbeacon2.utils.parse import (
-    extract_variants,
-    count_variants,
-    merge_intervals,
-    get_vcf_samples,
-)
+from cgbeacon2.utils.add import add_dataset, add_user, add_variants
+from cgbeacon2.utils.parse import count_variants, extract_variants, get_vcf_samples, merge_intervals
 from cgbeacon2.utils.update import update_dataset, update_event
+from flask.cli import current_app, with_appcontext
 
 
 @click.group()
 def add():
     """Add items to database using the CLI"""
-    pass
 
 
 @add.command()
@@ -67,17 +61,26 @@ def demo(ctx):
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
-        variants, ds=ds_id, vcf="cgbeacon2/resources/demo/test_trio.vcf.gz", sample=[sample],
+        variants,
+        ds=ds_id,
+        vcf="cgbeacon2/resources/demo/test_trio.vcf.gz",
+        sample=[sample],
     )
 
     # Invoke add variants command to import all SV variants from demo sample
     ctx.invoke(
-        variants, ds=ds_id, vcf="cgbeacon2/resources/demo/test_trio.SV.vcf.gz", sample=[sample],
+        variants,
+        ds=ds_id,
+        vcf="cgbeacon2/resources/demo/test_trio.SV.vcf.gz",
+        sample=[sample],
     )
 
     # Invoke add variants command to import also BND variants from separate VCF file
     ctx.invoke(
-        variants, ds=ds_id, vcf="cgbeacon2/resources/demo/BND.SV.vcf", sample=[sample],
+        variants,
+        ds=ds_id,
+        vcf="cgbeacon2/resources/demo/BND.SV.vcf",
+        sample=[sample],
     )
 
 
@@ -99,7 +102,11 @@ def demo(ctx):
 )
 @click.option("-desc", type=click.STRING, nargs=1, required=False, help="dataset description")
 @click.option(
-    "-version", type=click.FLOAT, nargs=1, required=False, help="dataset version, i.e. 1.0",
+    "-version",
+    type=click.FLOAT,
+    nargs=1,
+    required=False,
+    help="dataset version, i.e. 1.0",
 )
 @click.option("-url", type=click.STRING, nargs=1, required=False, help="external url")
 @click.option("-cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")

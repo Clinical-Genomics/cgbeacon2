@@ -44,11 +44,21 @@ def test_add_dataset_wrong_build(public_dataset, mock_app):
 
     # When invoking the command without a valid genome build
     result = runner.invoke(
-        cli, ["add", "dataset", "-id", dataset["_id"], "-name", dataset["name"], "-build", "meh",],
+        cli,
+        [
+            "add",
+            "dataset",
+            "-id",
+            dataset["_id"],
+            "-name",
+            dataset["name"],
+            "-build",
+            "meh",
+        ],
     )
     # Then the command should return error
     assert result.exit_code == 2
-    assert "Invalid value for '-build': invalid choice" in result.output
+    assert "Invalid value for '-build':" in result.output
 
 
 def test_add_dataset_complete(public_dataset, mock_app, database):

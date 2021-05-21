@@ -5,6 +5,8 @@
 ### Fixed
 - Links in docs pages
 - Added instructions on how to install bedtools in documentation and readme file
+- Build badge link in README page
+- Fixed test no longer working after the release of Flask 2.0
 ### Changed
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge

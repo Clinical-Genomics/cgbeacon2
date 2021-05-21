@@ -45,7 +45,15 @@ def test_delete_existing_dataset(public_dataset, mock_app, database):
     assert new_dataset is not None
 
     # If the dataset delete command is invoked providing the right database id
-    result = runner.invoke(cli, ["delete", "dataset", "-id", new_dataset["_id"],])
+    result = runner.invoke(
+        cli,
+        [
+            "delete",
+            "dataset",
+            "-id",
+            new_dataset["_id"],
+        ],
+    )
 
     # Then the command should be executed with no errors
     assert result.exit_code == 0
