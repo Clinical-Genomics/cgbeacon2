@@ -5,6 +5,7 @@
 ### Fixed
 - Links in docs pages
 - Added instructions on how to install bedtools in documentation and readme file
+- Build badge link in README page
 ### Changed
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge
