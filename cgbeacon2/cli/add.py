@@ -67,17 +67,26 @@ def demo(ctx):
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
-        variants, ds=ds_id, vcf="cgbeacon2/resources/demo/test_trio.vcf.gz", sample=[sample],
+        variants,
+        ds=ds_id,
+        vcf="cgbeacon2/resources/demo/test_trio.vcf.gz",
+        sample=[sample],
     )
 
     # Invoke add variants command to import all SV variants from demo sample
     ctx.invoke(
-        variants, ds=ds_id, vcf="cgbeacon2/resources/demo/test_trio.SV.vcf.gz", sample=[sample],
+        variants,
+        ds=ds_id,
+        vcf="cgbeacon2/resources/demo/test_trio.SV.vcf.gz",
+        sample=[sample],
     )
 
     # Invoke add variants command to import also BND variants from separate VCF file
     ctx.invoke(
-        variants, ds=ds_id, vcf="cgbeacon2/resources/demo/BND.SV.vcf", sample=[sample],
+        variants,
+        ds=ds_id,
+        vcf="cgbeacon2/resources/demo/BND.SV.vcf",
+        sample=[sample],
     )
 
 
@@ -99,7 +108,11 @@ def demo(ctx):
 )
 @click.option("-desc", type=click.STRING, nargs=1, required=False, help="dataset description")
 @click.option(
-    "-version", type=click.FLOAT, nargs=1, required=False, help="dataset version, i.e. 1.0",
+    "-version",
+    type=click.FLOAT,
+    nargs=1,
+    required=False,
+    help="dataset version, i.e. 1.0",
 )
 @click.option("-url", type=click.STRING, nargs=1, required=False, help="external url")
 @click.option("-cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")

@@ -39,7 +39,9 @@ def test_delete_variants_non_existing_sample(mock_app, public_dataset, database)
 
     # When invoking the command without a sample not present in dataset samples
     result = runner.invoke(
-        cli, ["delete", "variants", "-ds", public_dataset["_id"], "-sample", "bar"], input="y\n",
+        cli,
+        ["delete", "variants", "-ds", public_dataset["_id"], "-sample", "bar"],
+        input="y\n",
     )
 
     assert result.exit_code == 1
@@ -98,7 +100,9 @@ def test_delete_variants(mock_app, public_dataset, database):
 
     # When one of the samples is removed using the command line
     runner.invoke(
-        cli, ["delete", "variants", "-ds", public_dataset["_id"], "-sample", sample], input="y\n",
+        cli,
+        ["delete", "variants", "-ds", public_dataset["_id"], "-sample", sample],
+        input="y\n",
     )
 
     # Then there should be less variants left in the database

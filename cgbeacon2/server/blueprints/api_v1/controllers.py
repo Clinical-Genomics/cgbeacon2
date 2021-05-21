@@ -227,7 +227,9 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
     if customer_query.get("variantType") is None and all(
         [
             customer_query.get("referenceName"),
-            customer_query.get("start",),
+            customer_query.get(
+                "start",
+            ),
             customer_query.get("end"),
             customer_query.get("referenceBases"),
             customer_query.get("alternateBases"),
@@ -251,7 +253,10 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         customer_query.get("assemblyId"),
     ]:
         # return a bad request 400 error with explanation message
-        resp_obj["message"] = dict(error=NO_MANDATORY_PARAMS, allelRequest=customer_query,)
+        resp_obj["message"] = dict(
+            error=NO_MANDATORY_PARAMS,
+            allelRequest=customer_query,
+        )
         return
 
     # check if genome build requested corresponds to genome build of the available datasets:
@@ -263,16 +268,25 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         for dset in dset_builds:
             if dset != customer_query["assemblyId"]:
                 # return a bad request 400 error with explanation message
-                resp_obj["message"] = dict(error=BUILD_MISMATCH, allelRequest=customer_query,)
+                resp_obj["message"] = dict(
+                    error=BUILD_MISMATCH,
+                    allelRequest=customer_query,
+                )
                 return
 
     # alternateBases OR variantType is also required
     if all(
         param is None
-        for param in [customer_query.get("alternateBases"), customer_query.get("variantType"),]
+        for param in [
+            customer_query.get("alternateBases"),
+            customer_query.get("variantType"),
+        ]
     ):
         # return a bad request 400 error with explanation message
-        resp_obj["message"] = dict(error=NO_SECONDARY_PARAMS, allelRequest=customer_query,)
+        resp_obj["message"] = dict(
+            error=NO_SECONDARY_PARAMS,
+            allelRequest=customer_query,
+        )
         return
     # Check that genomic coordinates are provided (even rough)
     if (
@@ -280,7 +294,10 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         and any([coord in customer_query.keys() for coord in RANGE_COORDINATES]) is False
     ):
         # return a bad request 400 error with explanation message
-        resp_obj["message"] = dict(error=NO_POSITION_PARAMS, allelRequest=customer_query,)
+        resp_obj["message"] = dict(
+            error=NO_POSITION_PARAMS,
+            allelRequest=customer_query,
+        )
         return
 
     if customer_query.get("start"):  # query for exact position
@@ -292,7 +309,10 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
 
         except ValueError:
             # return a bad request 400 error with explanation message
-            resp_obj["message"] = dict(error=INVALID_COORDINATES, allelRequest=customer_query,)
+            resp_obj["message"] = dict(
+                error=INVALID_COORDINATES,
+                allelRequest=customer_query,
+            )
 
     # Range query
     elif any([coord in customer_query.keys() for coord in RANGE_COORDINATES]):  # range query
@@ -311,7 +331,10 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
                 fuzzy_end_query["$lte"] = int(customer_query["endMax"])
         except ValueError:
             # return a bad request 400 error with explanation message
-            resp_obj["message"] = dict(error=INVALID_COORDINATES, allelRequest=customer_query,)
+            resp_obj["message"] = dict(
+                error=INVALID_COORDINATES,
+                allelRequest=customer_query,
+            )
 
         if fuzzy_start_query:
             mongo_query["start"] = fuzzy_start_query

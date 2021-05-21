@@ -5,11 +5,13 @@ NO_MANDATORY_PARAMS = dict(
 )
 
 NO_SECONDARY_PARAMS = dict(
-    errorCode=400, errorMessage="Either 'alternateBases' or 'variantType' param is required",
+    errorCode=400,
+    errorMessage="Either 'alternateBases' or 'variantType' param is required",
 )
 
 NO_POSITION_PARAMS = dict(
-    errorCode=400, errorMessage="Start coordinate or range coordinate params are required",
+    errorCode=400,
+    errorMessage="Start coordinate or range coordinate params are required",
 )
 
 INVALID_COORDINATES = dict(

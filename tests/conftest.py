@@ -13,7 +13,12 @@ GA4GH_SCOPES = ["openid", "ga4gh_passport_v1"]
 @pytest.fixture(scope="function")
 def mock_user(request):
     """Define a mock user to be used when testing REST API services"""
-    user = dict(id="test_id", name="User Name", description="I'm a test user", url="someurl",)
+    user = dict(
+        id="test_id",
+        name="User Name",
+        description="I'm a test user",
+        url="someurl",
+    )
     return user
 
 
@@ -392,7 +397,11 @@ def bona_fide_passport_info(header, pem):
                 "value": "https://doi.org/10.1038/s41431-018-0219-y",
             }
         },
-        {"ga4gh_visa_v1": {"type": "ResearcherStatus",}},
+        {
+            "ga4gh_visa_v1": {
+                "type": "ResearcherStatus",
+            }
+        },
     ]
     passport_info = [jwt.encode(header, passport, pem).decode("utf-8") for passport in passports]
 

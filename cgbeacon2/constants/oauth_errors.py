@@ -13,9 +13,11 @@ EXPIRED_TOKEN_SIGNATURE = dict(
 INVALID_TOKEN_AUTH = dict(errorCode=403, errorMessage="Invalid auth token error")
 
 NO_GA4GH_USERDATA = dict(
-    errorCode=403, errorMessage="Could not connect retrieve userdata from GA4GH OIDC provider",
+    errorCode=403,
+    errorMessage="Could not connect retrieve userdata from GA4GH OIDC provider",
 )
 
 PASSPORTS_ERROR = dict(
-    errorCode=403, errorMessage="Could not understand JWT passports returned by OIDC provider",
+    errorCode=403,
+    errorMessage="Could not understand JWT passports returned by OIDC provider",
 )

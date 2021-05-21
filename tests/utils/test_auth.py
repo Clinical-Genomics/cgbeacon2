@@ -51,7 +51,9 @@ def test_claims_with_aud_and_issuers():
 
     # When creating the web tokens claim
     mock_oauth2_settings = dict(
-        issuers=["issuer1", "issuer2"], audience=["aud1", "aud2", "aud3"], verify_aud=True,
+        issuers=["issuer1", "issuer2"],
+        audience=["aud1", "aud2", "aud3"],
+        verify_aud=True,
     )
 
     # The function should contain the mandatory keys, with values

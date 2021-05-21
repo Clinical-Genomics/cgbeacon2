@@ -9,7 +9,10 @@ def test_add_user_wrong_id(mock_app):
     runner = mock_app.test_cli_runner()
 
     # When invoking the add user with an id that is not valid
-    result = runner.invoke(cli, ["add", "user", "-id", "test id", "-name", "User Name"],)
+    result = runner.invoke(
+        cli,
+        ["add", "user", "-id", "test id", "-name", "User Name"],
+    )
     # The command should return error message
     assert "User ID should not contain any space" in result.output
 
@@ -59,7 +62,8 @@ def test_add_user_twice(mock_app, mock_user, database):
 
     # When invoking the add user with to save a user with the same id
     result = runner.invoke(
-        cli, ["add", "user", "-id", mock_user["id"], "-name", mock_user["name"]],
+        cli,
+        ["add", "user", "-id", mock_user["id"], "-name", mock_user["name"]],
     )
     # Then the user is not created
     result = database["user"].find()
