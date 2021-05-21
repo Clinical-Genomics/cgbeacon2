@@ -1,26 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import click
 import datetime
-from flask.cli import with_appcontext, current_app
 
+import click
 from cgbeacon2.constants import CONSENT_CODES
 from cgbeacon2.models.user import User
-from cgbeacon2.utils.add import add_dataset, add_variants, add_user
-from cgbeacon2.utils.parse import (
-    extract_variants,
-    count_variants,
-    merge_intervals,
-    get_vcf_samples,
-)
+from cgbeacon2.utils.add import add_dataset, add_user, add_variants
+from cgbeacon2.utils.parse import count_variants, extract_variants, get_vcf_samples, merge_intervals
 from cgbeacon2.utils.update import update_dataset, update_event
+from flask.cli import current_app, with_appcontext
 
 
 @click.group()
 def add():
     """Add items to database using the CLI"""
-    pass
 
 
 @add.command()
