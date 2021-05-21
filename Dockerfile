@@ -1,9 +1,8 @@
 FROM frolvlad/alpine-miniconda3
 
-LABEL base_image="frolvlad/alpine-miniconda3"
 LABEL about.license="MIT License (MIT)"
 LABEL about.home="https://github.com/Clinical-Genomics/cgbeacon2"
-LABEL about.documentation="http://www.clinicalgenomics.se/cgbeacon2"
+LABEL about.documentation="https://clinical-genomics.github.io/cgbeacon2"
 LABEL about.tags="beacon,Rare diseases,VCF,variants,SNP,NGS"
 
 # Install bedtools using conda
@@ -18,14 +17,17 @@ WORKDIR /home/worker/app
 COPY . /home/worker/app
 
 # Install requirements
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Install the app
-RUN pip install -e .
+RUN pip install --no-cache-dir -e .
 
 # Run commands as non-root user
 RUN adduser -D worker
+
+# Grant non-root user permissions over the working directory
 RUN chown worker:worker -R /home/worker
+
 USER worker
 
 ENTRYPOINT ["beacon"]
