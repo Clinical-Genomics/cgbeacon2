@@ -136,9 +136,9 @@ def test_add_variants_snv(mock_app, public_dataset, database):
     assert test_variant["assemblyId"] == "GRCh37"
     assert sample in test_variant["datasetIds"][dataset["_id"]]["samples"]
 
-    # And 2 events should have been saved: one for the added dataset and one for the added variants
-    saved_events = sum(1 for i in database["event"].find())
-    assert saved_events == 2
+    # And one event should have been saved for the updated variant collection
+    saved_events = sum(1 for i in database["event"].find({"updated_collection": "variant"}))
+    assert saved_events == 1
 
 
 def test_add_variants_snv_panel_filtered(mock_app, public_dataset, database):
