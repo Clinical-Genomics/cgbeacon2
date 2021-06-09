@@ -18,18 +18,20 @@ def add():
 
 
 @add.command()
-@click.option("-id", type=click.STRING, nargs=1, required=True, help="User ID")
+@click.option("-user-id", type=click.STRING, nargs=1, required=True, help="User ID")
 @click.option("-name", type=click.STRING, nargs=1, required=True, help="User name")
 @click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
 @click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
 @with_appcontext
-def user(id, name, desc, url):
+def user(user_id, name, desc, url):
     """Creates a new user for adding/removing variants using the REST API"""
 
-    if " " in id:
+    if " " in user_id:
         click.echo("User ID should not contain any space")
         return
-    user_info = dict(_id=id, name=name, description=desc, url=url, created=datetime.datetime.now())
+    user_info = dict(
+        _id=user_id, name=name, description=desc, url=url, created=datetime.datetime.now()
+    )
     user = User(user_info)
     add_user(current_app.db, user)
 
@@ -57,7 +59,7 @@ def demo(ctx):
     sample = "ADM1059A1"
 
     # Invoke add dataset command
-    ctx.invoke(dataset, id=ds_id, name=ds_name, authlevel=authlevel)
+    ctx.invoke(dataset, ds_id=ds_id, name=ds_name, authlevel=authlevel)
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
@@ -85,7 +87,7 @@ def demo(ctx):
 
 
 @add.command()
-@click.option("-id", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("-ds-id", type=click.STRING, nargs=1, required=True, help="dataset ID")
 @click.option("-name", type=click.STRING, nargs=1, required=True, help="dataset name")
 @click.option(
     "-build",
@@ -112,10 +114,10 @@ def demo(ctx):
 @click.option("-cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(id, name, build, authlevel, desc, version, url, cc, update):
+def dataset(ds_id, name, build, authlevel, desc, version, url, cc, update):
     """Creates a dataset object in the database or updates a pre-existing one"""
 
-    dataset_obj = {"_id": id, "name": name, "assembly_id": build}
+    dataset_obj = {"_id": ds_id, "name": name, "assembly_id": build}
 
     if update is True:
         dataset_obj["updated"] = datetime.datetime.now()
@@ -155,7 +157,7 @@ def dataset(id, name, build, authlevel, desc, version, url, cc, update):
     if inserted_id:
         click.echo(f"Dataset collection was successfully updated with dataset '{inserted_id}'")
         # register the event in the event collection
-        update_event(current_app.db, id, "dataset", True)
+        update_event(current_app.db, ds_id, "dataset", True)
     else:
         click.echo("An error occurred while updating dataset collection")
 

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+from cgbeacon2.cli.commands import cli
 from cgbeacon2.resources import (
-    test_snv_vcf_path,
-    test_sv_vcf_path,
-    test_empty_vcf_path,
-    test_bnd_vcf_path,
     panel1_path,
     panel2_path,
+    test_bnd_vcf_path,
+    test_empty_vcf_path,
+    test_snv_vcf_path,
+    test_sv_vcf_path,
 )
-from cgbeacon2.cli.commands import cli
 
 
 def test_add_variants_no_dataset(mock_app):
@@ -95,7 +95,7 @@ def test_add_variants_wrong_samples(mock_app, public_dataset, database):
     assert "One or more provided sample was not found in the VCF file" in result.output
 
 
-def test_add_variants_snv_vcf_panel(mock_app, public_dataset, database):
+def test_add_variants_snv(mock_app, public_dataset, database):
     """Test the cli command to add SNV variants from a VCF file"""
 
     runner = mock_app.test_cli_runner()
@@ -136,12 +136,12 @@ def test_add_variants_snv_vcf_panel(mock_app, public_dataset, database):
     assert test_variant["assemblyId"] == "GRCh37"
     assert sample in test_variant["datasetIds"][dataset["_id"]]["samples"]
 
-    # And 2 events should have been saved: one for the added dataset and one for the added variants
-    saved_events = sum(1 for i in database["event"].find())
-    assert saved_events == 2
+    # And one event should have been saved for the updated variant collection
+    saved_events = sum(1 for i in database["event"].find({"updated_collection": "variant"}))
+    assert saved_events == 1
 
 
-def test_add_variants_snv_vcf_panel(mock_app, public_dataset, database):
+def test_add_variants_snv_panel_filtered(mock_app, public_dataset, database):
     """Test the cli command to add SNV variants from a panel-filtered VCF file"""
 
     runner = mock_app.test_cli_runner()

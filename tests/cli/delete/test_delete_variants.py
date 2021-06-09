@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import click
-
 from cgbeacon2.cli.commands import cli
-from cgbeacon2.resources import test_snv_vcf_path, panel1_path
+from cgbeacon2.resources import panel1_path, test_snv_vcf_path
 
 
 def test_delete_variants_confirm(mock_app):

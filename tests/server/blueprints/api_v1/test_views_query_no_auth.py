@@ -3,7 +3,6 @@ import json
 
 from cgbeacon2.cli.commands import cli
 from cgbeacon2.resources import test_bnd_vcf_path
-from cgbeacon2.resources import test_snv_vcf_path
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
 
@@ -88,7 +87,7 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             registered_dataset["_id"],
             "-name",
             registered_dataset["name"],

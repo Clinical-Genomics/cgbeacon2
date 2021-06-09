@@ -26,9 +26,9 @@ beacon add demo
 ## Adding a new dataset
 A new dataset can be created with the following command:
 ```
-beacon add dataset -id <dataset_id> -name <"A dataset name"> -build <GRCh37|GRCh38> -authlevel <public|registered|controlled>
+beacon add dataset -ds-id <dataset_id> -name <"A dataset name"> -build <GRCh37|GRCh38> -authlevel <public|registered|controlled>
 ```
-The above parameters (id, name, build, authlevel) are mandatory. If user doesn't specify any genome build then the default build used is GRCh37. One dataset can be associated to variants called using only one genome build.
+The above parameters (ds-id, name, build, authlevel) are mandatory. If user doesn't specify any genome build then the default build used is GRCh37. One dataset can be associated to variants called using only one genome build.
 `authlevel` parameter will be used in queries to return results according to the request authentication level.
 
 - **Public datasets** can be interrogated by any beacon and any user in general and should not be used to store sensitive data such as individual phenotypes.
@@ -36,7 +36,7 @@ The above parameters (id, name, build, authlevel) are mandatory. If user doesn't
 - **Controlled access datasets** might be used to store sensitive information and will be accessed only by users that have a signed agreement and their access approved by a Data Access Committee (DAC).
 
 
-More info about the ELixir AAI authentication is available [here](https://elixir-europe.org/services/compute/aai)
+More info about the Elixir AAI authentication is available [here](https://elixir-europe.org/services/compute/aai)
 
 Other optional parameters that can be provided to improve the dataset description are the following.
 ```
@@ -80,7 +80,7 @@ beacon add user
 
 
 Options:
-  -id TEXT    User ID  [required]
+  -user-id TEXT    User ID  [required]
   -name TEXT  User name  [required]
   -desc TEXT  User description
   -url TEXT   User url
