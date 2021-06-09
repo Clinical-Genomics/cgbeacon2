@@ -8,7 +8,7 @@ def test_add_user_wrong_id(mock_app):
     runner = mock_app.test_cli_runner()
 
     # When invoking the add user with an id that is not valid
-    runner.invoke(
+    result = runner.invoke(
         cli,
         ["add", "user", "-id", "test id", "-name", "User Name"],
     )
