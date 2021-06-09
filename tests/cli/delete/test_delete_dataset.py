@@ -32,7 +32,7 @@ def test_delete_existing_dataset(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             dataset["_id"],
             "-name",
             dataset["name"],

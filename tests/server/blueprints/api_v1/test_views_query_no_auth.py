@@ -87,7 +87,7 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             registered_dataset["_id"],
             "-name",
             registered_dataset["name"],

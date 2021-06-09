@@ -16,7 +16,7 @@ def test_add_dataset_no_id(public_dataset, mock_app):
     result = runner.invoke(cli, ["add", "dataset", "-name", dataset["name"]])
     # Then the command should return error
     assert result.exit_code == 2
-    assert "Missing option '-id'" in result.output
+    assert "Missing option '-ds-id'" in result.output
 
 
 def test_add_dataset_no_name(public_dataset, mock_app):
@@ -28,7 +28,7 @@ def test_add_dataset_no_name(public_dataset, mock_app):
     dataset = public_dataset
 
     # When invoking the command without the -name parameter
-    result = runner.invoke(cli, ["add", "dataset", "-id", dataset["_id"]])
+    result = runner.invoke(cli, ["add", "dataset", "-ds-id", dataset["_id"]])
     # Then the command should return error
     assert result.exit_code == 2
     assert "Missing option '-name'" in result.output
@@ -48,7 +48,7 @@ def test_add_dataset_wrong_build(public_dataset, mock_app):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             dataset["_id"],
             "-name",
             dataset["name"],
@@ -75,7 +75,7 @@ def test_add_dataset_complete(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             dataset["_id"],
             "-name",
             dataset["name"],
@@ -130,7 +130,7 @@ def test_add_dataset_wrong_consent(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             dataset["_id"],
             "-name",
             dataset["name"],
@@ -176,7 +176,7 @@ def test_update_non_existent_dataset(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             dataset["_id"],
             "-name",
             dataset["name"],
@@ -219,7 +219,7 @@ def test_update_dataset(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-id",
+            "-ds-id",
             dataset["_id"],
             "-name",
             dataset["name"],
