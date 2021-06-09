@@ -8,9 +8,11 @@
 - Build badge link in README page
 - Fixed test no longer working after the release of Flask 2.0
 - Replaced old docs link www.clinicalgenomics.se/cgbeacon2 with new https://clinical-genomics.github.io/cgbeacon2
+- Improved code according to codefactor and Flaske8 suggestions
 ### Changed
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge
+- id param name in create user and create database cli command
 
 
 ## [2.0] - 2021.01.11
