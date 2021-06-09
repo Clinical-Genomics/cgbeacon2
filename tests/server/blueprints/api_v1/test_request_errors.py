@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
+
 from cgbeacon2.constants import (
-    NO_MANDATORY_PARAMS,
-    NO_SECONDARY_PARAMS,
-    NO_POSITION_PARAMS,
-    INVALID_COORDINATES,
     BUILD_MISMATCH,
+    INVALID_COORDINATES,
+    NO_MANDATORY_PARAMS,
+    NO_POSITION_PARAMS,
+    NO_SECONDARY_PARAMS,
 )
-from cgbeacon2.resources import test_snv_vcf_path
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
 

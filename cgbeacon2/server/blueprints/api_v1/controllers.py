@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 import logging
-from flask import current_app
+
 from cgbeacon2.constants import (
-    NO_MANDATORY_PARAMS,
-    NO_SECONDARY_PARAMS,
-    NO_POSITION_PARAMS,
-    INVALID_COORDINATES,
     BUILD_MISMATCH,
+    INVALID_COORDINATES,
+    NO_MANDATORY_PARAMS,
+    NO_POSITION_PARAMS,
+    NO_SECONDARY_PARAMS,
     QUERY_PARAMS_API_V1,
 )
 from cgbeacon2.models import DatasetAlleleResponse
 from cgbeacon2.utils.add import add_variants as variants_loader
 from cgbeacon2.utils.delete import delete_variants as variant_deleter
-from cgbeacon2.utils.update import update_dataset
-from cgbeacon2.utils.parse import (
-    get_vcf_samples,
-    compute_filter_intervals,
-    extract_variants,
-    count_variants,
-)
 from cgbeacon2.utils.md5 import md5_key
+from cgbeacon2.utils.parse import (
+    compute_filter_intervals,
+    count_variants,
+    extract_variants,
+    get_vcf_samples,
+)
+from cgbeacon2.utils.update import update_dataset
+from flask import current_app
 
 RANGE_COORDINATES = ("startMin", "startMax", "endMin", "endMax")
 LOG = logging.getLogger(__name__)
@@ -153,7 +154,6 @@ def delete_variants_task(req):
     req_data = req.json
 
     dataset_id = req_data.get("dataset_id")
-    dataset = db["dataset"].find_one({"_id": dataset_id})
     samples = req_data.get("samples")
 
     updated, removed = variant_deleter(db, dataset_id, samples)
