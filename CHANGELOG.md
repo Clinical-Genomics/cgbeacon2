@@ -2,6 +2,7 @@
 ### Added
 - Instructions to run the Beacon cli and web server connected to mongo as a service via Podman
 - Inclusive-language check using [woke](https://github.com/get-woke/woke) github action
+- Use official Docker github actions to push Docker images to Docker Hub -> Master branch (on release event) and PR branch (on push event)
 ### Fixed
 - Links in docs pages
 - Added instructions on how to install bedtools in documentation and readme file
