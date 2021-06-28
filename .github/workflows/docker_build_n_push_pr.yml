@@ -1,4 +1,4 @@
-name: Publish image based on PR branch n Docker Hub (clinicalgenomics/cgbeacon2-stage) on push event
+name: Publish image based on PR branch on Docker Hub (clinicalgenomics/cgbeacon2-stage. Triggered by push event
 
 on: [push]
 

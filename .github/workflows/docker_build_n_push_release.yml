@@ -1,4 +1,4 @@
-name: Publish image based on master branch in Docker Hub (clinicalgenomics/cgbeacon2) whenever a new release is created
+name: Publish image based on master branch in Docker Hub (clinicalgenomics/cgbeacon2). Triggered whenever a new release is created
 
 on:
  release:
