@@ -18,25 +18,6 @@ def add():
 
 
 @add.command()
-@click.option("-user-id", type=click.STRING, nargs=1, required=True, help="User ID")
-@click.option("-name", type=click.STRING, nargs=1, required=True, help="User name")
-@click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
-@click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
-@with_appcontext
-def user(user_id, name, desc, url):
-    """Creates a new user for adding/removing variants using the REST API"""
-
-    if " " in user_id:
-        click.echo("User ID should not contain any space")
-        return
-    user_info = dict(
-        _id=user_id, name=name, description=desc, url=url, created=datetime.datetime.now()
-    )
-    user = User(user_info)
-    add_user(current_app.db, user)
-
-
-@add.command()
 @with_appcontext
 @click.pass_context
 def demo(ctx):
@@ -47,8 +28,8 @@ def demo(ctx):
     """
 
     # Dropping any existing database collection from demo database
-    collections = current_app.db.collection_names()
-    click.echo(f"\n\nDropping the following collections:{ ','.join(collections) }")
+    collections = current_app.db.list_collection_names()
+    click.echo(f"\n\nDropping the following collections--->{ ','.join(collections) }\n")
     for collection in collections:
         current_app.db.drop_collection(collection)
 
@@ -84,6 +65,34 @@ def demo(ctx):
         vcf="cgbeacon2/resources/demo/BND.SV.vcf",
         sample=[sample],
     )
+
+    # Invoke add user command to creating an authorized user (via X-Auth-Token) for using the APIs
+    demo_user = ctx.invoke(
+        user,
+        user_id="DExterMOrgan",
+        desc="Dexter Morgan",
+    )
+    click.echo(f"\n\nAuth token for using the API:{demo_user.token}\n")
+
+
+@add.command()
+@click.option("-user-id", type=click.STRING, nargs=1, required=True, help="User ID")
+@click.option("-name", type=click.STRING, nargs=1, required=True, help="User name")
+@click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
+@click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
+@with_appcontext
+def user(user_id, name, desc, url):
+    """Creates a new user for adding/removing variants using the REST API"""
+
+    if " " in user_id:
+        click.echo("User ID should not contain any space")
+        return
+    user_info = dict(
+        _id=user_id, name=name, description=desc, url=url, created=datetime.datetime.now()
+    )
+    user = User(user_info)
+    add_user(current_app.db, user)
+    return user
 
 
 @add.command()
