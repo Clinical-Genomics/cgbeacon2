@@ -1,5 +1,10 @@
 ## [] -
 ### Added
+### Fixed
+### Changed
+
+## [3.0] - 2021.06.30
+### Added
 - Instructions to run the Beacon cli and web server connected to mongo as a service via Podman
 - Inclusive-language check using [woke](https://github.com/get-woke/woke) github action
 - Use official Docker github actions to push Docker images to Docker Hub -> Master branch (on release event) and PR branch (on push event)
@@ -11,7 +16,7 @@
 - Build badge link in README page
 - Fixed test no longer working after the release of Flask 2.0
 - Replaced old docs link www.clinicalgenomics.se/cgbeacon2 with new https://clinical-genomics.github.io/cgbeacon2
-- Improved code according to codefactor and Flaske8 suggestions
+- Improved code according to codefactor and Flake8 suggestions
 - Indented code in a github action
 - Link to docs in the README page
 ### Changed
