@@ -3,6 +3,7 @@
 - Instructions to run the Beacon cli and web server connected to mongo as a service via Podman
 - Inclusive-language check using [woke](https://github.com/get-woke/woke) github action
 - Use official Docker github actions to push Docker images to Docker Hub -> Master branch (on release event) and PR branch (on push event)
+- Create a demo user with a token for using the API when creating a demo instance
 ### Fixed
 - Links in docs pages
 - Added instructions on how to install bedtools in documentation and readme file
@@ -15,6 +16,7 @@
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge
 - id param name in create user and create database cli command
+- Use list_collection_names() instead of collection_names() that was deprecated in pymongo 3.7
 
 
 ## [2.0] - 2021.01.11
