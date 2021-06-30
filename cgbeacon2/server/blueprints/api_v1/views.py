@@ -1,27 +1,22 @@
 # -*- coding: utf-8 -*-
 import logging
-from flask import (
-    Blueprint,
-    current_app,
-    jsonify,
-    request,
-    render_template,
-    flash,
-)
-from flask_negotiate import consumes
+from threading import Thread
+
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
 from cgbeacon2.utils.parse import validate_add_params
+from flask import Blueprint, current_app, flash, jsonify, render_template, request
+from flask_negotiate import consumes
+
 from .controllers import (
+    add_variants_task,
     create_allele_query,
+    delete_variants_task,
     dispatch_query,
     validate_add_data,
     validate_delete_data,
-    add_variants_task,
-    delete_variants_task,
 )
-from threading import Thread
 
 API_VERSION = "1.0.0"
 LOG = logging.getLogger(__name__)
@@ -151,13 +146,13 @@ def add():
 
 
 @consumes("application/json")
-@api1_bp.route("/apiv1.0/delete", methods=["POST"])
+@api1_bp.route("/apiv1.0/delete", methods=["DELETE"])
 def delete():
     """
     Endpoint accepting json data from POST requests. If request params are OK returns 200 (success).
     Then start a Thread that will delete variants from database.
     ########### POST request ###########
-    curl -X POST \
+    curl -X DELETE \
     -H 'Content-Type: application/json' \
     -H 'X-Auth-Token: auth_token' \
     -d '{"dataset_id": "test_public",

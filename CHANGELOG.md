@@ -17,6 +17,7 @@
 - Switched coveralls badge with codecov badge
 - id param name in create user and create database cli command
 - Use list_collection_names() instead of collection_names() that was deprecated in pymongo 3.7
+- Use DELETE requests for deleting items from the database
 
 
 ## [2.0] - 2021.01.11

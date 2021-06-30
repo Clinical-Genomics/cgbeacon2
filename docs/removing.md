@@ -14,7 +14,7 @@ Note that dataset ID (-ds) and sample are mandatory parameters. To specify multi
 
 ## Removing variants for one or more samples by using the API
 
-Authorized users can also remove variants by sending a request to the /apiv1.0/delete endpoint. This endpoint accepts json data POST requests. If the request parameters are correct it will return a response with code 200 (success) and message "Deleting variants from Beacon", whole it will start the actual thread that will remove variants from the database.
+Authorized users can also remove variants by sending a request to the /apiv1.0/delete endpoint. This endpoint accepts json data DELETE requests. If the request parameters are correct it will return a response with code 200 (success) and message "Deleting variants from Beacon", whole it will start the actual thread that will remove variants from the database.
 
 The request to the add API should contain the following header parameters:
  - **Content-Type**: application/json
@@ -22,9 +22,9 @@ The request to the add API should contain the following header parameters:
 
 Auth-token is the token created in the moment an API user is created in the database (documentation [here](loading.md#variants_api)).
 
-Example of a POST request to delete variants:
+Example of a DELETE request to delete variants:
 ```
-curl -X POST \
+curl -X DELETE \
   -H 'Content-Type: application/json' \
   -H 'X-Auth-Token: auth_token' \
   -d '{"dataset_id": "test_public",

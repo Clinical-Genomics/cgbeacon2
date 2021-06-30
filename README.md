@@ -147,9 +147,9 @@ Note that only authenticated users will be able to use this endpoint by includin
 
 <a name="delete"></a>
 - **/delete**.
-Endpoint that can be used by authenticated users to remove variants by sending a POST request like this:
+Endpoint that can be used by authenticated users to remove variants by sending a DELETE request like this:
 ```
-curl -X POST \
+curl -X DELETE \
   -H 'Content-Type: application/json' \
   -H 'X-Auth-Token: auth_token' \
   -d '{"dataset_id": "test_public",
