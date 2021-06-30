@@ -5,7 +5,7 @@
 
 An updated beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
 
-This README only gives a brief overview of the tool, for a more complete reference, please check out our docs: https://clinical-genomics.github.io
+This README only gives a brief overview of the tool, for a more complete reference, please check out our docs: https://clinical-genomics.github.io/cgbeacon2
 
 Table of Contents:
 1. [ Running the app using Docker ](#docker)
