@@ -18,6 +18,9 @@ def test_add_demo(mock_app, database):
     # A new dataset should have been inserted
     assert database["dataset"].find_one()
 
+    # Variants should have been inserted into database
     result = database["variant"].find()
-
     assert sum(1 for i in result) > 0
+
+    # A new user should have been created
+    assert database["user"].find_one()
