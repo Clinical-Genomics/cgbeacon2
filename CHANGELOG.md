@@ -15,6 +15,7 @@
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge
 - id param name in create user and create database cli command
+- Use DELETE requests for deleting items from the database
 
 
 ## [2.0] - 2021.01.11
