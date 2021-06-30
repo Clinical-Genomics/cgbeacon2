@@ -70,7 +70,7 @@ def demo(ctx):
     demo_user = ctx.invoke(
         user,
         user_id="DExterMOrgan",
-        desc="Dexter Morgan",
+        name="Dexter Morgan",
     )
     click.echo(f"\n\nAuth token for using the API:{demo_user.token}\n")
 
