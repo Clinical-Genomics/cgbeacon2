@@ -4,6 +4,7 @@
 - Inclusive-language check using [woke](https://github.com/get-woke/woke) github action
 - Use official Docker github actions to push Docker images to Docker Hub -> Master branch (on release event) and PR branch (on push event)
 - Create a demo user with a token for using the API when creating a demo instance
+- Github action to deploy docs after a new release is published
 ### Fixed
 - Links in docs pages
 - Added instructions on how to install bedtools in documentation and readme file
@@ -12,6 +13,7 @@
 - Replaced old docs link www.clinicalgenomics.se/cgbeacon2 with new https://clinical-genomics.github.io/cgbeacon2
 - Improved code according to codefactor and Flaske8 suggestions
 - Indented code in a github action
+- Link to docs in the README page
 ### Changed
 - Switch to codecov in gihub actions
 - Switched coveralls badge with codecov badge
