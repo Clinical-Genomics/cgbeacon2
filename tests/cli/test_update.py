@@ -35,7 +35,7 @@ def test_update_genes_build_38(mock_app, database):
         b"ENSG00000232218\t\t\t22\t32386668\t32386868\n"
         b"[success]"
     )
-    responses.add(responses.GET, url, body=response, status=200, stream=True)
+    responses.add(responses.GET, url, body=response, status=200, stream=True, match_querystring=False)
 
     # test add a dataset_obj using the app cli
     runner = mock_app.test_cli_runner()

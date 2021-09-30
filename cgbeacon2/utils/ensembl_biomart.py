@@ -1,5 +1,6 @@
 """Code for downloading all genes with coordinates from Ensembl Biomart"""
 import logging
+
 import requests
 
 BIOMART_37 = "http://grch37.ensembl.org/biomart/martservice?query="
