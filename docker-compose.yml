@@ -4,7 +4,7 @@ version: '3'
 # (sudo) docker-compose down
 services:
   mongodb:
-    image: mvertes/alpine-mongo
+    image: mongo:4.4.9
     container_name: mongodb
     networks:
       - beacon-net

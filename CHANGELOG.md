@@ -2,6 +2,7 @@
 ### Added
 ### Fixed
 ### Changed
+- Replaced the alpine-based MongoDB image used in docker-compose with the official MongodDB image (db version 4.4.9)
 
 ## [3.0] - 2021.06.30
 ### Added
