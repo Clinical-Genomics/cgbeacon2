@@ -3,20 +3,22 @@ import responses  # for the sake of mocking it
 from cgbeacon2.cli.commands import cli
 from cgbeacon2.utils.ensembl_biomart import BIOMART_38
 
+# Example of query runned on the EnsemblBiomartClient
 XML_QUERY = """<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Query>
-<Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.6" completionStamp = "1">
+	<!DOCTYPE Query>
+	<Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.6" completionStamp = "1">
 
-	<Dataset name = "hsapiens_gene_ensembl" interface = "default" >
-		<Filter name = "chromosome_name" value = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y,MT"/>
-		<Attribute name = "ensembl_gene_id" />
-		<Attribute name = "hgnc_id" />
-		<Attribute name = "hgnc_symbol" />
-		<Attribute name = "chromosome_name" />
-		<Attribute name = "start_position" />
-		<Attribute name = "end_position" />
-	</Dataset>
-</Query>"""
+		<Dataset name = "hsapiens_gene_ensembl" interface = "default" >
+			<Filter name = "chromosome_name" value = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X,Y,MT"/>
+			<Attribute name = "ensembl_gene_id" />
+			<Attribute name = "hgnc_id" />
+			<Attribute name = "hgnc_symbol" />
+			<Attribute name = "chromosome_name" />
+			<Attribute name = "start_position" />
+			<Attribute name = "end_position" />
+		</Dataset>
+	</Query>
+	"""
 
 
 @responses.activate
@@ -35,7 +37,9 @@ def test_update_genes_build_38(mock_app, database):
         b"ENSG00000232218\t\t\t22\t32386668\t32386868\n"
         b"[success]"
     )
-    responses.add(responses.GET, url, body=response, status=200, stream=True)
+    responses.add(
+        responses.GET, url, body=response, status=200, stream=True, match_querystring=False
+    )
 
     # test add a dataset_obj using the app cli
     runner = mock_app.test_cli_runner()
