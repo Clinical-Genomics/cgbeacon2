@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import responses  # for the sake of mocking it
 from cgbeacon2.cli.commands import cli
-from cgbeacon2.utils.ensembl_biomart import BIOMART_38, requests
+from cgbeacon2.utils.ensembl_biomart import BIOMART_38
 
 # Example of query runned on the EnsemblBiomartClient
 XML_QUERY = """<?xml version="1.0" encoding="UTF-8"?>
