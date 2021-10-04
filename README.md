@@ -29,7 +29,7 @@ docker-compose up -d
 The command will create 3 containers:
 - mongodb: starting a mongodb server
 - beacon-cli: the a command-line app, which will connect to the server and populates it with demo data
-- beacon-web: a web server running on localhost and port 27017.
+- beacon-web: a web server running on localhost, port 6000.
 
 The server will be running and accepting requests sent from outside the containers (another terminal or a web browser). Read further down to find out about request types and queries.
 
