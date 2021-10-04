@@ -12,7 +12,7 @@
 - **/**.
 General info regarding this Beacon, including a description of its datasets, API version, sample count etc, can be obtained by sending a GET request using the following shell command:
 ```
-curl -X GET 'http://localhost:5000/apiv1.0/'
+curl -X GET 'http://localhost:6000/apiv1.0/'
 ```
 
 Demo beacon will reply to this request with a JSON object like this:
@@ -26,7 +26,7 @@ Query endpoint supports both GET and POST requests.
 Example of a GET request:
 ```
 curl -X GET \
-  'http://localhost:5000/apiv1.0/query?referenceName=1&referenceBases=C&start=156146085&assemblyId=GRCh37&alternateBases=A'
+  'http://localhost:6000/apiv1.0/query?referenceName=1&referenceBases=C&start=156146085&assemblyId=GRCh37&alternateBases=A'
 ```
 
 Example of a POST request:
@@ -38,7 +38,7 @@ curl -X POST \
   "referenceBases": "C",
   "alternateBases": "A",
   "assemblyId": "GRCh37",
-  "includeDatasetResponses": "HIT"}' http://localhost:5000/apiv1.0/query
+  "includeDatasetResponses": "HIT"}' http://localhost:6000/apiv1.0/query
 ```
 
 The Beacon reply to a query of this type would be a json object where the "exist" key will be true if the allele is found, otherwise it will be false.
@@ -48,7 +48,7 @@ The Beacon reply to a query of this type would be a json object where the "exist
 
 <a name="webform"></a>
 ## Web interface
-A simple web interface to perform interactive queries can be used by typing the following address in any browser window: `http://127.0.0.1:5000/apiv1.0/query_form`
+A simple web interface to perform interactive queries can be used by typing the following address in any browser window: `http://127.0.0.1:6000/apiv1.0/query_form`
 
 ![Interface picture](pics/beacon2_interface.jpg)
 

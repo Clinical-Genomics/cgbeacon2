@@ -15,7 +15,7 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
     """Test a POST request to search for an existing BND structural variant
 
     curl -X POST \
-    localhost:5000/apiv1.0/query \
+    localhost:6000/apiv1.0/query \
     -H 'Content-Type: application/json' \
     -H 'Accept: application/json' \
     -d '{"referenceName": "17",
@@ -352,7 +352,7 @@ def test_query_form_get(mock_app):
 def test_post_query(mock_app, test_snv, public_dataset):
     """Test receiving classical POST json request and returning a response
         curl -X POST \
-        localhost:5000/apiv1.0/query \
+        localhost:6000/apiv1.0/query \
         -H 'Content-Type: application/json' \
         -H 'Accept: application/json' \
         -d '{"referenceName": "1",
