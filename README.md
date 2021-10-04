@@ -77,7 +77,7 @@ To start the server run this command:
 ```
 beacon run -h custom_host -p custom_port
 ```
-Omitting custom_host and custom_port parameters will make the server run on default host=localhost (127.0.0.1) and default port 6000.
+Omitting custom_host and custom_port parameters will make the server run on default host=localhost (127.0.0.1) and default port 5000.
 
 Please note that this code is NOT guaranteed to be bug-free and it must be adapted to be used in production.
 
@@ -96,7 +96,7 @@ This command will create 2 collections: "dataset" and "variant". Dataset collect
 - **/**.
 General info regarding this Beacon, including a description of its datasets, API version, sample count etc, can be obtained by sending a GET request using the following shell command:
 ```
-curl -X GET 'http://localhost:6000/apiv1.0/'
+curl -X GET 'http://localhost:5000/apiv1.0/'
 ```
 
 Demo beacon will reply to this request with a JSON object like this:
@@ -110,7 +110,7 @@ Query endpoint supports both GET and POST requests.
 Example of a GET request:
 ```
 curl -X GET \
-  'http://localhost:6000/apiv1.0/query?referenceName=1&referenceBases=C&start=156146085&assemblyId=GRCh37&alternateBases=A'
+  'http://localhost:5000/apiv1.0/query?referenceName=1&referenceBases=C&start=156146085&assemblyId=GRCh37&alternateBases=A'
 ```
 
 Example of a POST request:
@@ -122,7 +122,7 @@ curl -X POST \
   "referenceBases": "C",
   "alternateBases": "A",
   "assemblyId": "GRCh37",
-  "includeDatasetResponses": "HIT"}' http://localhost:6000/apiv1.0/query
+  "includeDatasetResponses": "HIT"}' http://localhost:5000/apiv1.0/query
 ```
 
 The Beacon reply to a query of this type would be a json object where the "exist" key will be true if the allele is found, otherwise it will be false.
@@ -141,7 +141,7 @@ curl -X POST \
   "vcf_path": "path/to/cgbeacon2/cgbeacon2/resources/demo/test_trio.vcf.gz",
   "samples" : ["ADM1059A1", "ADM1059A2"],
   "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
-  "assemblyId": "GRCh37"}' http://localhost:6000/apiv1.0/add
+  "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
 ```
 Note that only authenticated users will be able to use this endpoint by including the user's auth_token in the request headers. [Additional info](https://clinical-genomics.github.io/cgbeacon2/loading/) on how to use this endpoint.
 
@@ -153,14 +153,14 @@ curl -X DELETE \
   -H 'Content-Type: application/json' \
   -H 'X-Auth-Token: auth_token' \
   -d '{"dataset_id": "test_public",
-  "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:6000/apiv1.0/delete
+  "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:5000/apiv1.0/delete
 ```
 Additional info available [here](https://clinical-genomics.github.io/cgbeacon2/removing/).
 
 
 <a name="webform"></a>
 ## Web interface
-A simple web interface to perform interactive queries can be used by typing the following address in any browser window: `http://127.0.0.1:6000/apiv1.0/query_form`
+A simple web interface to perform interactive queries can be used by typing the following address in any browser window: `http://127.0.0.1:5000/apiv1.0/query_form`
 
 ![Interface picture](docs/pics/beacon2_interface.jpg)
 

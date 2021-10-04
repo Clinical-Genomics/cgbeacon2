@@ -34,7 +34,7 @@ def info():
     """Returns Beacon info data as a json object
 
     Example:
-        curl -X GET 'http://localhost:6000/apiv1.0/'
+        curl -X GET 'http://localhost:5000/apiv1.0/'
 
     """
 
@@ -52,7 +52,7 @@ def query_form():
     Query is performed only on public access datasets contained in this beacon
 
     query_form page is accessible from a browser at this address:
-    http://127.0.0.1:6000/apiv1.0/query_form
+    http://127.0.0.1:5000/apiv1.0/query_form
     """
 
     all_dsets = current_app.db["dataset"].find()
@@ -112,7 +112,7 @@ def add():
     -d '{"dataset_id": "test_public",
     "vcf_path": "path/to/cgbeacon2/resources/demo/test_trio.vcf.gz",
     "samples" : ["ADM1059A1", "ADM1059A2"],
-    "assemblyId": "GRCh37"}' http://localhost:6000/apiv1.0/add
+    "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
     """
     resp = None
     # Check request auth token
@@ -156,7 +156,7 @@ def delete():
     -H 'Content-Type: application/json' \
     -H 'X-Auth-Token: auth_token' \
     -d '{"dataset_id": "test_public",
-    "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:6000/apiv1.0/delete
+    "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:5000/apiv1.0/delete
     """
     resp = None
     # Check request auth token
@@ -189,7 +189,7 @@ def query():
     Examples:
     ########### GET request ###########
     curl -X GET \
-    'http://localhost:6000/apiv1.0/query?referenceName=1&referenceBases=C&start=156146085&assemblyId=GRCh37&alternateBases=A'
+    'http://localhost:5000/apiv1.0/query?referenceName=1&referenceBases=C&start=156146085&assemblyId=GRCh37&alternateBases=A'
 
     ########### POST request ###########
     curl -X POST \
@@ -199,7 +199,7 @@ def query():
     "referenceBases": "C",
     "alternateBases": "A",
     "assemblyId": "GRCh37",
-    "includeDatasetResponses": "HIT"}' http://localhost:6000/apiv1.0/query
+    "includeDatasetResponses": "HIT"}' http://localhost:5000/apiv1.0/query
 
     """
 

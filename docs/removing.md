@@ -28,7 +28,7 @@ curl -X DELETE \
   -H 'Content-Type: application/json' \
   -H 'X-Auth-Token: auth_token' \
   -d '{"dataset_id": "test_public",
-  "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:6000/apiv1.0/delete
+  "samples" : ["ADM1059A1", "ADM1059A2"]}' http://localhost:5000/apiv1.0/delete
 ```
 
 ## Removing a specific dataset
