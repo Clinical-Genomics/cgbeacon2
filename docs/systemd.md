@@ -126,7 +126,7 @@ After=network-online.target
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=no # Eventually turn this into on-failure
-ExecStart=/usr/bin/podman run --env "MONGODB_HOST=mongodb" -d --log-driver=journald --name beacon-web -p 5000:5000 clinicalgenomics/cgbeacon2 run
+ExecStart=/usr/bin/podman run --env "MONGODB_HOST=mongodb" -d --log-driver=journald --name beacon-web -p 6000:6000 clinicalgenomics/cgbeacon2 run
 ExecStop=/usr/bin/podman stop beacon-web
 ExecStopPost=/usr/bin/podman rm --ignore -f beacon-web
 TimeoutStartSec=1800s
@@ -152,7 +152,7 @@ Output from the command above:
      Loaded: loaded (/home/vagrant/.config/systemd/user/beacon-web.service; enabled; vendor preset: disabled)
      Active: active (running) since Fri 2021-03-05 15:10:59 UTC; 12s ago
        Docs: man:podman-generate-systemd(1)
-    Process: 22165 ExecStart=/usr/bin/podman run --env MONGODB_HOST=mongodb -d --log-driver=journald --name beacon-web -p 5000:5000 clinicalgenomics/cgbeacon2 run (code=exited, status=0>
+    Process: 22165 ExecStart=/usr/bin/podman run --env MONGODB_HOST=mongodb -d --log-driver=journald --name beacon-web -p 6000:6000 clinicalgenomics/cgbeacon2 run (code=exited, status=0>
       Tasks: 20 (limit: 1129)
      Memory: 127.4M
         CPU: 857ms
@@ -172,7 +172,7 @@ Mar 05 15:11:02 localhost.localdomain conmon[22208]:    Use a production WSGI se
 Mar 05 15:11:02 localhost.localdomain conmon[22208]:  * Debug mode: off
 Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:cgbeacon2.server:Environment variable settings not found, configuring from instance file.
 Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:cgbeacon2.server:database connection info:Database(MongoClient(host=['mongodb:27017'], document_class=dict, tz_aware=False, con>
-Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:werkzeug: * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:werkzeug: * Running on http://127.0.0.1:6000/ (Press CTRL+C to quit)
 ```
 
 To stop the service type the following command:

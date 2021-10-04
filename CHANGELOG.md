@@ -3,6 +3,7 @@
 ### Fixed
 ### Changed
 - Replaced the alpine-based MongoDB image used in docker-compose with the official MongodDB image (db version 4.4.9)
+- Launch the demo app on port 6000 when it's started via docker-compose
 
 ## [3.0] - 2021.06.30
 ### Added

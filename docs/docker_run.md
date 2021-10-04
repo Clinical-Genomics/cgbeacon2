@@ -74,7 +74,7 @@ Exit from the execution of the images by typing `exit`
 
 ## Starting an app server connected to the database
 
-An app server instance connected to the server might be started in a similar way using Docker Compose. This is an example of a such server, listening for incoming requests on port 5000, from hosts outside the container.
+An app server instance connected to the server might be started in a similar way using Docker Compose. This is an example of a such server, listening for incoming requests on port 6000, from hosts outside the container.
 
 Example of docker-compose.yml file:
 
@@ -98,9 +98,9 @@ services:
     links:
       - mongodb
     expose:
-      - '5000'
+      - '6000'
     ports:
-      - '5000:5000'
+      - '6000:6000'
     command: bash -c 'beacon run --host 0.0.0.0'
 ```
 
@@ -111,7 +111,7 @@ docker.compose up -d
 
 The server should be now listing for requests. Test that it is working by sending a request to the beacon info endpoint from another terminal window:
 ```
-curl -X GET 'http://127.0.0.1:5000/apiv1.0/'
+curl -X GET 'http://127.0.0.1:6000/apiv1.0/'
 ```
 
 Stop the server by typing:
