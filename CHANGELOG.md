@@ -1,7 +1,7 @@
 ## [] -
 ### Added
 ### Fixed
-- Fixed the command that runs the app on docker-compose to run it on port 6000
+- Fixed the command that runs the web app service on docker-compose
 ### Changed
 - Replaced the alpine-based MongoDB image used in docker-compose with the official MongodDB image (db version 4.4.9)
 - Launch the demo app on port 6000 when it's started via docker-compose
