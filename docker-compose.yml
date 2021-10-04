@@ -34,9 +34,9 @@ services:
     networks:
       - beacon-net
     expose:
-      - '5000'
+      - '6000'
     ports:
-      - '5000:5000'
+      - '6000:6000'
     command: run --host 0.0.0.0
 
 networks:
