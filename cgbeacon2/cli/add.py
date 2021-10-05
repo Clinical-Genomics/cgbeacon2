@@ -67,19 +67,20 @@ def demo(ctx):
     )
 
     # Invoke add user command to creating an authorized user (via X-Auth-Token) for using the APIs
-    demo_user = ctx.invoke(
-        user,
-        user_id="DExterMOrgan",
-        name="Dexter Morgan",
-        token="DEMO"
-    )
+    demo_user = ctx.invoke(user, user_id="DExterMOrgan", name="Dexter Morgan", token="DEMO")
     click.echo(f"\n\nAuth token for using the API:{demo_user.token}\n")
 
 
 @add.command()
 @click.option("-user-id", type=click.STRING, nargs=1, required=True, help="User ID")
 @click.option("-name", type=click.STRING, nargs=1, required=True, help="User name")
-@click.option("-token", type=click.STRING, nargs=1, required=False, help="If not specified, the token will be created automatically")
+@click.option(
+    "-token",
+    type=click.STRING,
+    nargs=1,
+    required=False,
+    help="If not specified, the token will be created automatically",
+)
 @click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
 @click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
 @with_appcontext
@@ -90,7 +91,12 @@ def user(user_id, name, token, desc, url):
         click.echo("User ID should not contain any space")
         return
     user_info = dict(
-        _id=user_id, name=name, token=token, description=desc, url=url, created=datetime.datetime.now()
+        _id=user_id,
+        name=name,
+        token=token,
+        description=desc,
+        url=url,
+        created=datetime.datetime.now(),
     )
     user = User(user_info)
     add_user(current_app.db, user)
