@@ -1,10 +1,13 @@
 ## [] -
 ### Added
+- Option to provide a custom token when creating a database user
 ### Fixed
 - Fixed the command that runs the web app service on docker-compose
 ### Changed
 - Replaced the alpine-based MongoDB image used in docker-compose with the official MongodDB image (db version 4.4.9)
 - Launch the demo app on port 6000 when it's started via docker-compose
+- Build Docker image from local repo when using docker-compose
+- Use database port 27013 in docker-compose
 
 ## [3.0] - 2021.06.30
 ### Added

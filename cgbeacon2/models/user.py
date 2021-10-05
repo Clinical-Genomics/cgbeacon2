@@ -9,10 +9,10 @@ class User:
         """Instantiate a new user"""
         self._id = user_dict["_id"]
         self.name = user_dict["name"]
+        self.token = user_dict["token"] or self._create_token()
         self.description = user_dict["description"]
         self.url = user_dict.get("url")
         self.created = user_dict["created"]
-        self.token = self._create_token()
 
     def _create_token(self):
         """Creates an authentication token for a new user"""
