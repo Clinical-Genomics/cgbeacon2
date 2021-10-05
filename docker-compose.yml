@@ -9,15 +9,15 @@ services:
     networks:
       - beacon-net
     ports:
-      - '27017:27017'
+      - '27013:27013'
     expose:
-      - '27017'
+      - '27013'
 
   beacon-cli:
     container_name: beacon-cli
     environment:
       MONGODB_HOST: mongodb
-    image: clinicalgenomics/cgbeacon2
+    build: .
     depends_on:
       - mongodb
     networks:
@@ -28,7 +28,7 @@ services:
     container_name: beacon-web
     environment:
       MONGODB_HOST: mongodb
-    image: clinicalgenomics/cgbeacon2
+    build: .
     depends_on:
       - mongodb
     networks:
@@ -36,8 +36,8 @@ services:
     expose:
       - '6000'
     ports:
-      - '6000:6000'
-    command: run --host 0.0.0.0 --port 6000
+      - '6000:5000'
+    command: run --host 0.0.0.0
 
 networks:
   beacon-net:
