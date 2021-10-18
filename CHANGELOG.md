@@ -1,5 +1,10 @@
 ## [] -
 ### Added
+### Fixed
+### Changed
+
+## [3.1] - 2021.10.18
+### Added
 - Option to provide a custom token when creating a database user
 - Example of URI for connecting to a MongoDB replica set
 ### Fixed
