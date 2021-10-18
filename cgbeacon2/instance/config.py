@@ -8,7 +8,8 @@ SECRET_KEY = "MySuperSecretKey"
 DB_HOST = "127.0.0.1"
 DB_PORT = 27017
 DB_NAME = "cgbeacon2-test"
-DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"  # standalone MongoDB instance
+# DB_URI = "mongodb://localhost:27011,localhost:27012,localhost:27013/?replicaSet=rs0" # MongoDB replica set
 
 
 ORGANISATION = dict(
