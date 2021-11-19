@@ -1,5 +1,6 @@
 ## [] -
 ### Added
+- Vulture GitHub action to find unused code with 80% confidence
 ### Fixed
 ### Changed
 
