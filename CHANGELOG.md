@@ -3,6 +3,7 @@
 - Vulture GitHub action to find unused code with 80% confidence
 ### Fixed
 ### Changed
+- Scam only changed .py files with Vulture
 
 ## [3.1] - 2021.10.18
 ### Added
