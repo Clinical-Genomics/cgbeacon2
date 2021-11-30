@@ -2,6 +2,7 @@
 ### Added
 - Vulture GitHub action to find unused code with 80% confidence
 ### Fixed
+- Freeze PyMongo lib to version<4.0 to keep supporting previous MongoDB versions
 ### Changed
 - Scan only changed .py files with Vulture
 
