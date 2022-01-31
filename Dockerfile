@@ -1,7 +1,7 @@
 ###########
 # BUILDER #
 ###########
-FROM frolvlad/alpine-miniconda3 AS python-builder
+FROM frolvlad/alpine-miniconda3:python3.7 AS python-builder
 
 # Install required libs
 RUN apk update && \
@@ -9,6 +9,8 @@ RUN apk update && \
 
 # Install bedtools using conda
 RUN conda update -n base -c defaults conda && conda install -c bioconda bedtools
+
+WORKDIR /temp
 
 # Install app dependencies
 COPY requirements.txt .
@@ -18,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 #########
 # FINAL #
 #########
-FROM frolvlad/alpine-miniconda3
+FROM frolvlad/alpine-miniconda3:python3.7
 
 LABEL about.license="MIT License (MIT)"
 LABEL about.home="https://github.com/Clinical-Genomics/cgbeacon2"
