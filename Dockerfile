@@ -1,33 +1,62 @@
-FROM frolvlad/alpine-miniconda3
+###########
+# BUILDER #
+###########
+FROM clinicalgenomics/python3.8-venv:1.0 AS python-builder
+
+# Install base dependencies
+RUN apt-get update && \
+     apt-get -y upgrade && \
+     apt-get install -y --no-install-recommends wget build-essential gcc zlib1g-dev && \
+     apt-get clean && \
+     rm -rf /var/lib/apt/lists/*
+
+# Download bedtools static binary
+RUN cd /usr/local/bin && \
+    wget -q https://github.com/arq5x/bedtools2/releases/download/v2.29.2/bedtools.static.binary && \
+    mv bedtools.static.binary bedtools && \
+    chmod +x bedtools
+
+ENV PATH="/venv/bin:$PATH"
+
+# Install dependencies
+COPY . /temp
+
+WORKDIR /temp
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+#########
+# FINAL #
+#########
+FROM python:3.8-slim
 
 LABEL about.license="MIT License (MIT)"
 LABEL about.home="https://github.com/Clinical-Genomics/cgbeacon2"
 LABEL about.documentation="https://clinical-genomics.github.io/cgbeacon2"
 LABEL about.tags="beacon,Rare diseases,VCF,variants,SNP,NGS"
 
-# Install bedtools using conda
-RUN conda update -n base -c defaults conda && conda install -c bioconda bedtools
+# Do not upgrade to the latest pip version to ensure more reproducible builds
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PATH="/venv/bin:$PATH"
+RUN echo export PATH="/venv/bin:\$PATH" > /etc/profile.d/venv.sh
 
-# Install required libs
-RUN apk update \
-	&& apk --no-cache add gcc g++ curl libcurl curl-dev zlib-dev bzip2-dev xz-dev \
-    bash python3
+# Copy the folder where bedtools was installed from builder image
+COPY --from=python-builder /usr/local/bin /usr/local/bin
 
-WORKDIR /home/worker/app
+# Create a non-root user to run commands
+RUN groupadd --gid 1000 worker && useradd -g worker --uid 1000 --shell /usr/sbin/nologin --create-home worker
+
+# Copy virtual environment from builder
+COPY --chown=worker:worker --from=python-builder /venv /venv
+
+# Copy app dir to image
 COPY . /home/worker/app
 
-# Install requirements
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /home/worker/app
 
 # Install the app
 RUN pip install --no-cache-dir -e .
 
-# Run commands as non-root user
-RUN adduser -D worker
-
-# Grant non-root user permissions over the working directory
-RUN chown worker:worker -R /home/worker
-
+# Run the app as non-root user
 USER worker
-
 ENTRYPOINT ["beacon"]
