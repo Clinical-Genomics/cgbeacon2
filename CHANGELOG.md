@@ -5,7 +5,7 @@
 - Freeze PyMongo lib to version<4.0 to keep supporting previous MongoDB versions
 ### Changed
 - Scan only changed .py files with Vulture
-- Multi-stage build in Dockerfile
+- Multi-stage Dockerfile for smaller image
 
 ## [3.1] - 2021.10.18
 ### Added
