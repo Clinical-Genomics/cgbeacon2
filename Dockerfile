@@ -12,7 +12,7 @@ RUN apt-get update && \
 
 # Download bedtools static binary
 RUN cd /usr/local/bin && \
-    wget https://github.com/arq5x/bedtools2/releases/download/v2.29.2/bedtools.static.binary && \
+    wget -q https://github.com/arq5x/bedtools2/releases/download/v2.29.2/bedtools.static.binary && \
     mv bedtools.static.binary bedtools && \
     chmod +x bedtools
 
@@ -55,7 +55,7 @@ COPY . /home/worker/app
 WORKDIR /home/worker/app
 
 # Install the app
-RUN pip install -e .
+RUN pip install --no-cache-dir -e .
 
 # Run the app as non-root user
 USER worker
