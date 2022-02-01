@@ -1,4 +1,4 @@
-## [] -
+## [3.2] - 2022.02.01
 ### Added
 - Vulture GitHub action to find unused code with 80% confidence
 ### Fixed
