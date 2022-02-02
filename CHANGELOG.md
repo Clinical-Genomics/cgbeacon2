@@ -11,6 +11,7 @@
 ### Changed
 - Scan only changed .py files with Vulture
 - Multi-stage Dockerfile for smaller and faster-built image
+- Install required libs from requirements.txt directly in setup.py
 
 ## [3.1] - 2021.10.18
 ### Added
