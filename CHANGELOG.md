@@ -1,6 +1,7 @@
 ## [] -
 ### Added
 - Push to PyPI when a new release is created
+- Dockerfile-server to serve the prod app via gunicorn
 ### changed
 - Install required libs from requirements.txt directly in setup.py
 

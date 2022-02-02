@@ -1,3 +1,5 @@
+import os
+
 # Turns on debugging features in Flask
 DEBUG = True
 
@@ -5,7 +7,7 @@ DEBUG = True
 SECRET_KEY = "MySuperSecretKey"
 
 # Database connection parameters
-DB_HOST = "127.0.0.1"
+DB_HOST = os.getenv("MONGODB_HOST") or "127.0.0.1"
 DB_PORT = 27017
 DB_NAME = "cgbeacon2-test"
 DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"  # standalone MongoDB instance

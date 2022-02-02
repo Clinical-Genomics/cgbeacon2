@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from flask import Flask
 import logging
 import os
+
+from flask import Flask
 from pymongo import MongoClient
 
 from .blueprints import api_v1
@@ -20,7 +21,9 @@ def create_app():
         app.config.from_envvar("CGBEACON2_CONFIG")
         LOG.info("Starting app envirironmental variable CGBEACON2_CONFIG")
     except RuntimeError:
-        LOG.info("Environment variable settings not found, configuring from instance file.")
+        LOG.info(
+            "CGBEACON2_CONFIG environment variable not found, configuring from default instance file."
+        )
         app_root = os.path.abspath(__file__).split("cgbeacon2")[0]
 
         # check if config file exists under ../instance:
@@ -37,8 +40,6 @@ def create_app():
 
     # If app is runned from inside a container, override host port
     db_uri = app.config["DB_URI"]
-    if os.getenv("MONGODB_HOST"):
-        db_uri = f"mongodb://{os.getenv('MONGODB_HOST')}:{'27017'}/{'cgbeacon2'}"
 
     client = MongoClient(db_uri)
     app.db = client[app.config["DB_NAME"]]
