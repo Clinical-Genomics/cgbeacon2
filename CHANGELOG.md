@@ -1,6 +1,8 @@
 ## [] -
 ### Added
 - Push to PyPI when a new release is created
+### changed
+- Install required libs from requirements.txt directly in setup.py
 
 
 ## [3.2] - 2022.02.01
@@ -11,7 +13,7 @@
 ### Changed
 - Scan only changed .py files with Vulture
 - Multi-stage Dockerfile for smaller and faster-built image
-- Install required libs from requirements.txt directly in setup.py
+
 
 ## [3.1] - 2021.10.18
 ### Added
