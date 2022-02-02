@@ -17,7 +17,6 @@ services:
     container_name: beacon-cli
     environment:
       MONGODB_HOST: mongodb
-      MONGODB_PORT: 27017
       CGBEACON2_CONFIG: '/home/worker/app/cgbeacon2/instance/config.py'
     build: .
     depends_on:
