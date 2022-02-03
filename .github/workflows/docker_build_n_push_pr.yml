@@ -31,4 +31,4 @@ jobs:
          context: ./
          file: ./Dockerfile-server
          push: true
-         tags: "clinicalgenomics/cgbeacon2-server-stage:${{steps.get_branch_name.outputs.branch}}, clinicalgenomics/cgbeacon2-stage:latest"
+         tags: "clinicalgenomics/cgbeacon2-server-stage:${{steps.get_branch_name.outputs.branch}}, clinicalgenomics/cgbeacon2-server-stage:latest"
