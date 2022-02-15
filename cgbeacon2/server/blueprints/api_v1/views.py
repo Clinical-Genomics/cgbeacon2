@@ -37,7 +37,7 @@ def info():
         curl -X GET 'http://localhost:5000/apiv1.0/'
 
     """
-
+    raise ValueError("Meh")
     beacon_config = current_app.config.get("BEACON_OBJ")
     beacon = Beacon(beacon_config, API_VERSION, current_app.db)
 
