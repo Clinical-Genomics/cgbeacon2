@@ -2,6 +2,7 @@
 import logging
 import os
 
+from cgbeacon2.utils.notify import TlsSMTPHandler
 from flask import Flask
 from pymongo import MongoClient
 
@@ -9,6 +10,27 @@ from .blueprints import api_v1
 
 logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger(__name__)
+
+
+def configure_email_error_logging(app):
+    """Setup logging of error/exceptions to email."""
+    LOG.debug(f"Configuring email error logging to notify server admins:{app.config['ADMINS']}")
+
+    mail_handler = TlsSMTPHandler(
+        mailhost=(app.config["MAIL_SERVER"], app.config["MAIL_PORT"]),
+        fromaddr=app.config["MAIL_USERNAME"],
+        toaddrs=app.config["ADMINS"],
+        subject=f"{app.name} - {app.config['DB_NAME']} - log error",
+        credentials=(app.config["MAIL_USERNAME"], app.config["MAIL_PASSWORD"]),
+    )
+    mail_handler.setLevel(logging.ERROR)
+    mail_handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s: %(message)s " "[in %(pathname)s:%(lineno)d]"
+        )
+    )
+    app.logger.addHandler(mail_handler)
+    logging.getLogger("werkzeug").addHandler(mail_handler)
 
 
 def create_app():
@@ -46,5 +68,17 @@ def create_app():
     LOG.info("database connection info:{}".format(app.db))
 
     app.register_blueprint(api_v1.api1_bp)
+
+    # Configure email logging of errors
+    if all(
+        [
+            app.config.get("ADMINS"),
+            app.config.get("MAIL_SERVER"),
+            app.config.get("MAIL_PORT"),
+            app.config.get("MAIL_USERNAME"),
+            app.config.get("MAIL_PASSWORD"),
+        ]
+    ):
+        configure_email_error_logging(app)
 
     return app

@@ -13,6 +13,14 @@ DB_NAME = "cgbeacon2-test"
 DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"  # standalone MongoDB instance
 # DB_URI = "mongodb://localhost:27011,localhost:27012,localhost:27013/?replicaSet=rs0" # MongoDB replica set
 
+# ADMINS will receive email notification is app crashes
+# MAIL_SERVER = "smtp.gmail.com"
+# MAIL_PORT = 587
+# MAIL_USE_TLS = True
+# MAIL_USE_SSL = False
+# MAIL_USERNAME = "system.email@email.com"
+# MAIL_PASSWORD = "password"
+# ADMINS = ["admin.email@email.com"]
 
 ORGANISATION = dict(
     id="scilifelab",  # mandatory
