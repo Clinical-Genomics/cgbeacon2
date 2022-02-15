@@ -8,7 +8,6 @@
 - Dockerfile-server image pushed to Docker Hub (cgbeacon2-server-stage) when a PR is opened or updated
 
 
-
 ## [3.2] - 2022.02.01
 ### Added
 - Vulture GitHub action to find unused code with 80% confidence
