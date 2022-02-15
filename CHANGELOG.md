@@ -3,8 +3,10 @@
 - Push to PyPI when a new release is created
 - Dockerfile-server to serve the prod app via gunicorn
 - Notify admins via email when app crashes
-### changed
+### Changed
 - Install required libs from requirements.txt directly in setup.py
+- Dockerfile-server image pushed to Docker Hub (cgbeacon2-server-stage) when a PR is opened or updated
+
 
 
 ## [3.2] - 2022.02.01
