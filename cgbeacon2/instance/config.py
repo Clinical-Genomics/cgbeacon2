@@ -14,13 +14,13 @@ DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"  # standalone MongoDB instan
 # DB_URI = "mongodb://localhost:27011,localhost:27012,localhost:27013/?replicaSet=rs0" # MongoDB replica set
 
 # ADMINS will receive email notification is app crashes
-# MAIL_SERVER = mail_port
-# MAIL_PORT = email_port
-# MAIL_USE_TLS = True or False
-# MAIL_USE_SSL = True or False
-# MAIL_USERNAME = 'user_email@mail.se'
-# MAIL_PASSWORD = 'mail_password'
-# ADMINS = ["admin.name@mail.com"]
+# MAIL_SERVER = "smtp.gmail.com"
+# MAIL_PORT = 587
+# MAIL_USE_TLS = True
+# MAIL_USE_SSL = False
+# MAIL_USERNAME = "system.email@email.com"
+# MAIL_PASSWORD = "password"
+# ADMINS = ["admin.email@email.com"]
 
 ORGANISATION = dict(
     id="scilifelab",  # mandatory
