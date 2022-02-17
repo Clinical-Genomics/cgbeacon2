@@ -199,7 +199,6 @@ def query():
     "alternateBases": "A",
     "assemblyId": "GRCh37",
     "includeDatasetResponses": "HIT"}' http://localhost:5000/apiv1.0/query
-
     """
 
     beacon_config = current_app.config.get("BEACON_OBJ")

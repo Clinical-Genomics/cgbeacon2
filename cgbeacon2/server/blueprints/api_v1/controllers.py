@@ -201,7 +201,7 @@ def create_allele_query(resp_obj, req):
     if "includeDatasetResponses" not in customer_query:
         customer_query["includeDatasetResponses"] = "NONE"
 
-    # check if the minimal required params were provided in query
+    # check if the minimum required params were provided in query
     check_allele_request(resp_obj, customer_query, mongo_query)
 
     # if an error occurred, do not query database and return error
@@ -223,34 +223,32 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         customer_query(dict): a dictionary with all the key/values provided in the external request
         mongo_query(dict): the query to collect variants from this server
     """
+    chrom = customer_query.get("referenceName")
+    start = customer_query.get("start")
+    end = customer_query.get("end")
+    ref = customer_query.get("referenceBases")
+    alt = customer_query.get("alternateBases")
+    build = customer_query.get("assemblyId")
+    datasets = customer_query.get("datasetIds", [])
+    variant_type = customer_query.get("variantType")
+
     # If customer asks for a classical SNV
-    if customer_query.get("variantType") is None and all(
-        [
-            customer_query.get("referenceName"),
-            customer_query.get(
-                "start",
-            ),
-            customer_query.get("end"),
-            customer_query.get("referenceBases"),
-            customer_query.get("alternateBases"),
-            customer_query.get("assemblyId"),
-        ]
-    ):
+    if customer_query.get("variantType") is None and all([chrom, start, end, ref, alt, build]):
         # generate md5_key to compare with our database
         mongo_query["_id"] = md5_key(
-            customer_query["referenceName"],
-            customer_query["start"],
-            customer_query.get("end"),
-            customer_query["referenceBases"],
-            customer_query["alternateBases"],
-            customer_query["assemblyId"],
+            chrom,
+            start,
+            end,
+            ref,
+            alt,
+            build,
         )
 
     # Check that the 3 mandatory parameters are present in the query
     if None in [
-        customer_query.get("referenceName"),
-        customer_query.get("referenceBases"),
-        customer_query.get("assemblyId"),
+        chrom,
+        ref,
+        build,
     ]:
         # return a bad request 400 error with explanation message
         resp_obj["message"] = dict(
@@ -260,13 +258,13 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         return
 
     # check if genome build requested corresponds to genome build of the available datasets:
-    if len(customer_query.get("datasetIds", [])) > 0:
+    if len(datasets) > 0:
         dset_builds = current_app.db["dataset"].find(
-            {"_id": {"$in": customer_query["datasetIds"]}}, {"assembly_id": 1, "_id": 0}
+            {"_id": {"$in": datasets}}, {"assembly_id": 1, "_id": 0}
         )
         dset_builds = [dset["assembly_id"] for dset in dset_builds if dset["assembly_id"]]
         for dset in dset_builds:
-            if dset != customer_query["assemblyId"]:
+            if dset != build:
                 # return a bad request 400 error with explanation message
                 resp_obj["message"] = dict(
                     error=BUILD_MISMATCH,
@@ -278,8 +276,8 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
     if all(
         param is None
         for param in [
-            customer_query.get("alternateBases"),
-            customer_query.get("variantType"),
+            alt,
+            variant_type,
         ]
     ):
         # return a bad request 400 error with explanation message
@@ -290,7 +288,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         return
     # Check that genomic coordinates are provided (even rough)
     if (
-        customer_query.get("start") is None
+        start is None
         and any([coord in customer_query.keys() for coord in RANGE_COORDINATES]) is False
     ):
         # return a bad request 400 error with explanation message
@@ -300,12 +298,11 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         )
         return
 
-    if customer_query.get("start"):  # query for exact position
+    if start:  # query for exact position
         try:
-            if customer_query.get("end") is not None:
-                mongo_query["end"] = int(customer_query["end"])
-
-            mongo_query["start"] = int(customer_query["start"])
+            if end is not None:
+                mongo_query["end"] = int(end)
+            mongo_query["start"] = int(start)
 
         except ValueError:
             # return a bad request 400 error with explanation message
@@ -343,15 +340,15 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
 
     if mongo_query.get("_id") is None:
         # perform normal query
-        mongo_query["assemblyId"] = customer_query["assemblyId"]
-        mongo_query["referenceName"] = customer_query["referenceName"]
-        mongo_query["referenceBases"] = customer_query["referenceBases"]
+        mongo_query["assemblyId"] = build
+        mongo_query["referenceName"] = chrom
+        mongo_query["referenceBases"] = ref
 
         if "alternateBases" in customer_query:
-            mongo_query["alternateBases"] = customer_query["alternateBases"]
+            mongo_query["alternateBases"] = alt
 
         if "variantType" in customer_query:
-            mongo_query["variantType"] = customer_query["variantType"]
+            mongo_query["variantType"] = variant_type
 
     else:
         # use only variant _id in query
