@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from authlib.jose import jwt
 import time
+
 import mongomock
 import pytest
-
+from authlib.jose import jwt
 from cgbeacon2.server import create_app
 
 DATABASE_NAME = "testdb"
@@ -69,16 +69,16 @@ def basic_query(test_snv):
 def test_snv():
     """A dictionary representing a snv variant as it is saved in database"""
     variant = {
-        "_id": "0e331ff7e817513492852ca696588443",
+        "_id": "572dca7bd95dc2f288a0dbcfee2df7d2",
         "referenceName": "1",
-        "start": 235826381,
-        "startMin": 235826381,
-        "startMax": 235826381,
-        "end": 235826383,
-        "endMin": 235826383,
-        "endMax": 235826383,
-        "referenceBases": "TA",
-        "alternateBases": "T",
+        "start": 235878452,
+        "startMin": 235878452,
+        "startMax": 235878452,
+        "end": 235878453,
+        "endMin": 235878453,
+        "endMax": 235878453,
+        "referenceBases": "G",
+        "alternateBases": "GTTT",
         "assemblyId": "GRCh37",
         "datasetIds": {"public_ds": {"samples": {"ADM1059A1": {"allele_count": 2}}}},
         "call_count": 2,

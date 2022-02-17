@@ -255,7 +255,6 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
     if (
         customer_query.get("variantType") is None
         and all([chrom, start, end, ref, alt, build])
-        and not "N" in ref
         and not "N" in alt
     ):
         # generate md5_key to quickly compare with our database
@@ -371,8 +370,6 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         mongo_query.pop("start")
         mongo_query.pop("end", None)
 
-    LOG.info(f"Mongo query:{mongo_query}")
-
 
 def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], False)):
     """Query variant collection using a query dictionary
@@ -393,7 +390,7 @@ def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], Fal
     """
     variant_collection = current_app.db["variant"]
 
-    LOG.info(f"Perform database query -----------> {mongo_query}.")
+    LOG.error(f"Perform database query -----------> {mongo_query}.")
     LOG.info(f"Response level (datasetAlleleResponses) -----> {response_type}.")
 
     # End users are only interested in knowing which datasets have one or more specific vars, return only datasets and callCount
