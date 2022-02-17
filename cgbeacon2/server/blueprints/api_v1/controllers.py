@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import re
 
 from cgbeacon2.constants import (
     BUILD_MISMATCH,
@@ -403,7 +402,7 @@ def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], Fal
     """
     variant_collection = current_app.db["variant"]
 
-    LOG.error(f"Perform database query -----------> {mongo_query}.")
+    LOG.info(f"Perform database query -----------> {mongo_query}.")
     LOG.info(f"Response level (datasetAlleleResponses) -----> {response_type}.")
 
     # End users are only interested in knowing which datasets have one or more specific vars, return only datasets and callCount
