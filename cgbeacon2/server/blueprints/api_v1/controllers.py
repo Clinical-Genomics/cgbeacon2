@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import re
 
 from cgbeacon2.constants import (
     BUILD_MISMATCH,
@@ -255,6 +256,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
     if (
         customer_query.get("variantType") is None
         and all([chrom, start, end, ref, alt, build])
+        and not "N" in ref
         and not "N" in alt
     ):
         # generate md5_key to quickly compare with our database
@@ -266,6 +268,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
             alt,
             build,
         )
+        return
 
     # Check that the 3 mandatory parameters are present in the query
     if None in [
@@ -301,6 +304,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
             allelRequest=customer_query,
         )
         return
+
     # Check that genomic coordinates are provided (even rough)
     if (
         start is None
@@ -353,22 +357,31 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         if fuzzy_end_query:
             mongo_query["end"] = fuzzy_end_query
 
-    if mongo_query.get("_id") is None:
-        # perform normal query
-        mongo_query["assemblyId"] = build
-        mongo_query["referenceName"] = chrom
-        mongo_query["referenceBases"] = ref
+    mongo_query["assemblyId"] = build
+    mongo_query["referenceName"] = chrom
 
-        if "alternateBases" in customer_query:
-            mongo_query["alternateBases"] = alt
+    add_coords_query(mongo_query, "referenceBases", ref)
 
-        if "variantType" in customer_query:
-            mongo_query["variantType"] = variant_type
+    if "alternateBases" in customer_query:
+        add_coords_query(mongo_query, "alternateBases", alt)
 
+    if "variantType" in customer_query:
+        mongo_query["variantType"] = variant_type
+
+
+def add_coords_query(mongo_query, field, value):
+    """Created a regex for a database query when ref or alt coords contain Ns
+
+    Accepts:
+        mongo_query(dict): an allele query dictionary
+        field(string): "referenceBases" or "alternateBases"
+        value(string): A stretch of bases, might containg Ns
+    """
+
+    if "N" in value:
+        mongo_query[field] = {"$regex": value.replace("N", ".")}
     else:
-        # use only variant _id in query
-        mongo_query.pop("start")
-        mongo_query.pop("end", None)
+        mongo_query[field] = value
 
 
 def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], False)):
