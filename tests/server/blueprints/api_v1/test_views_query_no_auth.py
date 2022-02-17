@@ -276,7 +276,7 @@ def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):
     database["dataset"].insert_one(public_dataset)
 
     # when providing the required parameters in a SNV query with includeDatasetResponses=NONE (or omitting the param)
-    query_string = "&".join([BASE_ARGS, "start=235826381", ALT_ARG])
+    query_string = "&".join([BASE_ARGS, COORDS_ARGS, ALT_ARG])
     response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
     data = json.loads(response.data)
 
