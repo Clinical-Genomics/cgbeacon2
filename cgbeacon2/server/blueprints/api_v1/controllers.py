@@ -215,6 +215,25 @@ def create_allele_query(resp_obj, req):
     return mongo_query
 
 
+def check_request_build(datasets, build):
+    """Make sure that genome build requested in query is available on this beacon for the given datasets.
+
+    Accepts:
+        datasets(list): list of datasets present in the request
+        build(str): genome build of variant present in the request
+
+    Returns:
+        True or False
+    """
+    ds_query = {}
+    if len(datasets) > 0:
+        ds_query["_id"] = {"$in": datasets}
+
+    results = current_app.db["dataset"].find(ds_query, {"assembly_id": 1, "_id": 0})
+    ds_builds = [res["assembly_id"] for res in results]
+    return build in ds_builds
+
+
 def check_allele_request(resp_obj, customer_query, mongo_query):
     """Check that the query to the server is valid
 
@@ -232,9 +251,14 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
     datasets = customer_query.get("datasetIds", [])
     variant_type = customer_query.get("variantType")
 
-    # If customer asks for a classical SNV
-    if customer_query.get("variantType") is None and all([chrom, start, end, ref, alt, build]):
-        # generate md5_key to compare with our database
+    # If customer wants to match a SNV with precise coordinates, alt and ref
+    if (
+        customer_query.get("variantType") is None
+        and all([chrom, start, end, ref, alt, build])
+        and not "N" in ref
+        and not "N" in alt
+    ):
+        # generate md5_key to quickly compare with our database
         mongo_query["_id"] = md5_key(
             chrom,
             start,
@@ -257,20 +281,12 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         )
         return
 
-    # check if genome build requested corresponds to genome build of the available datasets:
-    if len(datasets) > 0:
-        dset_builds = current_app.db["dataset"].find(
-            {"_id": {"$in": datasets}}, {"assembly_id": 1, "_id": 0}
+    if len(datasets) > 0 and check_request_build(datasets, build) is False:
+        resp_obj["message"] = dict(
+            error=BUILD_MISMATCH,
+            allelRequest=customer_query,
         )
-        dset_builds = [dset["assembly_id"] for dset in dset_builds if dset["assembly_id"]]
-        for dset in dset_builds:
-            if dset != build:
-                # return a bad request 400 error with explanation message
-                resp_obj["message"] = dict(
-                    error=BUILD_MISMATCH,
-                    allelRequest=customer_query,
-                )
-                return
+        return
 
     # alternateBases OR variantType is also required
     if all(
@@ -354,6 +370,8 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         # use only variant _id in query
         mongo_query.pop("start")
         mongo_query.pop("end", None)
+
+    LOG.info(f"Mongo query:{mongo_query}")
 
 
 def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], False)):
