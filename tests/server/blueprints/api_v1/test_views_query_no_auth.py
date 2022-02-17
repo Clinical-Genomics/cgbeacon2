@@ -6,9 +6,9 @@ from cgbeacon2.resources import test_bnd_vcf_path
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
 
-BASE_ARGS = "query?assemblyId=GRCh37&referenceName=1&referenceBases=TA"
-COORDS_ARGS = "start=235826381&end=235826383"
-ALT_ARG = "alternateBases=T"
+BASE_ARGS = "query?assemblyId=GRCh37&referenceName=1&referenceBases=G"
+COORDS_ARGS = "start=235878452&end=235878453"
+ALT_ARG = "alternateBases=GTTT"
 
 
 def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test_bnd_sv):
@@ -126,6 +126,24 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
 ################## TESTS FOR HANDLING GET REQUESTS ################
 
 
+def test_get_request_snv_regex(mock_app, test_snv, public_dataset):
+    """Test running a query when request contains ref allele with Ns"""
+
+    # GIVEN a dataset with a variant:
+    database = mock_app.db
+    database["variant"].insert_one(test_snv)
+    database["dataset"].insert_one(public_dataset)
+
+    # GIVEN a query that contains Ns in the reference field:
+    query_string = "&".join([BASE_ARGS, COORDS_ARGS, "alternateBases=NNTN"])
+
+    # THEN server response should return a match
+    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    data = json.loads(response.data)
+    for ds_level_result in data["datasetAlleleResponses"]:
+        assert ds_level_result["exists"] is True
+
+
 def test_get_request_exact_position_snv_return_ALL(
     mock_app, test_snv, public_dataset, public_dataset_no_variants
 ):
@@ -151,11 +169,11 @@ def test_get_request_exact_position_snv_return_ALL(
     assert response.status_code == 200
 
     # AllelRequest field should reflect the original query
-    assert data["allelRequest"]["referenceName"] == "1"
-    assert data["allelRequest"]["start"]
-    assert data["allelRequest"]["end"]
-    assert data["allelRequest"]["referenceBases"] == "TA"
-    assert data["allelRequest"]["alternateBases"] == "T"
+    assert data["allelRequest"]["referenceName"] == test_snv["referenceName"]
+    assert data["allelRequest"]["start"] == str(test_snv["start"])
+    assert data["allelRequest"]["end"] == str(test_snv["end"])
+    assert data["allelRequest"]["referenceBases"] == test_snv["referenceBases"]
+    assert data["allelRequest"]["alternateBases"] == test_snv["alternateBases"]
     assert data["allelRequest"]["includeDatasetResponses"] == "ALL"
 
     assert data.get("message") is None
@@ -258,7 +276,7 @@ def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):
     database["dataset"].insert_one(public_dataset)
 
     # when providing the required parameters in a SNV query with includeDatasetResponses=NONE (or omitting the param)
-    query_string = "&".join([BASE_ARGS, "start=235826381", ALT_ARG])
+    query_string = "&".join([BASE_ARGS, COORDS_ARGS, ALT_ARG])
     response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
     data = json.loads(response.data)
 

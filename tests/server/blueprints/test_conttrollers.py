@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
-from cgbeacon2.server.blueprints.api_v1.controllers import overlapping_samples
+from cgbeacon2.server.blueprints.api_v1.controllers import add_coords_query, overlapping_samples
+
+
+def test_add_coords_query_fuzzy_search():
+    """test the function adding coordinates search to the allele database query"""
+    mongo_query = {}
+
+    # GIVEN an alt allele with Ns
+    alt = "TTANGN"
+    add_coords_query(mongo_query, "alternateBases", alt)
+    assert mongo_query["alternateBases"] == {"$regex": alt.replace("N", ".")}
 
 
 def test_overlapping_samples_overlap():

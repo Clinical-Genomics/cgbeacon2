@@ -3,9 +3,11 @@
 - Push to PyPI when a new release is created
 - Dockerfile-server to serve the prod app via gunicorn
 - Notify admins via email when app crashes
+- Queries using fuzzy string searching (allow Ns in search pattern)
 ### Changed
 - Install required libs from requirements.txt directly in setup.py
 - Dockerfile-server image pushed to Docker Hub (cgbeacon2-server-stage) when a PR is opened or updated
+- Refactored code in server/blueprints/api_v1/controllers.py
 
 
 ## [3.2] - 2022.02.01
