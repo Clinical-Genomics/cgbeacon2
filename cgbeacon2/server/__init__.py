@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger(__name__)
 
 
-def configure_email_error_logging(app):
+def configure_email_error_logging(app) -> None:
     """Setup logging of error/exceptions to email."""
     LOG.debug(f"Configuring email error logging to notify server admins:{app.config['ADMINS']}")
 
@@ -33,7 +33,7 @@ def configure_email_error_logging(app):
     logging.getLogger("werkzeug").addHandler(mail_handler)
 
 
-def create_app():
+def create_app() -> Flask:
     """Method that creates the Flask app"""
 
     app = None

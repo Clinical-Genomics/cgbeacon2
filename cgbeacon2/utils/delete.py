@@ -4,7 +4,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
-def delete_genes(collection, build="GRCh37"):
+def delete_genes(collection, build="GRCh37") -> int:
     """Delete all genes from gene database collection
 
     Accepts:
@@ -22,7 +22,7 @@ def delete_genes(collection, build="GRCh37"):
     return result.deleted_count
 
 
-def delete_dataset(database, id):
+def delete_dataset(database, id) -> int:
     """Delete a dataset from dataset collection
 
     Accepts:
@@ -43,7 +43,7 @@ def delete_dataset(database, id):
     return result.deleted_count
 
 
-def delete_variants(database, ds_id, samples):
+def delete_variants(database, ds_id, samples) -> tuple:
     """Delete variants for one or more samples
 
     Accepts:
@@ -74,7 +74,7 @@ def delete_variants(database, ds_id, samples):
     return n_updated, n_removed
 
 
-def delete_variant(database, dataset_id, variant, samples):
+def delete_variant(database, dataset_id, variant, samples) -> tuple:
     """Delete one variant from database or just update the samples having it
 
     Accepts:

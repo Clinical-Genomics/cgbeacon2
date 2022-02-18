@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import Union
 
 from cgbeacon2.constants import (
     BUILD_MISMATCH,
@@ -27,7 +28,7 @@ RANGE_COORDINATES = ("startMin", "startMax", "endMin", "endMax")
 LOG = logging.getLogger(__name__)
 
 
-def validate_add_data(req):
+def validate_add_data(req) -> Union[None, str]:
     """Validate the data specified in the paramaters of an add request received via the API.
 
     Accepts:
@@ -66,7 +67,7 @@ def validate_add_data(req):
         return "Could not create a gene filter using the provided gene list"
 
 
-def add_variants_task(req):
+def add_variants_task(req) -> None:
     """Perform the actual task of adding variants to the database after receiving an add request
     Accepts:
         req(flask.request): POST request received by server
@@ -102,7 +103,7 @@ def add_variants_task(req):
     LOG.info(f"Number of inserted variants for samples:{samples}:{added}")
 
 
-def overlapping_samples(dataset_samples, request_samples):
+def overlapping_samples(dataset_samples, request_samples) -> bool:
     """Check that samples provided by user are contained in either VCF of dataset object
 
     Accepts:
@@ -118,7 +119,7 @@ def overlapping_samples(dataset_samples, request_samples):
     return all(sample in ds_sampleset for sample in sampleset)
 
 
-def validate_delete_data(req):
+def validate_delete_data(req) -> str:
     """Validate the data specified in the paramaters of a delete request received via the API.
 
     Accepts:
@@ -146,7 +147,7 @@ def validate_delete_data(req):
         return "One or more provided samples was not found in the dataset"
 
 
-def delete_variants_task(req):
+def delete_variants_task(req) -> None:
     """Perform the actual task of removing variants from the database after receiving an delete request
     Accepts:
         req(flask.request): POST request received by server
@@ -163,12 +164,15 @@ def delete_variants_task(req):
         LOG.info(f"Number of updated variants:{updated}. Number of deleted variants:{removed}")
 
 
-def create_allele_query(resp_obj, req):
+def create_allele_query(resp_obj, req) -> dict:
     """Populates a dictionary with the parameters provided in the request<<
 
     Accepts:
         resp_obj(dictionary): response data that will be returned by server
         req(flask.request): request received by server
+
+    Returns:
+        mongo_query(dict): database query to retrieve allele info
 
     """
     customer_query = {}
@@ -216,7 +220,7 @@ def create_allele_query(resp_obj, req):
     return mongo_query
 
 
-def check_allele_request(resp_obj, customer_query, mongo_query):
+def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
     """Check that the query to the server is valid
 
     Accepts:
@@ -361,7 +365,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         mongo_query["variantType"] = variant_type
 
 
-def add_coords_query(mongo_query, field, value):
+def add_coords_query(mongo_query, field, value) -> None:
     """Created a regex for a database query when ref or alt coords contain Ns
 
     Accepts:
@@ -376,7 +380,7 @@ def add_coords_query(mongo_query, field, value):
         mongo_query[field] = value
 
 
-def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], False)):
+def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], False)) -> tuple:
     """Query variant collection using a query dictionary
 
     Accepts:
@@ -424,7 +428,7 @@ def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], Fal
     return False, []
 
 
-def results_filter_by_auth(variants, auth_levels):
+def results_filter_by_auth(variants, auth_levels) -> list:
     """Filter variants returned by query using auth levels (specified by token, if present, otherwise public access only datasets)
 
     Accepts:
@@ -463,7 +467,7 @@ def results_filter_by_auth(variants, auth_levels):
     return filtered_variants
 
 
-def create_ds_allele_response(response_type, req_dsets, variants):
+def create_ds_allele_response(response_type, req_dsets, variants) -> tuple:
     """Create a Beacon Dataset Allele Response
 
     Accepts:

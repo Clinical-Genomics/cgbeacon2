@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging
-from progress.bar import Bar
+from typing import Union
 
 from cgbeacon2.constants import CHROMOSOMES
 from cgbeacon2.models.variant import Variant
-from cgbeacon2.utils.parse import variant_called, bnd_mate_name, sv_end
+from cgbeacon2.utils.parse import bnd_mate_name, sv_end, variant_called
+from progress.bar import Bar
+from pymongo.results import InsertOneResult
 
 LOG = logging.getLogger(__name__)
 
 
-def add_user(database, user):
+def add_user(database, user) -> Union[None, InsertOneResult]:
     """Adds a user to the database
 
     Accepts:
@@ -30,7 +32,7 @@ def add_user(database, user):
     return result.inserted_id
 
 
-def add_dataset(database, dataset_dict, update=False):
+def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneResult]:
     """Add/modify a dataset
 
     Accepts:
@@ -64,7 +66,7 @@ def add_dataset(database, dataset_dict, update=False):
         LOG.error(err)
 
 
-def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
+def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants) -> int:
     """Build variant objects from a cyvcf2 VCF iterator
 
     Accepts:
@@ -147,7 +149,7 @@ def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants):
     return inserted_vars
 
 
-def add_variant(database, variant, dataset_id):
+def add_variant(database, variant, dataset_id) -> Union[int, InsertOneResult]:
     """Check if a variant is already in database and update it, otherwise add a new one
 
     Accepts:
@@ -197,7 +199,7 @@ def add_variant(database, variant, dataset_id):
         return allele_count
 
 
-def cumulative_allele_count(samples_obj):
+def cumulative_allele_count(samples_obj) -> int:
     """Return cumulative allele count for each sample in a dictionary
 
     Accepts:

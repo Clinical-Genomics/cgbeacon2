@@ -2,7 +2,7 @@
 import hashlib
 
 
-def md5_key(chrom, start, end, ref, alt, assembly):
+def md5_key(chrom, start, end, ref, alt, assembly) -> str:
     """Generate a md5 key representing uniquely the variant
 
     Accepts:

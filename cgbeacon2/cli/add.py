@@ -20,7 +20,7 @@ def add():
 @add.command()
 @with_appcontext
 @click.pass_context
-def demo(ctx):
+def demo(ctx) -> None:
     """Loads demo data into the database:
     A test dataset with public access (genome assembly GRCh37)
     Demo SNV variants filtered using a demo gene panel
@@ -84,7 +84,7 @@ def demo(ctx):
 @click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
 @click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
 @with_appcontext
-def user(user_id, name, token, desc, url):
+def user(user_id, name, token, desc, url) -> User:
     """Creates a new user for adding/removing variants using the REST API"""
 
     if " " in user_id:
@@ -131,7 +131,7 @@ def user(user_id, name, token, desc, url):
 @click.option("-cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(ds_id, name, build, authlevel, desc, version, url, cc, update):
+def dataset(ds_id, name, build, authlevel, desc, version, url, cc, update) -> None:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
     dataset_obj = {"_id": ds_id, "name": name, "assembly_id": build}
@@ -197,7 +197,7 @@ def dataset(ds_id, name, build, authlevel, desc, version, url, cc, update):
     help="one or more bed files containing genomic intervals",
 )
 @with_appcontext
-def variants(ds, vcf, sample, panel):
+def variants(ds, vcf, sample, panel) -> None:
     """Add variants from a VCF file to a dataset"""
     # make sure dataset id corresponds to a dataset in the database
 

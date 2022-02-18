@@ -4,6 +4,7 @@
 - Dockerfile-server to serve the prod app via gunicorn
 - Notify admins via email when app crashes
 - Queries using fuzzy string searching (allow Ns in search pattern)
+- Return type annotation to all python functions
 ### Changed
 - Install required libs from requirements.txt directly in setup.py
 - Dockerfile-server image pushed to Docker Hub (cgbeacon2-server-stage) when a PR is opened or updated

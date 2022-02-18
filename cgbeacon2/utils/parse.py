@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-from cyvcf2 import VCF
 import os
 import re
-from flask import current_app
-from pybedtools.bedtool import BedTool
-from jsonschema import validate, ValidationError
 from tempfile import NamedTemporaryFile
-from cgbeacon2.resources import variants_add_schema_path
+from typing import Union
 
+from cgbeacon2.resources import variants_add_schema_path
+from cyvcf2 import VCF
+from flask import current_app
+from jsonschema import ValidationError, validate
+from pybedtools.bedtool import BedTool
 
 BND_ALT_PATTERN = re.compile(r".*[\],\[](.*?):(.*?)[\],\[]")
 CHR_PATTERN = re.compile(r"(chr)?(.*)", re.IGNORECASE)
@@ -17,7 +18,7 @@ CHR_PATTERN = re.compile(r"(chr)?(.*)", re.IGNORECASE)
 LOG = logging.getLogger(__name__)
 
 
-def validate_add_params(req):
+def validate_add_params(req) -> Union[None, dict]:
     """Validated the parameters in the request sent to add new variants into the database
 
     Accepts:
@@ -37,7 +38,7 @@ def validate_add_params(req):
     return True
 
 
-def get_vcf_samples(vcf_file):
+def get_vcf_samples(vcf_file) -> list:
     """Returns a list of samples contained in the VCF
 
     Accepts:
@@ -57,7 +58,7 @@ def get_vcf_samples(vcf_file):
     return vcf_samples
 
 
-def bnd_mate_name(alt, chrom):
+def bnd_mate_name(alt, chrom) -> str:
     """Returns chromosome and mate for a BND variant
 
     Accepts:
@@ -81,7 +82,7 @@ def bnd_mate_name(alt, chrom):
     return end_chrom
 
 
-def sv_end(pos, alt, svend=None, svlen=None):
+def sv_end(pos, alt, svend=None, svlen=None) -> int:
     """Return the end coordinate for a structural variant
 
     Accepts:
@@ -108,7 +109,7 @@ def sv_end(pos, alt, svend=None, svlen=None):
     return end - 1  # coordinate should be zero-based
 
 
-def compute_filter_intervals(req_data):
+def compute_filter_intervals(req_data) -> Union[None, BedTool]:
     """Compute filter intervals from a list of genes
 
     Accepts:
@@ -130,7 +131,9 @@ def compute_filter_intervals(req_data):
     return filter_intervals
 
 
-def genes_to_bedtool(gene_collection, hgnc_ids=None, ensembl_ids=None, build="GRCh37"):
+def genes_to_bedtool(
+    gene_collection, hgnc_ids=None, ensembl_ids=None, build="GRCh37"
+) -> Union[None, BedTool]:
     """Create a Bedtool object with gene coordinates from a list of genes contained in the database
 
     Accepts:
@@ -164,7 +167,7 @@ def genes_to_bedtool(gene_collection, hgnc_ids=None, ensembl_ids=None, build="GR
     return bt
 
 
-def extract_variants(vcf_file, samples=None, filter=None):
+def extract_variants(vcf_file, samples=None, filter=None) -> Union[None, VCF]:
     """Parse a VCF file and return its variants as cyvcf2.VCF objects
 
     Accepts:
@@ -193,7 +196,7 @@ def extract_variants(vcf_file, samples=None, filter=None):
     return vcf_obj
 
 
-def _compute_intersections(vcf_file, filter):
+def _compute_intersections(vcf_file, filter) -> BedTool:
     """Create a temporary file with the gene panel intervals
 
     Accepts:
@@ -201,7 +204,7 @@ def _compute_intersections(vcf_file, filter):
         filter(BcfTool object)
 
     Returns:
-        intersections()
+        intersections(BedTool)
     """
 
     vcf_bed = BedTool(vcf_file)
@@ -217,7 +220,7 @@ def _compute_intersections(vcf_file, filter):
     return intersections
 
 
-def count_variants(vcf_obj):
+def count_variants(vcf_obj) -> int:
     """Count how many variants are contained in a VCF object
 
     Accepts:
@@ -233,7 +236,7 @@ def count_variants(vcf_obj):
     return nr_variants
 
 
-def merge_intervals(panels):
+def merge_intervals(panels) -> BedTool:
     """Create genomic intervals to filter VCF files starting from the provided panel file(s)
 
     Accepts:
@@ -250,7 +253,7 @@ def merge_intervals(panels):
     return merged_panels
 
 
-def variant_called(vcf_samples, gt_positions, g_types):
+def variant_called(vcf_samples, gt_positions, g_types) -> dict:
     """Return a list of samples where variant was called
 
     Accepts:

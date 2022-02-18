@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 import pymongo
 from cgbeacon2 import __version__
 
@@ -6,7 +8,7 @@ from cgbeacon2 import __version__
 class Beacon:
     """Represents a general beacon object"""
 
-    def __init__(self, conf_obj, api_version="1.0.0", database=None):
+    def __init__(self, conf_obj, api_version="1.0.0", database=None) -> None:
         self.alternativeUrl = conf_obj.get("alternative_url")
         self.apiVersion = f"v{api_version}"
         self.createDateTime = self._date_event(database, True)
@@ -21,7 +23,7 @@ class Beacon:
         self.datasets = self._datasets(database)
         self.datasets_by_auth_level = self._datasets_by_access_level(database)
 
-    def _date_event(self, database, order_asc):
+    def _date_event(self, database, order_asc) -> datetime.datetime:
         """Return the date of the first event event created for this beacon
 
         Accepts:
@@ -41,13 +43,13 @@ class Beacon:
             for event in events:
                 return event.get("created")
 
-    def introduce(self):
+    def introduce(self) -> dict:
         """Returns a the description of this beacon, with the fields required by the / endpoint"""
         beacon_obj = self.__dict__
         beacon_obj.pop("datasets_by_auth_level")
         return beacon_obj
 
-    def _datasets(self, database):
+    def _datasets(self, database) -> list:
         """Retrieve all datasets associated to this Beacon
 
         Accepts:
@@ -78,7 +80,7 @@ class Beacon:
 
         return datasets
 
-    def _datasets_by_access_level(self, database):
+    def _datasets_by_access_level(self, database) -> dict:
         """Retrieve all datasets associated to this Beacon, by access level
 
         Accepts:
@@ -98,7 +100,7 @@ class Beacon:
 
         return datasets_by_level
 
-    def _sample_allele_requests(self):
+    def _sample_allele_requests(self) -> list:
         """Returns a list of example allele requests"""
 
         examples = [
