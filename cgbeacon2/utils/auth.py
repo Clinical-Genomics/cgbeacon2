@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import Union
 
 import jwt  # https://github.com/jpadilla/pyjwt
 import requests
