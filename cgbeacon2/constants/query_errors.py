@@ -19,6 +19,11 @@ INVALID_COORDINATES = dict(
     errorMessage="invalid coordinates. Variant start and stop positions must be numbers",
 )
 
+UNKNOWN_DATASETS = dict(
+    errorCode=400,
+    errorMessage="invalid datasets. Database does not contain the dataset IDs specified in the query",
+)
+
 BUILD_MISMATCH = dict(
     errorCode=400,
     errorMessage="Requested genome assembly is in conflict with the assembly of one or more requested datasets",

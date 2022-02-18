@@ -8,6 +8,8 @@
 - Install required libs from requirements.txt directly in setup.py
 - Dockerfile-server image pushed to Docker Hub (cgbeacon2-server-stage) when a PR is opened or updated
 - Refactored code in server/blueprints/api_v1/controllers.py
+### Fixed
+- Error returned when query contains non-existent dataset IDs
 
 
 ## [3.2] - 2022.02.01

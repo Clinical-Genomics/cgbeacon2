@@ -8,6 +8,7 @@ from cgbeacon2.constants import (
     NO_POSITION_PARAMS,
     NO_SECONDARY_PARAMS,
     QUERY_PARAMS_API_V1,
+    UNKNOWN_DATASETS,
 )
 from cgbeacon2.models import DatasetAlleleResponse
 from cgbeacon2.utils.add import add_variants as variants_loader
@@ -182,7 +183,7 @@ def create_allele_query(resp_obj, req):
             data = dict(req.form)
             customer_query["datasetIds"] = req.form.getlist("datasetIds")
 
-        else:  # application/json, This should be default
+        else:  # application/json, This is default with POST requests containing json data
             data = req.json
             customer_query["datasetIds"] = data.get("datasetIds", [])
 
@@ -213,25 +214,6 @@ def create_allele_query(resp_obj, req):
 
     resp_obj["allelRequest"] = customer_query
     return mongo_query
-
-
-def check_request_build(datasets, build):
-    """Make sure that genome build requested in query is available on this beacon for the given datasets.
-
-    Accepts:
-        datasets(list): list of datasets present in the request
-        build(str): genome build of variant present in the request
-
-    Returns:
-        True or False
-    """
-    ds_query = {}
-    if len(datasets) > 0:
-        ds_query["_id"] = {"$in": datasets}
-
-    results = current_app.db["dataset"].find(ds_query, {"assembly_id": 1, "_id": 0})
-    ds_builds = [res["assembly_id"] for res in results]
-    return build in ds_builds
 
 
 def check_allele_request(resp_obj, customer_query, mongo_query):
@@ -282,12 +264,23 @@ def check_allele_request(resp_obj, customer_query, mongo_query):
         )
         return
 
-    if len(datasets) > 0 and check_request_build(datasets, build) is False:
-        resp_obj["message"] = dict(
-            error=BUILD_MISMATCH,
-            allelRequest=customer_query,
-        )
-        return
+    if len(datasets) > 0:
+        # Check that requested datasets are contained in this beacon
+        dsets = list(current_app.db["dataset"].find({"_id": {"$in": datasets}}))
+        if len(dsets) == 0:  # requested dataset is not present in database
+            resp_obj["message"] = dict(
+                error=UNKNOWN_DATASETS,
+                allelRequest=customer_query,
+            )
+            return
+
+        if build not in [dset["assembly_id"] for dset in dsets]:
+            # Requested genome build doesn't correspond to genome build of available datasets
+            resp_obj["message"] = dict(
+                error=BUILD_MISMATCH,
+                allelRequest=customer_query,
+            )
+            return
 
     # alternateBases OR variantType is also required
     if all(

@@ -7,6 +7,7 @@ from cgbeacon2.constants import (
     NO_MANDATORY_PARAMS,
     NO_POSITION_PARAMS,
     NO_SECONDARY_PARAMS,
+    UNKNOWN_DATASETS,
 )
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
@@ -41,6 +42,24 @@ def test_query_get_request_missing_mandatory_params(mock_app):
     assert data["message"]["datasetAlleleResponses"] == []
     assert data["message"]["beaconId"]
     assert data["message"]["apiVersion"] == "1.0.0"
+
+
+def test_query_get_request_unknown_datasets(mock_app):
+    """Test the query endpoint with a qquery containing unknown datasets"""
+
+    # GIVEN a database with no datasets
+    database = mock_app.db
+    assert database["dataset"].find_one() is None
+
+    # WHEN a request contain a specific dataset ID
+    ds_param = "datasetIds=foo"
+    query_string = "&".join([BASE_ARGS, ds_param])
+    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+
+    # THEN it should return the expected type of error
+    assert response.status_code == 400
+    data = json.loads(response.data)
+    assert data["message"]["error"] == UNKNOWN_DATASETS
 
 
 def test_query_get_request_build_mismatch(mock_app, public_dataset):
