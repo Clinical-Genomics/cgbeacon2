@@ -3,7 +3,7 @@ import datetime
 import logging
 
 from flask.cli import current_app
-from pymongo import InsertOneResult
+from pymongo.results import InsertOneResult
 
 from .delete import delete_genes
 

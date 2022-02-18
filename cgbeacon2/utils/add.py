@@ -6,7 +6,7 @@ from cgbeacon2.constants import CHROMOSOMES
 from cgbeacon2.models.variant import Variant
 from cgbeacon2.utils.parse import bnd_mate_name, sv_end, variant_called
 from progress.bar import Bar
-from pymongo import InsertOneResult
+from pymongo.results import InsertOneResult
 
 LOG = logging.getLogger(__name__)
 
