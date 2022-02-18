@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import click
-from flask.cli import with_appcontext
 from cgbeacon2.utils.ensembl_biomart import EnsemblBiomartClient
 from cgbeacon2.utils.update import update_genes
+from flask.cli import with_appcontext
 
 
 @click.group()
@@ -21,7 +21,7 @@ def update():
     help="Genome assembly (default:GRCh37)",
     default="GRCh37",
 )
-def genes(build):
+def genes(build) -> None:
     """Update genes and gene coordinates in database"""
 
     click.echo(f"Collecting gene names from Ensembl, genome build -> {build}")

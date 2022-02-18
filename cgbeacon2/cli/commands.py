@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 import click
 from cgbeacon2 import __version__
+from cgbeacon2.server import create_app
 from flask.cli import FlaskGroup
 
-from cgbeacon2.server import create_app
 from .add import add
 from .delete import delete
 from .update import update
@@ -18,7 +18,7 @@ from .update import update
     add_default_commands=True,
     add_version_option=False,
 )
-def cli(**_):
+def cli(**_) -> None:
     """Base command for invoking the command line"""
     pass
 

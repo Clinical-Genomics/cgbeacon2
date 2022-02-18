@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import click
-from flask.cli import with_appcontext, current_app
-
 from cgbeacon2.utils.delete import delete_dataset, delete_variants
 from cgbeacon2.utils.update import update_dataset, update_event
+from flask.cli import current_app, with_appcontext
 
 
 @click.group()
@@ -16,7 +15,7 @@ def delete():
 @delete.command()
 @with_appcontext
 @click.option("-id", type=click.STRING, nargs=1, required=True, help="dataset ID")
-def dataset(id):
+def dataset(id) -> None:
     """Delete a dataset using its _id key"""
 
     click.echo(f"deleting dataset with id '{id}' from database")
@@ -43,7 +42,7 @@ def dataset(id):
     required=True,
     help="one or more samples to remove variants for",
 )
-def variants(ds, sample):
+def variants(ds, sample) -> None:
     """Remove variants for one or more samples of a dataset"""
 
     click.confirm(

@@ -5,7 +5,7 @@ from cgbeacon2.utils.md5 import md5_key
 class Variant:
     """A variant object"""
 
-    def __init__(self, parsed_variant, dataset_ids, genome_assembly="GRCh37"):
+    def __init__(self, parsed_variant, dataset_ids, genome_assembly="GRCh37") -> None:
         self.referenceName = parsed_variant["chromosome"]  # Accepting values 1-22, X, Y, MT
         if parsed_variant.get("mate_name"):
             self.mateName = parsed_variant["mate_name"]

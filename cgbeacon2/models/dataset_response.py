@@ -4,7 +4,7 @@
 class DatasetAlleleResponse:
     """Create a Beacon Dataset Allele Response object to be returned by Beacon Response"""
 
-    def __init__(self, dataset, variants):
+    def __init__(self, dataset, variants) -> None:
         self.datasetId = dataset["_id"]
         n_samples, n_alleles, n_variants = self._sample_allele_variant_count(
             self.datasetId, variants
@@ -15,7 +15,7 @@ class DatasetAlleleResponse:
         self.info = self._info(dataset)
         self.exists = True if self.sampleCount > 0 else False
 
-    def _info(self, dataset):
+    def _info(self, dataset) -> dict:
         """Provides additional info regarding a dataset object
 
         Accepts:
@@ -27,7 +27,7 @@ class DatasetAlleleResponse:
         info = dict(accessType=dataset["authlevel"].upper())
         return info
 
-    def _sample_allele_variant_count(self, dataset_id, variants):
+    def _sample_allele_variant_count(self, dataset_id, variants) -> tuple:
         """Counts samples and allelic calls for one or more variants
 
         Accepts:

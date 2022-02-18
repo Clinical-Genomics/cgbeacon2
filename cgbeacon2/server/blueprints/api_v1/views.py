@@ -6,7 +6,7 @@ from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
 from cgbeacon2.utils.parse import validate_add_params
-from flask import Blueprint, current_app, flash, jsonify, render_template, request
+from flask import Blueprint, Response, current_app, flash, jsonify, render_template, request
 from flask_negotiate import consumes
 
 from .controllers import (
@@ -30,7 +30,7 @@ api1_bp = Blueprint(
 
 
 @api1_bp.route("/apiv1.0/", methods=["GET"])
-def info():
+def info() -> Response:
     """Returns Beacon info data as a json object
 
     Example:
@@ -46,7 +46,7 @@ def info():
 
 
 @api1_bp.route("/apiv1.0/query_form", methods=["GET", "POST"])
-def query_form():
+def query_form() -> str:
     """The endpoint to a super simple query form to interrogate this beacon
     Query is performed only on public access datasets contained in this beacon
 
@@ -98,7 +98,7 @@ def query_form():
 
 @consumes("application/json")
 @api1_bp.route("/apiv1.0/add", methods=["POST"])
-def add():
+def add() -> Response:
     """
     Endpoint accepting json data from POST requests. If request params are OK returns 200 (success).
     Then start a Thread that will save variants to database.
@@ -146,7 +146,7 @@ def add():
 
 @consumes("application/json")
 @api1_bp.route("/apiv1.0/delete", methods=["DELETE"])
-def delete():
+def delete() -> Response:
     """
     Endpoint accepting json data from POST requests. If request params are OK returns 200 (success).
     Then start a Thread that will delete variants from database.
@@ -182,7 +182,7 @@ def delete():
 
 
 @api1_bp.route("/apiv1.0/query", methods=["GET", "POST"])
-def query():
+def query() -> Response:
     """Create a query from params provided in the request and return a response with eventual results, or errors
 
     Examples:
