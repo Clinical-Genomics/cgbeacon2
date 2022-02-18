@@ -312,7 +312,7 @@ def decode_passport(encoded) -> tuple:
     return header, payload
 
 
-def ga4gh_passports(decoded_token, token, oauth2_settings) -> Union(list, dict):
+def ga4gh_passports(decoded_token, token, oauth2_settings) -> Union[list, dict]:
     """Check dataset permissions and bona fide status from ga4gh token payload info
 
     Auth system is described by this document: https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md
