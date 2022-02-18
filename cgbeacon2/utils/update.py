@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-from flask.cli import current_app
 import datetime
 import logging
+
+from flask.cli import current_app
+from pymongo import InsertOneResult
+
 from .delete import delete_genes
 
 LOG = logging.getLogger(__name__)
 
 
-def update_genes(gene_lines, build="GRCh37"):
+def update_genes(gene_lines, build="GRCh37") -> list:
     """Update database genes using Ensembl Biomart service
 
     Accepts:
@@ -52,7 +55,7 @@ def update_genes(gene_lines, build="GRCh37"):
     return result.inserted_ids
 
 
-def update_event(database, dataset_id, updated_collection, add):
+def update_event(database, dataset_id, updated_collection, add) -> InsertOneResult.inserted_id:
     """Register an event corresponding to a change in the database
 
     Accepts:
@@ -77,7 +80,7 @@ def update_event(database, dataset_id, updated_collection, add):
     return event_id
 
 
-def update_dataset(database, dataset_id, samples, add):
+def update_dataset(database, dataset_id, samples, add) -> None:
     """Update dataset object in dataset collection after adding or removing variants
 
     Accepts:
@@ -112,10 +115,8 @@ def update_dataset(database, dataset_id, samples, add):
     # register an event for this update
     update_event(database, dataset_id, "variant", add)
 
-    return result
 
-
-def update_dataset_samples(dataset_obj, samples, add=True):
+def update_dataset_samples(dataset_obj, samples, add=True) -> set:
     """Update the list of samples for a dataset
 
     Accepts:
@@ -124,7 +125,7 @@ def update_dataset_samples(dataset_obj, samples, add=True):
         add(bool): whether the samples should be added or removed from dataset
 
     Returns:
-        datasets_samples(list): the updated list of samples
+        datasets_samples(set): the updated set of samples
     """
     datasets_samples = set(dataset_obj.get("samples", []))
 
@@ -138,7 +139,7 @@ def update_dataset_samples(dataset_obj, samples, add=True):
     return datasets_samples
 
 
-def update_dataset_variant_count(database, dataset_id):
+def update_dataset_variant_count(database, dataset_id) -> int:
     """Count how many variants there are for a dataset and update dataset object with this number
 
     Accepts:
@@ -158,7 +159,7 @@ def update_dataset_variant_count(database, dataset_id):
     return n_variants
 
 
-def update_dataset_allele_count(database, dataset_id, samples):
+def update_dataset_allele_count(database, dataset_id, samples) -> int:
     """Count how many allele calls are present for a dataset and update dataset object with this number
 
     Accepts:
@@ -188,7 +189,7 @@ def update_dataset_allele_count(database, dataset_id, samples):
     return allele_count
 
 
-def _samples_calls(variant_collection, dataset_id, samples):
+def _samples_calls(variant_collection, dataset_id, samples) -> int:
     """Count all allele calls for a dataset in variants collection
 
     Accepts:

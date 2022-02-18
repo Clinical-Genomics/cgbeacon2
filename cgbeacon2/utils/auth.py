@@ -1,34 +1,32 @@
 # -*- coding: utf-8 -*-
 import logging
-import requests
 
 import jwt  # https://github.com/jpadilla/pyjwt
+import requests
 from authlib.jose import jwt as jjwt
-
 from authlib.jose.errors import (
-    MissingClaimError,
-    InvalidClaimError,
     ExpiredTokenError,
+    InvalidClaimError,
     InvalidTokenError,
+    MissingClaimError,
 )
-
 from cgbeacon2.constants import (
-    MISSING_TOKEN,
-    WRONG_SCHEME,
-    MISSING_PUBLIC_KEY,
-    MISSING_TOKEN_CLAIMS,
-    INVALID_TOKEN_CLAIMS,
     EXPIRED_TOKEN_SIGNATURE,
     INVALID_TOKEN_AUTH,
+    INVALID_TOKEN_CLAIMS,
+    MISSING_PUBLIC_KEY,
+    MISSING_TOKEN,
+    MISSING_TOKEN_CLAIMS,
     NO_GA4GH_USERDATA,
     PASSPORTS_ERROR,
+    WRONG_SCHEME,
 )
 
 LOG = logging.getLogger(__name__)
 GA4GH_SCOPES = ["openid", "ga4gh_passport_v1"]
 
 
-def validate_token(request, database):
+def validate_token(request, database) -> bool:
     """Validate an auth token contained in the request header.
 
     Accepts:
@@ -56,7 +54,7 @@ def validate_token(request, database):
 
 # Authentication code is based on:
 # https://elixir-europe.org/services/compute/aai
-def authlevel(request, oauth2_settings):
+def authlevel(request, oauth2_settings) -> tuple:
     """Returns auth level from a request object
 
     Accepts:
@@ -130,7 +128,7 @@ def authlevel(request, oauth2_settings):
     return auth_level
 
 
-def elixir_key(server):
+def elixir_key(server) -> Union[dict, list]:
     """Retrieves Elixir AAI public key from Elixir JWK server
 
     Accepts:
@@ -147,7 +145,7 @@ def elixir_key(server):
         return MISSING_PUBLIC_KEY
 
 
-def claims(oauth2_settings):
+def claims(oauth2_settings) -> dict:
     """Set up web tokens claims options
 
     Accepts:
@@ -168,7 +166,7 @@ def claims(oauth2_settings):
     return claims
 
 
-def check_passports(passports, bona_fide_terms):
+def check_passports(passports, bona_fide_terms) -> Union[dict, tuple]:
     """Check userinfo provided by GA4GH
     GA4GH passports are described by this document: https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/researcher_ids/ga4gh_passport_v1.md
     # Code based on https://github.com/CSCfi/beacon-python/blob/master/beacon_api/permissions/ga4gh.py
@@ -208,7 +206,7 @@ def check_passports(passports, bona_fide_terms):
     return (list(registered_datasets), bona_fide_status)
 
 
-def is_bona_fide(bona_fide_passports, bona_fide_terms):
+def is_bona_fide(bona_fide_passports, bona_fide_terms) -> bool:
     """Retrieve bona fide status based on provided passports
 
     Documentation from GA4GH: https://github.com/ga4gh-duri/ga4gh-duri.github.io/blob/master/researcher_ids/ga4gh_passport_v1.md#registered-access
@@ -246,7 +244,7 @@ def is_bona_fide(bona_fide_passports, bona_fide_terms):
     return etics and status  # must be both True
 
 
-def get_ga4gh_registered_datasets(registered_passports):
+def get_ga4gh_registered_datasets(registered_passports) -> set:
     """Retrieve registered datasets based on provided passports
 
     Accepts:
@@ -267,7 +265,7 @@ def get_ga4gh_registered_datasets(registered_passports):
     return datasets
 
 
-def validate_passport(passport):
+def validate_passport(passport) -> Union[None, dict]:
     """Validate passport claims
 
     Accepts:
@@ -292,7 +290,7 @@ def validate_passport(passport):
         LOG.error(f"Error while decoding/validating passport:{ex}")
 
 
-def decode_passport(encoded):
+def decode_passport(encoded) -> tuple:
     """Decode GA4GH passport info
     Passport is a JWT token consisting of 3 strings separated by dots.
     This function extracts info from first and second string (header, payload).
@@ -313,7 +311,7 @@ def decode_passport(encoded):
     return header, payload
 
 
-def ga4gh_passports(decoded_token, token, oauth2_settings):
+def ga4gh_passports(decoded_token, token, oauth2_settings) -> Union(list, dict):
     """Check dataset permissions and bona fide status from ga4gh token payload info
 
     Auth system is described by this document: https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md
@@ -346,7 +344,7 @@ def ga4gh_passports(decoded_token, token, oauth2_settings):
     return passports
 
 
-def ga4gh_userdata(token, elixir_oidc):
+def ga4gh_userdata(token, elixir_oidc) -> Union[list, dict]:
     """Sends a request to the Elixir OIDC Broker to retrieve user info (permissions)
 
     Accepts:

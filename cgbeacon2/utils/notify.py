@@ -8,7 +8,7 @@ LOG = logging.getLogger(__name__)
 class TlsSMTPHandler(SMTPHandler):
     """Class for handling error logging system"""
 
-    def emit(self, record):
+    def emit(self, record) -> None:
         """Emit a record.
         Format the record and send it to the specified admin addressees.
         """

@@ -21,7 +21,7 @@ LOG = logging.getLogger(__name__)
 class EnsemblBiomartClient:
     """Class to handle requests to the ensembl biomart api"""
 
-    def __init__(self, build="GRCh37"):
+    def __init__(self, build="GRCh37") -> None:
         """Initialise a ensembl biomart client"""
         self.server = BIOMART_37
         if build == "GRCh38":
@@ -38,7 +38,7 @@ class EnsemblBiomartClient:
         self.xml = self._create_biomart_xml()
         self.header = True
 
-    def _create_biomart_xml(self):
+    def _create_biomart_xml(self) -> str:
         """Convert biomart query params into biomart xml query
 
         Accepts:
@@ -67,7 +67,7 @@ class EnsemblBiomartClient:
 
         return "\n".join(xml_lines)
 
-    def _xml_filters(self):
+    def _xml_filters(self) -> list:
         """Creates a filter line for the biomart xml document
 
         Returns:
@@ -87,7 +87,7 @@ class EnsemblBiomartClient:
 
         return formatted_lines
 
-    def _xml_attributes(self):
+    def _xml_attributes(self) -> list:
         """Creates an attribute line for the biomart xml document
 
         Returns:
