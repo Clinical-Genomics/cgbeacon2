@@ -37,7 +37,7 @@ def create_app() -> Flask:
     """Method that creates the Flask app"""
 
     app = None
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path="", static_folder="static")
 
     try:
         app.config.from_envvar("CGBEACON2_CONFIG")
