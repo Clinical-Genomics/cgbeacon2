@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 from threading import Thread
 
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
 from cgbeacon2.utils.parse import validate_add_params
-from flask import Blueprint, Response, current_app, flash, jsonify, render_template, request
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    flash,
+    jsonify,
+    render_template,
+    request,
+    send_from_directory,
+)
 from flask_negotiate import consumes
 
 from .controllers import (
@@ -23,10 +33,19 @@ LOG = logging.getLogger(__name__)
 api1_bp = Blueprint(
     "api_v1",
     __name__,
-    static_folder="static",
     template_folder="templates",
-    static_url_path="/api_v1/static",
 )
+
+
+@api1_bp.route("/apiv1.0/img/<filename>")
+def send_img(filename):
+    """Serve images to be displayed in web pages"""
+    mimetype = "image/png"
+    if filename.endswith(".svg"):
+        mimetype = "image/svg+xml"
+    return send_from_directory(
+        os.path.join(current_app.root_path, "static"), filename, mimetype=mimetype
+    )
 
 
 @api1_bp.route("/apiv1.0/", methods=["GET"])
