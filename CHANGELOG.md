@@ -1,6 +1,6 @@
 ## [] -
 ### Fixed
-- Long description error in setup.py file causing an error on twine
+- Long description error in setup.py file causing an error on twine before PyPI push
 
 ## [3.3] - 2022.03.11
 ### Added
