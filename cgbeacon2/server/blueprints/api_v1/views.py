@@ -23,9 +23,7 @@ LOG = logging.getLogger(__name__)
 api1_bp = Blueprint(
     "api_v1",
     __name__,
-    static_folder="static",
     template_folder="templates",
-    static_url_path="/static",
 )
 
 
