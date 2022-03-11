@@ -14,7 +14,8 @@ from setuptools import Command, find_packages, setup
 
 # Package meta-data.
 NAME = "cgbeacon2"
-DESCRIPTION = "An updated beacon supporting GA4GH API 1.0"
+DESCRIPTION = "A beacon supporting GA4GH API 1.0"
+LONG_DESCRIPTION = "A Python and MongoDB - based beacon supporting GA4GH API v 1.0"
 URL = "https://github.com/Clinical-Genomics/cgbeacon2"
 EMAIL = "chiara.rasi@scilifelab.se"
 AUTHOR = "Chiara Rasi"
@@ -45,9 +46,6 @@ def parse_reqs(req_path="./requirements.txt"):
 
 
 REQUIRED = parse_reqs()
-
-with io.open(os.path.join(here, "README.md"), encoding="utf-8") as f:
-    long_description = "\n" + f.read()
 
 # Load the package's __version__.py module as a dictionary.
 about = {}
@@ -92,7 +90,7 @@ setup(
     name=NAME,
     version=version,
     description=DESCRIPTION,
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
