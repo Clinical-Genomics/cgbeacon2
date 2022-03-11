@@ -1,4 +1,4 @@
-## [] -
+## [3.3.1] - 2022.03.11
 ### Fixed
 - Long description error in setup.py file causing an error on twine before PyPI push
 - Switch to codecov action v.2, since v.1 is deprecated
