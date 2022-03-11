@@ -25,7 +25,7 @@ api1_bp = Blueprint(
     __name__,
     static_folder="static",
     template_folder="templates",
-    static_url_path="/api_v1/static",
+    static_url_path="/static",
 )
 
 
