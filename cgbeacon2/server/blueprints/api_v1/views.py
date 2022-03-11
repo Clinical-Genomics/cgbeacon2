@@ -38,7 +38,7 @@ api1_bp = Blueprint(
 
 
 @api1_bp.route("/apiv1.0/img/<filename>")
-def send_img(filename):
+def send_img(filename) -> Response:
     """Serve images to be displayed in web pages"""
     mimetype = "image/png"
     if filename.endswith(".svg"):

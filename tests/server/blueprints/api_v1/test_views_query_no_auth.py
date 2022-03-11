@@ -3,12 +3,28 @@ import json
 
 from cgbeacon2.cli.commands import cli
 from cgbeacon2.resources import test_bnd_vcf_path
+from flask import url_for
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
 
 BASE_ARGS = "query?assemblyId=GRCh37&referenceName=1&referenceBases=G"
 COORDS_ARGS = "start=235878452&end=235878453"
 ALT_ARG = "alternateBases=GTTT"
+
+
+def test_send_img(mock_app):
+    """Test the function that returns image files"""
+    filename = "logo.d59ae85.svg"
+
+    # GIVEN a mock app
+    with mock_app.test_request_context():
+        with mock_app.test_client() as client:
+            # WHEN the endpoint for retrieving an image is invoked
+            resp = client.get(url_for("api_v1.send_img", filename=filename))
+            # THEN the response should be successful
+            assert resp.status_code == 200
+            # And should return an image
+            assert resp.mimetype == "image/svg+xml"
 
 
 def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test_bnd_sv):
