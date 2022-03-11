@@ -1,4 +1,4 @@
-## [] -
+## [3.3] - 2022.03.11
 ### Added
 - Push to PyPI when a new release is created
 - Dockerfile-server to serve the prod app via gunicorn
