@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="shortcut icon" href="/static/clinGen.png">
+  <link rel="shortcut icon" href="{{ url_for('api_v1.static', filename='clinGen.png') }}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/sticky-footer.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
@@ -16,7 +16,7 @@
     <div id="top-menu">
         <ul class="nav menu">
           <li>
-            <img src="/static/logo.d59ae85.svg" alt="CG logo" height="36.8" align="middle">
+            <img src="{{ url_for('api_v1.static', filename='logo.d59ae85.svg') }}" alt="Clinical Genomics logo" height="36.8" align="middle">
           </li>
           <li>
             <a class="nav-link" style="color: #ef7c00" href="https://www.scilifelab.se/facilities/clinical-genomics-stockholm/" target="_blank">Clinical Genomics Beacon - SciLifeLab Stockholm</a>
@@ -37,19 +37,19 @@
 <footer class="footer">
   <div class="row d-flex justify-content-around">
     <div>
-      <a href="https://www.scilifelab.se" target=_blank><img src="/static/scilifelab-logo.svg" alt="SciLifeLab" height="50"></a>
+      <a href="https://www.scilifelab.se" target=_blank><img src="{{url_for('api_v1.static', filename='scilifelab-logo.svg')}}" alt="SciLifeLab" height="50"></a>
     </div>
     <div>
-      <a href="https://elixir-europe.org/" target=_blank><img src="/static/elixir_logo.png" alt="Elixir" height="50"></a>
+      <a href="https://elixir-europe.org/" target=_blank><img src="{{url_for('api_v1.static', filename='elixir_logo.png')}}" alt="Elixir" height="50"></a>
     </div>
     <div>
-      <a href="http://ki.se" target=_blank><img src="/static/KI2.jpeg" alt="Karolinska University Hospital" height="50"></a>
+      <a href="http://ki.se" target=_blank><img src="{{url_for('api_v1.static', filename='KI2.jpeg')}}" alt="Karolinska University Hospital" height="50"></a>
     </div>
     <div>
-      <a href="https://www.ga4gh.org/" target=_blank><img src="/static/ga4gh.png" alt="Global Alliance for Genomics and Health" height="50"></a>
+      <a href="https://www.ga4gh.org/" target=_blank><img src="{{url_for('api_v1.static', filename='ga4gh.png')}}" alt="Global Alliance for Genomics and Health" height="50"></a>
     </div>
     <div>
-      <a href="https://beacon-network.org/#/" target=_blank><img src="/static/beacon-network-logo-dark.svg" alt="The Beacon Network" height="50"></a>
+      <a href="https://beacon-network.org/#/" target=_blank><img src="{{url_for('api_v1.static', filename='beacon-network-logo-dark.svg')}}" alt="The Beacon Network" height="50"></a>
     </div>
   </div>
 </footer>
