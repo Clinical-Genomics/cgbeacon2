@@ -11,7 +11,7 @@
 - Refactored code in server/blueprints/api_v1/controllers.py
 ### Fixed
 - Error returned when query contains non-existent dataset IDs
-
+- Serve images as static files otherwise nginx doesn't show them
 
 ## [3.2] - 2022.02.01
 ### Added
