@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/Clinical-Genomics/cgbeacon2.svg?branch=master)](https://travis-ci.com/Clinical-Genomics/cgbeacon2)
 [![codecov](https://codecov.io/gh/Clinical-Genomics/cgbeacon2/branch/master/graph/badge.svg?token=C7JSM0UKCQ)](https://codecov.io/gh/Clinical-Genomics/cgbeacon2)
 
-An updated beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
+An Python and MongoDB - based beacon supporting [ GA4GH API 1.0 ][ga4gh_api1]
 
 This README only gives a brief overview of the tool, for a more complete reference, please check out our docs: https://clinical-genomics.github.io/cgbeacon2
 
