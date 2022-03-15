@@ -34,10 +34,10 @@ COPY --from=python-builder /usr/local/bin /usr/local/bin
 RUN groupadd --gid 1000 worker && useradd -g worker --uid 1000 --shell /usr/sbin/nologin --create-home worker
 
 # Copy virtual environment from builder
-COPY --chown=worker:worker --from=python-builder /venv /venv
+COPY --from=python-builder /venv /venv
 
 # Copy app dir to image
-COPY . /home/worker/app
+COPY --chown=worker:worker . /home/worker/app
 
 WORKDIR /home/worker/app
 

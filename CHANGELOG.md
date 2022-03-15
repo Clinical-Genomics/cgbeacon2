@@ -1,3 +1,7 @@
+## [] -
+### Fixed
+- Fix permission denied when mounting volumes in image filesystem
+
 ## [3.3.1] - 2022.03.11
 ### Fixed
 - Long description error in setup.py file causing an error on twine before PyPI push
