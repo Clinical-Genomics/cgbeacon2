@@ -3,6 +3,7 @@ import logging
 import os
 from threading import Thread
 
+from cgbeacon2.__version__ import __version__
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
@@ -24,6 +25,7 @@ from .controllers import (
     create_allele_query,
     delete_variants_task,
     dispatch_query,
+    stats,
     validate_add_data,
     validate_delete_data,
 )
@@ -64,6 +66,7 @@ def info() -> Response:
     return resp
 
 
+@api1_bp.route("/", methods=["GET", "POST"])
 @api1_bp.route("/apiv1.0/query_form", methods=["GET", "POST"])
 def query_form() -> str:
     """The endpoint to a super simple query form to interrogate this beacon
@@ -111,6 +114,8 @@ def query_form() -> str:
         "queryform.html",
         chromosomes=CHROMOSOMES,
         dsets=all_dsets,
+        software_version=__version__,
+        stats=stats(),
         form=dict(request.form),
     )
 

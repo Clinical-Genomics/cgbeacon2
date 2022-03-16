@@ -9,24 +9,15 @@
   <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/sticky-footer.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
   <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 </head>
 
 <header>
-  <nav class="navbar navbar-dark bg-dark">
-    <div id="top-menu">
-        <ul class="nav menu">
-          <li>
-            <img src="{{ url_for('api_v1.send_img', filename='logo.d59ae85.svg') }}" alt="Clinical Genomics logo" height="36.8" align="middle">
-          </li>
-          <li>
-            <a class="nav-link" style="color: #ef7c00" href="https://www.scilifelab.se/facilities/clinical-genomics-stockholm/" target="_blank">Clinical Genomics Beacon - SciLifeLab Stockholm</a>
-          </li>
-
-        </ul>
-    </div>
+  <nav class="nav navbar-dark bg-dark justify-content-between">
+    <a class="nav-item nav-link text-white" href="https://www.scilifelab.se/facilities/clinical-genomics-stockholm/" target="_blank"><img class="mr-3" src="{{ url_for('api_v1.send_img', filename='logo.d59ae85.svg') }}" alt="Clinical Genomics logo" height="30">Clinical Genomics Beacon - SciLifeLab Stockholm</a>
+    <a class="nav-item nav-link text-white d-flex align-items-center" href="https://github.com/Clinical-Genomics/cgbeacon2" target="_blank"><i class="fab fa-github mr-3" style="font-size:30px;" align="middle"></i>Software v.{{software_version}}</a>
   </nav>
 </header>
-
 <body>
 {% block body %}{% endblock %}
 <br>
