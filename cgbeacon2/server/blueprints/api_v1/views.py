@@ -145,7 +145,7 @@ def add() -> Response:
         resp.status_code = INVALID_TOKEN_AUTH["errorCode"]
         return resp
 
-    LOG.warning(f"REQUEST RECEIVED:{resp.json}")
+    LOG.warning(f"REQUEST RECEIVED:{request.json}")
 
     # Check that request contains the required params
     validate_req = validate_add_params(request)
