@@ -28,6 +28,17 @@ RANGE_COORDINATES = ("startMin", "startMax", "endMin", "endMax")
 LOG = logging.getLogger(__name__)
 
 
+def stats() -> dict:
+    """Return general stats to be displayed on landing page"""
+    db = current_app.db
+    stats = dict(
+        db_name=current_app.config.get("DB_NAME"),
+        n_datasets=db["dataset"].count_documents({}),
+        variant_count=db["variant"].count_documents({}),
+    )
+    return stats
+
+
 def validate_add_data(req) -> Union[None, str]:
     """Validate the data specified in the paramaters of an add request received via the API.
 

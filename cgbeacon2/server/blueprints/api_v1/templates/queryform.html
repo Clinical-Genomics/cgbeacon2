@@ -1,8 +1,14 @@
 
 {% extends "layout.html" %}
 {% block body %}
+
   <div class="container-fluid">
-    <br>
+    <div class="mb-3 mt-3 alert {% if stats.db_name and stats.n_datasets > 0 %} alert-success {% else %} alert-warning {% endif %}" role="alert">
+      <p class="mb-0">  {{stats}}
+      </p>
+    </div>
+
+    <div class="mt-3">
       <form action="{{url_for('api_v1.query_form')}}" method="post">
         <div class="row">
           <div class="col-md-12">
@@ -118,6 +124,7 @@
             </div>
         </div>
       </form>
+    </div>
   </div>
 {% endblock %}
 

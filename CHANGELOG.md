@@ -3,6 +3,12 @@
 - Long description error in setup.py file causing an error on twine before PyPI push
 - Switch to codecov action v.2, since v.1 is deprecated
 
+## [] -
+### Added
+- Redirect to query form page when user lands on / endpoint
+- Software version on query form page
+- Database name and general stats on landing page
+
 ## [3.3] - 2022.03.11
 ### Added
 - Push to PyPI when a new release is created
