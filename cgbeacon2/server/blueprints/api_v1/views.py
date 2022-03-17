@@ -96,6 +96,8 @@ def query_form() -> str:
             resp_obj["error"] = None
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
+            flash(resp_obj)
+
             flash_color = "secondary" if resp_obj["exists"] is False else "success"
 
             if len(resp_obj.get("datasetAlleleResponses", [])) > 0:
