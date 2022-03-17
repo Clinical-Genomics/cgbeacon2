@@ -35,7 +35,7 @@
                    <span class="badge badge-pill badge-dark">allele count:{{dset.allele_count or 0}}</span>
                  </div>
                  <div class="col-4">
-                   <small>Created:{{dset.created.strftime('%Y-%m-%d')}} / Last modified:{% if dset.updated %} {{dset.updated.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %}</small><br>
+                   <small>Created:{% if dset.created %} {{dset.created.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %} / Last modified:{% if dset.updated %} {{dset.updated.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %}</small><br>
                 </div>
               </div>
               <div class="row">
