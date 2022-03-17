@@ -176,7 +176,7 @@ def delete_variants_task(req) -> None:
 
 
 def create_allele_query(resp_obj, req) -> dict:
-    """Populates a dictionary with the parameters provided in the request<<
+    """Populates a dictionary with the parameters provided in the request
 
     Accepts:
         resp_obj(dictionary): response data that will be returned by server
