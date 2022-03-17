@@ -5,9 +5,9 @@
   <div class="container-fluid">
     <nav aria-label="breadcrumb mt-3">
       <ol class="breadcrumb {% if stats.db_name and stats.n_datasets > 0 %} alert-success {% else %} alert-warning {% endif %}" ">
-        <li class="breadcrumb-item"><i class="fas fa-database mr-3"></i>database:{{stats.db_name}}</li>
-        <li class="breadcrumb-item"><i class="fas fa-archive mr-3"></i>n. datasets:{{stats.n_datasets}}</li>
-        <li class="breadcrumb-item"><i class="fas fa-dna mr-3"></i>n. distinct variants:{{stats.variant_count}}</li>
+        <li class="breadcrumb-item"><i class="fas fa-database mr-1"></i>database:{{stats.db_name}}</li>
+        <li class="breadcrumb-item"><i class="fas fa-archive mr-1"></i>n. datasets:{{stats.n_datasets}}</li>
+        <li class="breadcrumb-item"><i class="fas fa-dna mr-1"></i>n. distinct variants:{{stats.variant_count}}</li>
       </ol>
     </nav>
 
@@ -20,14 +20,14 @@
         </div>
         <div class="row">
           <div class="col-md-2">
-            <label for="assemblyId">Genome build<span style="color: #ef7c00;">*</span></label>
+            <label for="assemblyId">Genome build<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="required field">*</span></label>
             <select class="form-control" name="assemblyId" required>
               <option>GRCh37</option>
               <option {% if form.assemblyId == "GRCh38" %} selected="selected" {% endif %}>GRCh38</option>
             </select>
           </div>
           <div class="col-md-2">
-            <label for="referenceName">Chromosome<span style="color: #ef7c00;">*</span></label>
+            <label for="referenceName">Chromosome<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="required field">*</span></label>
             <select class="form-control" name="referenceName" required>
               {% for chrom in chromosomes %}
                 <option {% if chrom == form.referenceName %} selected="selected" {% endif %} >{{chrom}}</option>
@@ -35,7 +35,7 @@
             </select>
           </div>
           <div class="col-md-2">
-            <label for="referenceBases">Reference bases<span style="color: #ef7c00;">*</span></label>
+            <label for="referenceBases">Reference bases<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="required field">*</span></label>
             <input type="text" class="form-control" id="referenceBases" name="referenceBases" placeholder="ex: T" value="{{form.referenceBases}}" required>
           </div>
           <div class="col-md-3">
@@ -86,11 +86,11 @@
             </select>
           </div>
           <div class="col-md-2">
-            <label for="start">Start position</label>
+            <label for="start">Start position<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="0-based coordinate">**</span></label>
             <input type="number" class="form-control" id="start" name="start" value={{form.start}}>
           </div>
           <div class="col-md-2">
-            <label for="end">End position</label>
+            <label for="end">End position<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="0-based coordinate">**</span></label>
             <input type="number" class="form-control" id="end" name="end" value={{form.end}}>
           </div>
         </div>
@@ -102,19 +102,19 @@
           </div>
           <div id="rangeDiv" class="row" {% if form == {} or form.startMin == "" %} style="display:none" {%endif%}>
             <div class="col-sm-3">
-              <label for="startMin">Min start</label>
+              <label for="startMin">Min start<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="0-based coordinate">**</span></label>
               <input type="number" class="form-control" id="startMin" name="startMin" value={{form.startMin}}>
             </div>
             <div class="col-sm-3">
-              <label for="startMax">Max start</label>
+              <label for="startMax">Max start<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="0-based coordinate">**</span></label>
               <input type="number" class="form-control" id="startMax" name="startMax" value={{form.startMax}}>
             </div>
             <div class="col-sm-3">
-              <label for="endMin">Min end</label>
+              <label for="endMin">Min end<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="0-based coordinate">**</span></label>
               <input type="number" class="form-control" id="endMin" name="endMin" value={{form.endMin}}>
             </div>
             <div class="col-sm-3">
-              <label for="endMax">Max end</label>
+              <label for="endMax">Max end<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="0-based coordinate">**</span></label>
               <input type="number" class="form-control" id="endMax" name="endMax" value={{form.endMax}}>
             </div>
           </div>
@@ -137,6 +137,10 @@
   $('select[multiple]').selectpicker({
         width: '100%'
   });
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 
   $(function() {
     $('#type').change(function() {

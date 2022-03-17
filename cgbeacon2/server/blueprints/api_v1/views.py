@@ -50,13 +50,14 @@ def send_img(filename) -> Response:
     )
 
 
+@api1_bp.route("/", methods=["GET"])
 @api1_bp.route("/apiv1.0/", methods=["GET"])
 def info() -> Response:
     """Returns Beacon info data as a json object
 
     Example:
         curl -X GET 'http://localhost:5000/apiv1.0/'
-
+        curl -X GET 'http://localhost:5000/'
     """
     beacon_config = current_app.config.get("BEACON_OBJ")
     beacon = Beacon(beacon_config, API_VERSION, current_app.db)
@@ -69,7 +70,7 @@ def info() -> Response:
 @api1_bp.route("/", methods=["GET", "POST"])
 @api1_bp.route("/apiv1.0/query_form", methods=["GET", "POST"])
 def query_form() -> str:
-    """The endpoint to a super simple query form to interrogate this beacon
+    """The endpoint to a simple query form to interrogate this beacon
     Query is performed only on public access datasets contained in this beacon
 
     query_form page is accessible from a browser at this address:
