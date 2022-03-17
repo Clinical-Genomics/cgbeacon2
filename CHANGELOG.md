@@ -11,7 +11,7 @@
 - Tooltips on query form explaining that coordinates are 0-based
 - Clicking on number of datasets in query form expands dataset description window
 ### Changed
-- / endpoint redirects to info endpoint returning json beacon intro
+- / endpoint redirects to info endpoint returning json beacon info
 
 ## [3.3] - 2022.03.11
 ### Added
