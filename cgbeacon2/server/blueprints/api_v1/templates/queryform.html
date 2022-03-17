@@ -31,11 +31,12 @@
                    {% endif %}
                    <span class="badge badge-primary">{{dset.assembly_id}}</span>
                    <span class="badge badge-secondary">v{{dset.version}}</span>
-                   <span class="badge badge-pill badge-dark">variant count:{{dset.variant_count or 0}}</span>
-                   <span class="badge badge-pill badge-dark">allele count:{{dset.allele_count or 0}}</span>
+                   <br>
+                   <span class="badge badge-pill badge-light">variant count:{{dset.variant_count or 0}}</span>
+                   <span class="badge badge-pill badge-light">allele count:{{dset.allele_count or 0}}</span>
                  </div>
                  <div class="col-4">
-                   <small>Created:{% if dset.created %} {{dset.created.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %} / Last modified:{% if dset.updated %} {{dset.updated.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %}</small><br>
+                   <small>Created:{% if dset.created %} {{dset.created.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %} / Last modified:{% if dset.updated %} {{dset.updated.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %}</small>
                 </div>
               </div>
               <div class="row">
