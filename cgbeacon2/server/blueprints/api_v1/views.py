@@ -78,7 +78,7 @@ def query_form() -> str:
     """
 
     all_dsets = current_app.db["dataset"].find()
-    all_dsets = [ds["_id"] for ds in all_dsets]
+    all_dsets = [ds for ds in all_dsets]
     resp_obj = {}
 
     if request.method == "POST":

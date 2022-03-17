@@ -6,10 +6,54 @@
     <nav aria-label="breadcrumb mt-3">
       <ol class="breadcrumb {% if stats.db_name and stats.n_datasets > 0 %} alert-success {% else %} alert-warning {% endif %}" ">
         <li class="breadcrumb-item"><i class="fas fa-database mr-1"></i>database:{{stats.db_name}}</li>
-        <li class="breadcrumb-item"><i class="fas fa-archive mr-1"></i>n. datasets:{{stats.n_datasets}}</li>
+        <li class="breadcrumb-item"><i class="fas fa-archive mr-1"></i>n. datasets:<a href="#" data-toggle="modal" data-target="#dsDetails">{{stats.n_datasets}}</a></li>
         <li class="breadcrumb-item"><i class="fas fa-dna mr-1"></i>n. distinct variants:{{stats.variant_count}}</li>
       </ol>
     </nav>
+
+    <!-- Modal window that shows available datasets info -->
+    <div class="modal fade" id="dsDetails" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+        {% if dsets %}
+          <ul class="list-group list-group-flush">
+          {% for dset in dsets %}
+             <li class="list-group-item">
+               <div class="row">
+                 <div class="col-8">
+                   <b>{{dset.name}} ({{dset._id}})</b>
+                   {% if dset.authlevel == "controlled" %}
+                    <span class="badge badge-danger">controlled</span>
+                   {% elif dset.authlevel == "registered" %}
+                    <span class="badge badge-warning">registered</span>
+                   {% else %}
+                    <span class="badge badge-success">public</span>
+                   {% endif %}
+                   <span class="badge badge-primary">{{dset.assembly_id}}</span>
+                   <span class="badge badge-secondary">v{{dset.version}}</span>
+                   <span class="badge badge-pill badge-dark">variant count:{{dset.variant_count or 0}}</span>
+                   <span class="badge badge-pill badge-dark">allele count:{{dset.allele_count or 0}}</span>
+                 </div>
+                 <div class="col-4">
+                   <small>Created:{{dset.created.strftime('%Y-%m-%d')}} / Last modified:{% if dset.updated %} {{dset.updated.strftime('%Y-%m-%d')}} {% else %} n.a. {% endif %}</small><br>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">{{dset.description}}</div>
+              </div>
+             </li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          No datasets available for this beacon
+        {% endif %}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div> <!-- end of modal content -->
+      </div> <!-- end of modal dialog -->
+    </div>
+    <!-- End of datasets info modal -->
 
     <div class="mt-3">
       <form action="{{url_for('api_v1.query_form')}}" method="post">
@@ -42,7 +86,7 @@
             <label for="datasetIds">Dataset</label>
                 <select multiple class="selectpicker" name="datasetIds">
                   {%for dset in dsets %}
-                    <option value="{{dset}}">{{ dset }}</option>
+                    <option value="{{dset['_id']}}">{{ dset['_id'] }}</option>
                   {%endfor %}
                 </select>
           </div>

@@ -8,6 +8,10 @@
 - Redirect to query form page when user lands on / endpoint
 - Software version on query form page
 - Database name and general stats on landing page
+- Tooltips on query form explaining that coordinates are 0-based
+- Clicking on number of datasets in query form expands dataset description window
+### Changed
+- / endpoint redirects to info endpoint returning json beacon intro
 
 ## [3.3] - 2022.03.11
 ### Added
