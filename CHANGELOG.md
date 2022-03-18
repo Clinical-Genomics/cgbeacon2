@@ -12,6 +12,10 @@
 - Clicking on number of datasets in query form expands dataset description window
 ### Changed
 - / endpoint redirects to info endpoint returning json beacon info
+- Refactored HTML query form to be more user friendly
+- Refactored query form page to better display dataset-specific results
+### Fixed
+- Return dataset-specific info even if allele is not found
 
 ## [3.3] - 2022.03.11
 ### Added
