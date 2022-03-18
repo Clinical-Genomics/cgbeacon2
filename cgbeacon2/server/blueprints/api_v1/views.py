@@ -30,6 +30,8 @@ from .controllers import (
     validate_delete_data,
 )
 
+AUTHLEVEL = {"PUBLIC": "success", "REGISTERED": "warning", "CONTROLLED": "danger"}
+EXISTS = {True: "success", False: "secondary"}
 API_VERSION = "1.0.0"
 LOG = logging.getLogger(__name__)
 api1_bp = Blueprint(
@@ -97,21 +99,30 @@ def query_form() -> str:
             resp_obj["error"] = None
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
-            flash(resp_obj)
-
-            flash_color = "secondary" if resp_obj["exists"] is False else "success"
+            flash(f"<small class='muted'>Request received->{resp_obj['allelRequest']}</small>")
 
             if len(resp_obj.get("datasetAlleleResponses", [])) > 0:
+                ds_responses = []
                 # flash response from single datasets:
-                for resp in resp_obj["datasetAlleleResponses"]:
-                    if resp["exists"] is True:
-                        flash(resp, flash_color)
-                    else:
-                        flash(resp, flash_color)
+                for ds_resp in resp_obj["datasetAlleleResponses"]:
+                    resp = f"""
+                        <div class="row">
+                            <div class="col-3">dataset: {ds_resp["datasetId"]}</div>
+                            <div class="col-1"><span class="mr-1 badge badge-{AUTHLEVEL[ds_resp['info']['accessType']]}">{ds_resp['info']['accessType'].lower()}</span></div>
+                            <div class="col-5">
+                                <span class="badge badge-pill badge-light">sampleCount:{ds_resp["sampleCount"]}</span>
+                                <span class="badge badge-pill badge-light">callCount:{ds_resp["callCount"]}</span>
+                                <span class="badge badge-pill badge-light">variantCount:{ds_resp["variantCount"]}</span>
+                            </div>
+                            <div class="col-2">Allele exists: {ds_resp["exists"]}</div>
+                        </div>
+                        """
+                    flash(resp, EXISTS[ds_resp["exists"]])
+
             elif resp_obj["exists"] is True:
-                flash("Allele was found in this beacon", flash_color)
+                flash("Allele was found in this beacon", EXISTS[resp_obj["exists"]])
             else:
-                flash("Allele could not be found", flash_color)
+                flash("Allele could not be found", EXISTS[resp_obj["exists"]])
 
     return render_template(
         "queryform.html",

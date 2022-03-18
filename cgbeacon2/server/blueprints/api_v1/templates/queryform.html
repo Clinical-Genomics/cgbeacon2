@@ -1,7 +1,6 @@
 
 {% extends "layout.html" %}
 {% block body %}
-
   <div class="container-fluid">
     <nav aria-label="breadcrumb mt-3">
       <ol class="breadcrumb {% if stats.db_name and stats.n_datasets > 0 %} alert-success {% else %} alert-warning {% endif %}" ">
@@ -102,14 +101,15 @@
           <div class="form-check col-md-2">
             <input type="checkbox" id="type" {% if form == {} or form.variantType == "" %} checked {%endif%} data-toggle="toggle" data-on="Single nucleotides" data-off="Structural variants" data-onstyle="primary" data-offstyle="success">
           </div>
-          <div id="snvsDiv" class="col-md-2" {% if form != {} and form.variantType != "" %} style="display:none;" {%endif%}>
-            <label for="alternateBases">Alternate bases</label>
-            <input type="text" class="form-control" id="alternateBases" name="alternateBases" placeholder="ex: C" value="{{form.alternateBases}}">
-          </div>
 
           <div class="col-md-2">
             <label for="referenceBases">Reference bases<span style="color: #ef7c00;" data-toggle="tooltip" data-placement="top" title="required field">*</span></label>
             <input type="text" class="form-control" id="referenceBases" name="referenceBases" placeholder="ex: T" value="{{form.referenceBases}}" required>
+          </div>
+
+          <div id="snvsDiv" class="col-md-2" {% if form != {} and form.variantType != "" %} style="display:none;" {%endif%}>
+            <label for="alternateBases">Alternate bases</label>
+            <input type="text" class="form-control" id="alternateBases" name="alternateBases" placeholder="ex: C" value="{{form.alternateBases}}">
           </div>
 
           <div id="svsDiv" class="col-md-2" {% if form == {} or form.variantType == "" %} style="display:none" {%endif%}>
@@ -123,24 +123,24 @@
 
           <div class="form-check col-md-4 offset-2">
             <!-- DatasetAlleleResponse=NONE-->
-            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="NONE" {% if not allelRequest or allelRequest and allelRequest.includeDatasetResponses == "NONE"%} checked {% endif%}>
+            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="NONE" {% if 'includeDatasetResponses' not in form or form.includeDatasetResponses == "NONE"%} checked {% endif %}>
             <label class="form-check-label" for="includeDatasetResponses">
-              Check only if allele is present in any dataset
+              Check if allele is present in any dataset
             </label><br>
             <!-- DatasetAlleleResponse=ALL-->
-            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="ALL">
+            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="ALL" {% if form.includeDatasetResponses == "ALL"%} checked {% endif %}>
             <label class="form-check-label" for="includeDatasetResponses">
-              Dataset-specific info (all datasets)
+              Return dataset-level info (all datasets)
             </label><br>
             <!-- DatasetAlleleResponse=HIT-->
-            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="HIT">
+            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="HIT" {% if form.includeDatasetResponses == "HIT"%} checked {% endif %}>
             <label class="form-check-label" for="includeDatasetResponses">
-              Dataset-specific info (all datasets with hits)
+              Return dataset-level info (all datasets with hits)
             </label><br>
             <!-- DatasetAlleleResponse=MISS-->
-            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="MISS">
+            <input class="form-check-input" type="radio" name="includeDatasetResponses" id="includeDatasetResponses" value="MISS" {% if form.includeDatasetResponses == "MISS"%} checked {% endif %}>
             <label class="form-check-label" for="includeDatasetResponses">
-              Dataset-specific info (all datasets with NO hits)
+              Return dataset-level info (all datasets with NO hits)
             </label>
           </div>
         </div>
