@@ -40,7 +40,7 @@ def demo(ctx) -> None:
     sample = "ADM1059A1"
 
     # Invoke add dataset command
-    ctx.invoke(dataset, id=ds_id, name=ds_name, authlevel=authlevel)
+    ctx.invoke(dataset, did=ds_id, name=ds_name, authlevel=authlevel)
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
@@ -104,7 +104,7 @@ def user(uid, name, token, desc, url) -> User:
 
 
 @add.command()
-@click.option("--id", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("--did", type=click.STRING, nargs=1, required=True, help="dataset ID")
 @click.option("--name", type=click.STRING, nargs=1, required=True, help="dataset name")
 @click.option(
     "--build",
@@ -131,10 +131,10 @@ def user(uid, name, token, desc, url) -> User:
 @click.option("--cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(id, name, build, authlevel, desc, version, url, cc, update) -> None:
+def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
-    dataset_obj = {"_id": id, "name": name, "assembly_id": build}
+    dataset_obj = {"_id": did, "name": name, "assembly_id": build}
 
     if update is True:
         dataset_obj["updated"] = datetime.datetime.now()
@@ -174,7 +174,7 @@ def dataset(id, name, build, authlevel, desc, version, url, cc, update) -> None:
     if inserted_id:
         click.echo(f"Dataset collection was successfully updated with dataset '{inserted_id}'")
         # register the event in the event collection
-        update_event(current_app.db, id, "dataset", True)
+        update_event(current_app.db, did, "dataset", True)
     else:
         click.echo("An error occurred while updating dataset collection")
 
