@@ -180,17 +180,17 @@ def dataset(id, name, build, authlevel, desc, version, url, cc, update) -> None:
 
 
 @add.command()
-@click.option("-ds", type=click.STRING, nargs=1, required=True, help="dataset ID")
-@click.option("-vcf", type=click.Path(exists=True), required=True)
+@click.option("--ds", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("--vcf", type=click.Path(exists=True), required=True)
 @click.option(
-    "-sample",
+    "--sample",
     type=click.STRING,
     multiple=True,
     required=True,
     help="one or more samples to save variants for",
 )
 @click.option(
-    "-panel",
+    "--panel",
     type=click.Path(exists=True),
     multiple=True,
     required=False,

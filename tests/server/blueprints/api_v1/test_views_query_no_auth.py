@@ -57,11 +57,11 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
         [
             "add",
             "variants",
-            "-ds",
+            "--ds",
             public_dataset["_id"],
-            "-vcf",
+            "--vcf",
             test_bnd_vcf_path,
-            "-sample",
+            "--sample",
             sample,
         ],
     )
