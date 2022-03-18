@@ -8,7 +8,7 @@ def test_delete_variants_confirm(mock_app):
 
     runner = mock_app.test_cli_runner()
     # When invoking the command without confirming the action
-    result = runner.invoke(cli, ["delete", "variants", "-ds", "foo", "-sample", "bar"])
+    result = runner.invoke(cli, ["delete", "variants", "--ds", "foo", "--sample", "bar"])
     # Then the command should exit
     assert result.exit_code == 1
     assert "Do you want to continue?" in result.output
@@ -20,7 +20,9 @@ def test_delete_variant_non_existing_dataset(mock_app):
     runner = mock_app.test_cli_runner()
 
     # When invoking the command with a dataset not present in database
-    result = runner.invoke(cli, ["delete", "variants", "-ds", "foo", "-sample", "bar"], input="y\n")
+    result = runner.invoke(
+        cli, ["delete", "variants", "--ds", "foo", "--sample", "bar"], input="y\n"
+    )
 
     assert result.exit_code == 1
     assert "Couldn't find any dataset with id 'foo' in the database" in result.output
@@ -38,7 +40,7 @@ def test_delete_variants_non_existing_sample(mock_app, public_dataset, database)
     # When invoking the command without a sample not present in dataset samples
     result = runner.invoke(
         cli,
-        ["delete", "variants", "-ds", public_dataset["_id"], "-sample", "bar"],
+        ["delete", "variants", "--ds", public_dataset["_id"], "--sample", "bar"],
         input="y\n",
     )
 
@@ -99,7 +101,7 @@ def test_delete_variants(mock_app, public_dataset, database):
     # When one of the samples is removed using the command line
     runner.invoke(
         cli,
-        ["delete", "variants", "-ds", public_dataset["_id"], "-sample", sample],
+        ["delete", "variants", "--ds", public_dataset["_id"], "--sample", sample],
         input="y\n",
     )
 
