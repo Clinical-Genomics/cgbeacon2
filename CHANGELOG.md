@@ -10,6 +10,7 @@
 - Database name and general stats on landing page
 - Tooltips on query form explaining that coordinates are 0-based
 - Clicking on number of datasets in query form expands dataset description window
+- Codecov config file
 ### Changed
 - / endpoint redirects to info endpoint returning json beacon info
 - Refactored HTML query form to be more user friendly
