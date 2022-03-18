@@ -67,12 +67,12 @@ def demo(ctx) -> None:
     )
 
     # Invoke add user command to creating an authorized user (via X-Auth-Token) for using the APIs
-    demo_user = ctx.invoke(user, id="DExterMOrgan", name="Dexter Morgan", token="DEMO")
+    demo_user = ctx.invoke(user, uid="DExterMOrgan", name="Dexter Morgan", token="DEMO")
     click.echo(f"\n\nAuth token for using the API:{demo_user.token}\n")
 
 
 @add.command()
-@click.option("--id", type=click.STRING, nargs=1, required=True, help="User ID")
+@click.option("--uid", type=click.STRING, nargs=1, required=True, help="User ID")
 @click.option("--name", type=click.STRING, nargs=1, required=True, help="User name")
 @click.option(
     "--token",
@@ -84,14 +84,14 @@ def demo(ctx) -> None:
 @click.option("--desc", type=click.STRING, nargs=1, required=False, help="User description")
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="User url")
 @with_appcontext
-def user(id, name, token, desc, url) -> User:
+def user(uid, name, token, desc, url) -> User:
     """Creates a new user for adding/removing variants using the REST API"""
 
-    if " " in id:
+    if " " in uid:
         click.echo("User ID should not contain any space")
         return
     user_info = dict(
-        _id=id,
+        _id=uid,
         name=name,
         token=token,
         description=desc,
