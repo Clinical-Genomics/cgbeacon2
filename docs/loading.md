@@ -26,7 +26,7 @@ beacon add demo
 ## Adding a new dataset
 A new dataset can be created with the following command:
 ```
-beacon add dataset --id <dataset_id> --name <"A dataset name"> --build <GRCh37|GRCh38> --authlevel <public|registered|controlled>
+beacon add dataset --did <dataset_id> --name <"A dataset name"> --build <GRCh37|GRCh38> --authlevel <public|registered|controlled>
 ```
 The above parameters (ds-id, name, build, authlevel) are mandatory. If user doesn't specify any genome build then the default build used is GRCh37. One dataset can be associated to variants called using only one genome build.
 `authlevel` parameter will be used in queries to return results according to the request authentication level.
@@ -80,7 +80,7 @@ beacon add user
 
 
 Options:
-  --id TEXT    User ID  [required]
+  --uid TEXT    User ID  [required]
   --name TEXT  User name  [required]
   --desc TEXT  User description
   --url TEXT   User url
