@@ -14,7 +14,7 @@ def delete():
 
 @delete.command()
 @with_appcontext
-@click.option("-id", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("--id", type=click.STRING, nargs=1, required=True, help="dataset ID")
 def dataset(id) -> None:
     """Delete a dataset using its _id key"""
 
@@ -34,9 +34,9 @@ def dataset(id) -> None:
 
 @delete.command()
 @with_appcontext
-@click.option("-ds", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("--ds", type=click.STRING, nargs=1, required=True, help="dataset ID")
 @click.option(
-    "-sample",
+    "--sample",
     type=click.STRING,
     multiple=True,
     required=True,

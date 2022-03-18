@@ -14,6 +14,7 @@
 - / endpoint redirects to info endpoint returning json beacon info
 - Refactored HTML query form to be more user friendly
 - Refactored query form page to better display dataset-specific results
+- Refactored cli options and params to be compliant with the GNU coding standards
 ### Fixed
 - Return dataset-specific info even if allele is not found
 

@@ -40,7 +40,7 @@ def demo(ctx) -> None:
     sample = "ADM1059A1"
 
     # Invoke add dataset command
-    ctx.invoke(dataset, ds_id=ds_id, name=ds_name, authlevel=authlevel)
+    ctx.invoke(dataset, did=ds_id, name=ds_name, authlevel=authlevel)
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
@@ -67,31 +67,31 @@ def demo(ctx) -> None:
     )
 
     # Invoke add user command to creating an authorized user (via X-Auth-Token) for using the APIs
-    demo_user = ctx.invoke(user, user_id="DExterMOrgan", name="Dexter Morgan", token="DEMO")
+    demo_user = ctx.invoke(user, uid="DExterMOrgan", name="Dexter Morgan", token="DEMO")
     click.echo(f"\n\nAuth token for using the API:{demo_user.token}\n")
 
 
 @add.command()
-@click.option("-user-id", type=click.STRING, nargs=1, required=True, help="User ID")
-@click.option("-name", type=click.STRING, nargs=1, required=True, help="User name")
+@click.option("--uid", type=click.STRING, nargs=1, required=True, help="User ID")
+@click.option("--name", type=click.STRING, nargs=1, required=True, help="User name")
 @click.option(
-    "-token",
+    "--token",
     type=click.STRING,
     nargs=1,
     required=False,
     help="If not specified, the token will be created automatically",
 )
-@click.option("-desc", type=click.STRING, nargs=1, required=False, help="User description")
-@click.option("-url", type=click.STRING, nargs=1, required=False, help="User url")
+@click.option("--desc", type=click.STRING, nargs=1, required=False, help="User description")
+@click.option("--url", type=click.STRING, nargs=1, required=False, help="User url")
 @with_appcontext
-def user(user_id, name, token, desc, url) -> User:
+def user(uid, name, token, desc, url) -> User:
     """Creates a new user for adding/removing variants using the REST API"""
 
-    if " " in user_id:
+    if " " in uid:
         click.echo("User ID should not contain any space")
         return
     user_info = dict(
-        _id=user_id,
+        _id=uid,
         name=name,
         token=token,
         description=desc,
@@ -104,37 +104,37 @@ def user(user_id, name, token, desc, url) -> User:
 
 
 @add.command()
-@click.option("-ds-id", type=click.STRING, nargs=1, required=True, help="dataset ID")
-@click.option("-name", type=click.STRING, nargs=1, required=True, help="dataset name")
+@click.option("--did", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("--name", type=click.STRING, nargs=1, required=True, help="dataset name")
 @click.option(
-    "-build",
+    "--build",
     type=click.Choice(["GRCh37", "GRCh38"]),
     nargs=1,
     help="Genome assembly (default:GRCh37)",
     default="GRCh37",
 )
 @click.option(
-    "-authlevel",
+    "--authlevel",
     type=click.Choice(["public", "registered", "controlled"], case_sensitive=False),
     help="the access level of this dataset",
     required=True,
 )
-@click.option("-desc", type=click.STRING, nargs=1, required=False, help="dataset description")
+@click.option("--desc", type=click.STRING, nargs=1, required=False, help="dataset description")
 @click.option(
-    "-version",
+    "--version",
     type=click.FLOAT,
     nargs=1,
     required=False,
     help="dataset version, i.e. 1.0",
 )
-@click.option("-url", type=click.STRING, nargs=1, required=False, help="external url")
-@click.option("-cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
+@click.option("--url", type=click.STRING, nargs=1, required=False, help="external url")
+@click.option("--cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(ds_id, name, build, authlevel, desc, version, url, cc, update) -> None:
+def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
-    dataset_obj = {"_id": ds_id, "name": name, "assembly_id": build}
+    dataset_obj = {"_id": did, "name": name, "assembly_id": build}
 
     if update is True:
         dataset_obj["updated"] = datetime.datetime.now()
@@ -174,23 +174,23 @@ def dataset(ds_id, name, build, authlevel, desc, version, url, cc, update) -> No
     if inserted_id:
         click.echo(f"Dataset collection was successfully updated with dataset '{inserted_id}'")
         # register the event in the event collection
-        update_event(current_app.db, ds_id, "dataset", True)
+        update_event(current_app.db, did, "dataset", True)
     else:
         click.echo("An error occurred while updating dataset collection")
 
 
 @add.command()
-@click.option("-ds", type=click.STRING, nargs=1, required=True, help="dataset ID")
-@click.option("-vcf", type=click.Path(exists=True), required=True)
+@click.option("--ds", type=click.STRING, nargs=1, required=True, help="dataset ID")
+@click.option("--vcf", type=click.Path(exists=True), required=True)
 @click.option(
-    "-sample",
+    "--sample",
     type=click.STRING,
     multiple=True,
     required=True,
     help="one or more samples to save variants for",
 )
 @click.option(
-    "-panel",
+    "--panel",
     type=click.Path(exists=True),
     multiple=True,
     required=False,

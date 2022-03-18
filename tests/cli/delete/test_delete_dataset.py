@@ -9,7 +9,7 @@ def test_delete_non_existing_dataset(mock_app):
     runner = mock_app.test_cli_runner()
 
     # When invoking the command without the -id parameter
-    result = runner.invoke(cli, ["delete", "dataset", "-id", "foo"])
+    result = runner.invoke(cli, ["delete", "dataset", "--id", "foo"])
 
     # Then the command should run
     assert result.exit_code == 0
@@ -32,11 +32,11 @@ def test_delete_existing_dataset(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--did",
             dataset["_id"],
-            "-name",
+            "--name",
             dataset["name"],
-            "-authlevel",
+            "--authlevel",
             dataset["authlevel"],
         ],
     )
@@ -50,7 +50,7 @@ def test_delete_existing_dataset(public_dataset, mock_app, database):
         [
             "delete",
             "dataset",
-            "-id",
+            "--id",
             new_dataset["_id"],
         ],
     )

@@ -57,11 +57,11 @@ def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test
         [
             "add",
             "variants",
-            "-ds",
+            "--ds",
             public_dataset["_id"],
-            "-vcf",
+            "--vcf",
             test_bnd_vcf_path,
-            "-sample",
+            "--sample",
             sample,
         ],
     )
@@ -103,11 +103,11 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--did",
             registered_dataset["_id"],
-            "-name",
+            "--name",
             registered_dataset["name"],
-            "-authlevel",
+            "--authlevel",
             registered_dataset["authlevel"],
         ],
     )

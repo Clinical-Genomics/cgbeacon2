@@ -26,7 +26,7 @@ beacon add demo
 ## Adding a new dataset
 A new dataset can be created with the following command:
 ```
-beacon add dataset -ds-id <dataset_id> -name <"A dataset name"> -build <GRCh37|GRCh38> -authlevel <public|registered|controlled>
+beacon add dataset --did <dataset_id> --name <"A dataset name"> --build <GRCh37|GRCh38> --authlevel <public|registered|controlled>
 ```
 The above parameters (ds-id, name, build, authlevel) are mandatory. If user doesn't specify any genome build then the default build used is GRCh37. One dataset can be associated to variants called using only one genome build.
 `authlevel` parameter will be used in queries to return results according to the request authentication level.
@@ -40,10 +40,10 @@ More info about the Elixir AAI authentication is available [here](https://elixir
 
 Other optional parameters that can be provided to improve the dataset description are the following.
 ```
-  -desc TEXT                      dataset description
-  -version FLOAT                  dataset version, i.e. 1.0
-  -url TEXT                       external url
-  -cc TEXT                        consent code key. i.e. HMB
+  --desc TEXT                      dataset description
+  --version FLOAT                  dataset version, i.e. 1.0
+  --url TEXT                       external url
+  --cc TEXT                        consent code key. i.e. HMB
   --update
 ```
 The `--update` flag will allow to modify the information for a dataset that is already existing in the database.
@@ -57,10 +57,10 @@ Variant data can be loaded to the database using the following command:
 beacon add variants
 
 Options:
-  -ds TEXT      dataset ID  [required]
-  -vcf PATH     [required]
-  -sample TEXT  one or more samples to save variants for  [required]
-  -panel PATH   one or more bed files containing genomic intervals
+  --ds TEXT      dataset ID  [required]
+  --vcf PATH     [required]
+  --sample TEXT  one or more samples to save variants for  [required]
+  --panel PATH   one or more bed files containing genomic intervals
 ```
 ds (dataset id) and vcf (path to the VCF file containing the variants) are mandatory parameters. One or more samples included in the VCF file must also be specified. To specify multiple samples use the -sample parameter multiple times (example -sample sampleA -sample sampleB ..).
 
@@ -80,10 +80,10 @@ beacon add user
 
 
 Options:
-  -user-id TEXT    User ID  [required]
-  -name TEXT  User name  [required]
-  -desc TEXT  User description
-  -url TEXT   User url
+  --uid TEXT    User ID  [required]
+  --name TEXT  User name  [required]
+  --desc TEXT  User description
+  --url TEXT   User url
   --help      Show this message and exit.
 ```
 Once a user is created, a random user token will be created in the database for this user.
