@@ -99,7 +99,7 @@ def query_form() -> str:
             resp_obj["error"] = None
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
-            flash(f"<small class='muted'>Request received->{resp_obj['allelRequest']}</small>")
+            flash(f"<small>Request received->{resp_obj['allelRequest']}</small>")
 
             if len(resp_obj.get("datasetAlleleResponses", [])) > 0:
                 ds_responses = []
