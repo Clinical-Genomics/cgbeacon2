@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
   <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+  <style>
+  .alert {
+    margin-bottom:0;
+  }
+  </style>
 </head>
 
 <header>
@@ -21,11 +26,13 @@
 <body>
 {% block body %}{% endblock %}
 <br>
+<div class="mb-3">
 {% for category, message in get_flashed_messages(with_categories=True) %}
-  <div class="alert alert-{{category}}">{{ message }}</div>
+  <div class="alert alert-{{category}}">{{ message|safe }}</div>
 {% endfor %}
+</div>
 
-<footer class="footer">
+<footer class="footer mt-3">
   <div class="row d-flex justify-content-around">
     <div>
       <a href="https://www.scilifelab.se" target=_blank><img src="{{url_for('api_v1.send_img', filename='scilifelab-logo.svg')}}" alt="SciLifeLab" height="50"></a>

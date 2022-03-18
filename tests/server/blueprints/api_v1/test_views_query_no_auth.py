@@ -466,7 +466,7 @@ def test_query_form_post_snv_exact_coords_found(mock_app, test_snv, public_datas
 
     # And should display exists = true, af the dataset level
     assert "alert alert-success" in str(response.data)
-    assert "exists&#39;: True" in str(response.data)
+    assert "Allele exists: True" in str(response.data)
 
 
 def test_query_form_post_snv_exact_coords_not_found(mock_app, test_snv, public_dataset):
@@ -564,7 +564,7 @@ def test_query_post_range_coords_SV_found(mock_app, test_sv, public_dataset):
 
 
 def test_post_query_error(mock_app, test_snv, public_dataset):
-    """Test posting a query with errors, the servers should restuen error"""
+    """Test posting a query with errors, the servers should return error"""
 
     # Example, form data is missing wither alt base or variant type (one of them is mandatory)
     form_data = dict(
@@ -582,4 +582,4 @@ def test_post_query_error(mock_app, test_snv, public_dataset):
 
     # that displays the error
     assert "alert alert-danger" in str(response.data)
-    assert "errorCode&#39;: 400" in str(response.data)
+    assert "Missing one or more mandatory parameters" in str(response.data)

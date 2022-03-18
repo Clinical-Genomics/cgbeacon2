@@ -418,9 +418,6 @@ def dispatch_query(mongo_query, response_type, datasets=[], auth_levels=([], Fal
         variant_collection.find(mongo_query, {"_id": 0, "datasetIds": 1, "call_count": 1})
     )
 
-    if len(variants) == 0:
-        return False, []
-
     # Filter variants by auth level specified by user token (or lack of it)
     variants = results_filter_by_auth(variants, auth_levels)
 
