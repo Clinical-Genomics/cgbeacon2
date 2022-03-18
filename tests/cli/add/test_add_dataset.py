@@ -13,10 +13,10 @@ def test_add_dataset_no_id(public_dataset, mock_app):
     dataset = public_dataset
 
     # When invoking the command without the -id parameter
-    result = runner.invoke(cli, ["add", "dataset", "-name", dataset["name"]])
+    result = runner.invoke(cli, ["add", "dataset", "--name", dataset["name"]])
     # Then the command should return error
     assert result.exit_code == 2
-    assert "Missing option '-ds-id'" in result.output
+    assert "Missing option '--id'" in result.output
 
 
 def test_add_dataset_no_name(public_dataset, mock_app):
@@ -28,10 +28,10 @@ def test_add_dataset_no_name(public_dataset, mock_app):
     dataset = public_dataset
 
     # When invoking the command without the -name parameter
-    result = runner.invoke(cli, ["add", "dataset", "-ds-id", dataset["_id"]])
+    result = runner.invoke(cli, ["add", "dataset", "--id", dataset["_id"]])
     # Then the command should return error
     assert result.exit_code == 2
-    assert "Missing option '-name'" in result.output
+    assert "Missing option '--name'" in result.output
 
 
 def test_add_dataset_wrong_build(public_dataset, mock_app):
@@ -48,17 +48,17 @@ def test_add_dataset_wrong_build(public_dataset, mock_app):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--id",
             dataset["_id"],
-            "-name",
+            "--name",
             dataset["name"],
-            "-build",
+            "--build",
             "meh",
         ],
     )
     # Then the command should return error
     assert result.exit_code == 2
-    assert "Invalid value for '-build':" in result.output
+    assert "Invalid value for '--build':" in result.output
 
 
 def test_add_dataset_complete(public_dataset, mock_app, database):
@@ -75,21 +75,21 @@ def test_add_dataset_complete(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--id",
             dataset["_id"],
-            "-name",
+            "--name",
             dataset["name"],
-            "-build",
+            "--build",
             dataset["assembly_id"],
-            "-authlevel",
+            "--authlevel",
             dataset["authlevel"],
-            "-desc",
+            "--desc",
             dataset["description"],
-            "-version",
+            "--version",
             dataset["version"],
-            "-url",
+            "--url",
             dataset["url"],
-            "-cc",
+            "--cc",
             dataset["consent_code"],
         ],
     )
@@ -130,21 +130,21 @@ def test_add_dataset_wrong_consent(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--id",
             dataset["_id"],
-            "-name",
+            "--name",
             dataset["name"],
-            "-build",
+            "--build",
             dataset["assembly_id"],
-            "-authlevel",
+            "--authlevel",
             dataset["authlevel"],
-            "-desc",
+            "--desc",
             dataset["description"],
-            "-version",
+            "--version",
             dataset["version"],
-            "-url",
+            "--url",
             dataset["url"],
-            "-cc",
+            "--cc",
             "MEH",  # Non valid consent code
         ],
     )
@@ -176,21 +176,21 @@ def test_update_non_existent_dataset(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--id",
             dataset["_id"],
-            "-name",
+            "--name",
             dataset["name"],
-            "-build",
+            "--build",
             dataset["assembly_id"],
-            "-authlevel",
+            "--authlevel",
             dataset["authlevel"],
-            "-desc",
+            "--desc",
             dataset["description"],
-            "-version",
+            "--version",
             dataset["version"],
-            "-url",
+            "--url",
             dataset["url"],
-            "-cc",
+            "--cc",
             dataset["consent_code"],
             "--update",
         ],
@@ -219,21 +219,21 @@ def test_update_dataset(public_dataset, mock_app, database):
         [
             "add",
             "dataset",
-            "-ds-id",
+            "--id",
             dataset["_id"],
-            "-name",
+            "--name",
             dataset["name"],
-            "-build",
+            "--build",
             dataset["assembly_id"],
-            "-authlevel",
+            "--authlevel",
             dataset["authlevel"],
-            "-desc",
+            "--desc",
             dataset["description"],
-            "-version",
+            "--version",
             2.0,  # update to version 2
-            "-url",
+            "--url",
             dataset["url"],
-            "-cc",
+            "--cc",
             dataset["consent_code"],
             "--update",
         ],
