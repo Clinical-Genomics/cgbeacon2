@@ -1,9 +1,4 @@
-## [3.3.1] - 2022.03.11
-### Fixed
-- Long description error in setup.py file causing an error on twine before PyPI push
-- Switch to codecov action v.2, since v.1 is deprecated
-
-## [] -
+## [4.0] - 2022.03.21
 ### Added
 - Redirect to query form page when user lands on / endpoint
 - Software version on query form page
@@ -20,6 +15,11 @@
 ### Fixed
 - Return dataset-specific info even if allele is not found
 - Instructions on how to deploy the beacon with podman as a systemd service
+
+## [3.3.1] - 2022.03.11
+### Fixed
+- Long description error in setup.py file causing an error on twine before PyPI push
+- Switch to codecov action v.2, since v.1 is deprecated
 
 ## [3.3] - 2022.03.11
 ### Added
