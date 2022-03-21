@@ -107,8 +107,11 @@ systemctl --user enable beacon-cli.service
 
 
 ### Beacon web service file
-Assuming that the Beacon image is already present (see first step of chapter above), let's create a service config file to start the Beacon web app and keep it running.
-
+Let's create a service config file to start the Beacon web app and keep it running.
+```
+podman create --name beacon-web clinicalgenomics/cgbeacon2-server
+```
+Create the service file under ~/.config/systemd/user:
 Let's add the following unit file to the ~/.config/systemd/user folder:
 ```
 touch ~/.config/systemd/user/beacon-web.service
@@ -127,7 +130,14 @@ After=network-online.target
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=no # Eventually turn this into on-failure
-ExecStart=/usr/bin/podman run --env "MONGODB_HOST=mongodb" -d --log-driver=journald --name beacon-web -p 6000:6000 clinicalgenomics/cgbeacon2 run
+ExecStart=/usr/bin/podman run \
+            --env "MONGODB_HOST=mongodb" \
+            --security-opt=seccomp=unconfined \
+            --log-driver=journald \
+            --name beacon-web \
+            --tz local \
+            -p 8000:8000 \
+            clinicalgenomics/cgbeacon2-server
 ExecStop=/usr/bin/podman stop beacon-web
 ExecStopPost=/usr/bin/podman rm --ignore -f beacon-web
 TimeoutStartSec=1800s
@@ -150,30 +160,21 @@ systemctl --user status beacon-web.service
 Output from the command above:
 ```
 ● beacon-web.service - Podman beacon-web.service
-     Loaded: loaded (/home/vagrant/.config/systemd/user/beacon-web.service; enabled; vendor preset: disabled)
-     Active: active (running) since Fri 2021-03-05 15:10:59 UTC; 12s ago
-       Docs: man:podman-generate-systemd(1)
-    Process: 22165 ExecStart=/usr/bin/podman run --env MONGODB_HOST=mongodb -d --log-driver=journald --name beacon-web -p 6000:6000 clinicalgenomics/cgbeacon2 run (code=exited, status=0>
-      Tasks: 20 (limit: 1129)
-     Memory: 127.4M
-        CPU: 857ms
-     CGroup: /user.slice/user-1000.slice/user@1000.service/beacon-web.service
-             ├─22186 /usr/bin/slirp4netns --disable-host-loopback --mtu 65520 --enable-sandbox --enable-seccomp -c -e 3 -r 4 --netns-type=path /run/user/1000/netns/cni-ca198e4c-16ed-635>
-             ├─22188 containers-rootlessport
-             ├─22195 /usr/bin/fuse-overlayfs -o lowerdir=/home/vagrant/.local/share/containers/storage/overlay/l/LC4437NCV6N2LAK2TH5GB4CHUO:/home/vagrant/.local/share/containers/storage>
-             ├─22196 containers-rootlessport-child
-             └─22208 /usr/bin/conmon --api-version 1 -c 1df396a7135b15d460bb3d7d36661447f9dd33fe4326d01b2f3f9b0c3cea0eb9 -u 1df396a7135b15d460bb3d7d36661447f9dd33fe4326d01b2f3f9b0c3cea0>
-
-Mar 05 15:10:59 localhost.localdomain podman[22173]: 2021-03-05 15:10:59.397135996 +0000 UTC m=+0.449354072 container start 1df396a7135b15d460bb3d7d36661447f9dd33fe4326d01b2f3f9b0c3cea0>
-Mar 05 15:10:59 localhost.localdomain podman[22173]: 1df396a7135b15d460bb3d7d36661447f9dd33fe4326d01b2f3f9b0c3cea0eb9
-Mar 05 15:10:59 localhost.localdomain systemd[630]: Started Podman beacon-web.service.
-Mar 05 15:11:02 localhost.localdomain conmon[22208]:  * Environment: production
-Mar 05 15:11:02 localhost.localdomain conmon[22208]:    WARNING: This is a development server. Do not use it in a production deployment.
-Mar 05 15:11:02 localhost.localdomain conmon[22208]:    Use a production WSGI server instead.
-Mar 05 15:11:02 localhost.localdomain conmon[22208]:  * Debug mode: off
-Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:cgbeacon2.server:Environment variable settings not found, configuring from instance file.
-Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:cgbeacon2.server:database connection info:Database(MongoClient(host=['mongodb:27017'], document_class=dict, tz_aware=False, con>
-Mar 05 15:11:02 localhost.localdomain conmon[22208]: INFO:werkzeug: * Running on http://127.0.0.1:6000/ (Press CTRL+C to quit)
+   Loaded: loaded (/home/vagrant/.config/systemd/user/beacon-web.service; enabled; vendor preset: enabled)
+   Active: activating (start) since Mon 2022-03-21 10:48:00 UTC; 3min 23s ago
+     Docs: man:podman-generate-systemd(1)
+Cntrl PID: 5390 (podman)
+   CGroup: /user.slice/user-1000.slice/user@1000.service/beacon-web.service
+           ├─5390 /usr/bin/podman run --env MONGODB_HOST=mongodb --security-opt=seccomp=unconfined --log-driver=journald --name beacon-web --tz local -p 8000:>
+           ├─5402 /usr/bin/slirp4netns --disable-host-loopback --mtu=65520 --enable-sandbox --enable-seccomp -c -e 3 -r 4 --netns-type=path /run/user/1000/net>
+           ├─5404 containers-rootlessport
+           ├─5408 /usr/bin/fuse-overlayfs -o ,lowerdir=/home/vagrant/.local/share/containers/storage/overlay/l/UVIOW4TMABJJK5NP2TTAZQXCND:/home/vagrant/.local>
+           ├─5412 containers-rootlessport-child
+           ├─5419 /usr/bin/conmon --api-version 1 -c 5fc523663bdf26efee7af191ad4c70e184e05c3c1ec43bfd2c8541b23638c599 -u 5fc523663bdf26efee7af191ad4c70e184e05>
+           └─5fc523663bdf26efee7af191ad4c70e184e05c3c1ec43bfd2c8541b23638c599
+             ├─5427 /bin/sh -c gunicorn     --workers=$GUNICORN_WORKERS     --bind=$GUNICORN_BIND      --threads=$GUNICORN_THREADS     --timeout=$GUNICORN_TIM>
+             ├─5438 /venv/bin/python /venv/bin/gunicorn --workers=1 --bind=0.0.0.0:8000 --threads=1 --timeout=400 --proxy-protocol --forwarded-allow-ips=10.0.>
+             └─5440 /venv/bin/python /venv/bin/gunicorn --workers=1 --bind=0.0.0.0:8000 --thread
 ```
 
 To stop the service type the following command:

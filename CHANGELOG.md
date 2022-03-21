@@ -19,6 +19,7 @@
 - Refactored cli options and params to be compliant with the GNU coding standards
 ### Fixed
 - Return dataset-specific info even if allele is not found
+- Instructions on how to deploy the beacon with podman as a systemd service
 
 ## [3.3] - 2022.03.11
 ### Added
