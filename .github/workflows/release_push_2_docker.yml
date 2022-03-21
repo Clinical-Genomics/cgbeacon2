@@ -1,4 +1,4 @@
-name: Publish to Docker Hub both general image (clinicalgenomics/cgbeacon2) and gunicorn server image based on master branch. Triggered whenever a new release is created
+name: Publish to Docker Hub both general image (clinicalgenomics/cgbeacon2) and gunicorn server image (clinicalgenomics/cgbeacon2-server) based on master branch. Triggered whenever a new release is created
 
 on:
  release:
