@@ -138,7 +138,8 @@ def query_form() -> str:
 @api1_bp.route("/apiv1.0/add", methods=["POST"])
 def add() -> Response:
     """
-    Endpoint accepting json data from POST requests. If request params are OK returns 200 (success).
+    Endpoint used to load variants into the database.
+    It is accepting json data from POST requests. If request params are OK returns 200 (success).
     Then start a Thread that will save variants to database.
 
     Example:
@@ -180,6 +181,43 @@ def add() -> Response:
     resp = jsonify({"message": "Saving variants to Beacon"})
     resp.status_code = 200
     return resp
+
+
+@consumes("application/json")
+@api1_bp.route("/apiv1.0/add_dataset", methods=["POST"])
+def add_dataset() -> Response:
+    """
+    Endpoint accepting authenticated POST request with json data.
+    If request params are OK a new dataset will be created in the database
+
+    Example:
+    ########### POST request ###########
+    curl -X POST \
+    -H 'Content-Type: application/json' \
+    -H 'X-Auth-Token: auth_token' \
+    -d '{"dataset_id": "new_dataset_id",
+    "name": "A test dataset containing public data",
+    "build": GRCh37",
+    "authlevel", "public",
+    "description", "A string of text describing this dataset",
+    "version": 1,
+    "url": "URL to dataset description"
+     "update": False} http://localhost:5000/apiv1.0/add_dataset
+    """
+    resp = None
+    # Check request auth token
+    valid_token = validate_token(request, current_app.db)
+    if valid_token is False:
+        resp = jsonify({"message": INVALID_TOKEN_AUTH["errorMessage"]})
+        resp.status_code = INVALID_TOKEN_AUTH["errorCode"]
+        return resp
+
+    # Check that request params are valid
+    validate_req_data = validate_add_dataset_data(request)
+    if isinstance(validate_req_data, str):  # Validation failed
+        resp = jsonify({"message": validate_req_data})
+        resp.status_code = 422
+        return resp
 
 
 @consumes("application/json")
