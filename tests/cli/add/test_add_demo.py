@@ -15,6 +15,9 @@ def test_add_demo(mock_app, database):
     # The command shour run without errors
     assert result.exit_code == 0
 
+    # Genes should be loaded
+    assert database["gene"].find_one()
+
     # A new dataset should have been inserted
     assert database["dataset"].find_one()
 

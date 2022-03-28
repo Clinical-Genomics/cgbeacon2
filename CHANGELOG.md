@@ -1,3 +1,7 @@
+## [] -
+### Added
+- Load genes when initializing demo application
+
 ## [4.0] - 2022.03.21
 ### Added
 - Redirect to query form page when user lands on / endpoint

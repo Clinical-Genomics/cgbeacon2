@@ -32,4 +32,4 @@ def genes(build) -> None:
         return
 
     n_inserted = update_genes(gene_lines, build)
-    click.echo(f"Number of inserted genes for build {build}: {len(n_inserted)}")
+    click.echo(f"Number of inserted genes for build {build}: {len(n_inserted)}\n")

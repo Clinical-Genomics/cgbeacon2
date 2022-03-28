@@ -4,6 +4,7 @@
 import datetime
 
 import click
+from cgbeacon2.cli.update import genes as update_genes
 from cgbeacon2.constants import CONSENT_CODES
 from cgbeacon2.models.user import User
 from cgbeacon2.utils.add import add_dataset, add_user, add_variants
@@ -38,6 +39,9 @@ def demo(ctx) -> None:
     ds_name = "Test public dataset"
     authlevel = "public"
     sample = "ADM1059A1"
+
+    # Invoke update genes command
+    ctx.invoke(update_genes)
 
     # Invoke add dataset command
     ctx.invoke(dataset, did=ds_id, name=ds_name, authlevel=authlevel)
