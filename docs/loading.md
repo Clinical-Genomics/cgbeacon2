@@ -10,6 +10,7 @@ The default procedure to add variants to the beacon is always the following:
 
 ## How to add:
 1. [ Demo data ](#demodata)
+1. [ Gene data ](#genes)
 1. [ A new dataset (custom data)](#dataset)
 1. [ Variants (custom data) using the command line](#variants_cli)
 1. [ Variants (custom data) using the REST API](#variants_api)
@@ -20,6 +21,18 @@ The default procedure to add variants to the beacon is always the following:
 Demo data consisting in a test dataset with public access and a set of variants (SNVs and structural variants of different type) is available under the cgbeacon2/resources/demo folder. You don't need to load this data manually since the following command will take care of everything:
 ```
 beacon add demo
+```
+
+<a name="genes"></a>
+## Adding/updating gene data
+In order to accept add variants requests containing the `genes` option, the database should be pre-populated with gene data. VCF files can in fact be filtered by genes only if gene information containing chromosome, start and stop coordinates are already available when the variants load command is executed.
+
+To load genes into database or to update the database gene collection, run the following command:
+```
+beacon update genes
+
+Options:
+  -build [GRCh37|GRCh38]  Genome assembly (default:GRCh37)
 ```
 
 <a name="dataset"></a>
@@ -97,11 +110,11 @@ Where the auth_token is the token created for the user in the step described abo
 
 ### Sending an add request to the API
 Apart from the header, an add request should contain the following parameters:
- - **dataset_id** (mandatory): string dentifier for a dataset)
+ - **dataset_id** (mandatory): string dentifier for a dataset
  - **vcf_path** (mandatory): path to variants VCF file
  - **assemblyId** (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
  - **samples** (mandatory): list of samples to extract variants from in VCF file
- - **genes** (optional): an object containing two keys:
+ - **genes**<sup>*</sup> (optional): an object containing two keys:
   - **ids**: list of genes ids to be used to filter VCF file (only variants included in these genes will be saved to database).
   - **id_type**: either "HGNC" or "Ensembl", to specify which type of ID format `ids` refers to. All genes in the list must be of the same type (for example all Ensembl IDs).
 
@@ -116,3 +129,5 @@ curl -X POST \
   "genes" : {"ids": [17284, 29669, 11592], "id_type":"HGNC"},
   "assemblyId": "GRCh37"}' http://localhost:5000/apiv1.0/add
 ```
+
+<sup>*</sup> **In order for the genes option to work, it is necessary to load genes data into the database via the command line**. Instructions on how to load genes info into the database are available [here](#genes)
