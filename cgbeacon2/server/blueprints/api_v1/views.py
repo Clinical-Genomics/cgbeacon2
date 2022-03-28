@@ -4,6 +4,7 @@ import os
 from threading import Thread
 
 from cgbeacon2.__version__ import __version__
+from cgbeacon2.cli.add import dataset as add_dataset
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
@@ -212,9 +213,27 @@ def add_dataset() -> Response:
         resp.status_code = INVALID_TOKEN_AUTH["errorCode"]
         return resp
 
-    # Check that request params are valid
-    validate_req_data = validate_add_dataset_data(request)
-    if isinstance(validate_req_data, str):  # Validation failed
+    try:
+        did = request.get("dataset_id")
+        version = request.get("version") or 1.0
+        if add_dataset(
+            did=did,
+            name=request.get("name"),
+            build=request.get("build"),
+            authlevel=request.get("authlevel"),
+            desc=request.get("description"),
+            version=version,
+            url=request.get("url"),
+            update=request.get("update"),
+        ):
+            resp = jsonify({"message": "Dataset collection updated"})
+        else:
+            resp = jsonify({"message": "An error occurred while updating dataset collection"})
+
+        resp.status_code = 200
+        return resp
+
+    except Exception as ex:
         resp = jsonify({"message": validate_req_data})
         resp.status_code = 422
         return resp

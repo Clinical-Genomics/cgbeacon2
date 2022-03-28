@@ -182,6 +182,8 @@ def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None
     else:
         click.echo("An error occurred while updating dataset collection")
 
+    return inserted_id
+
 
 @add.command()
 @click.option("--ds", type=click.STRING, nargs=1, required=True, help="dataset ID")

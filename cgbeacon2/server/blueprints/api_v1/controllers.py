@@ -78,46 +78,6 @@ def validate_add_data(req) -> Union[None, str]:
         return "Could not create a gene filter using the provided gene list"
 
 
-def validate_add_dataset_data(req) -> Union[None, str]:
-    """Validate the data specified in the parameters of a add_dataset request received via the API.
-
-    Accepts:
-        req(flask.request): POST request received by server
-
-    Returns:
-        validate_request: None or a string describing errong if not validated
-    """
-    req_data = req.json
-
-    # Check if dataset id is valid string:
-    dataset_id = req_data.get("dataset_id")
-    if (
-        isinstance(dataset_id, string) is False
-        or " " in dataset_id
-        or any(not c.replace("_", "").isalnum())
-    ):
-        return "Invalid dataset ID. Dataset ID should be a string with alphanumeric characters and underscores"
-
-    update_ds = req_data.get("update")
-    db = current_app.db
-    if db["dataset"].find_one({"_id": dataset_id}) and update is False:
-        return f"A dataset with ID {dataset_id} already exists. Please specify if it should be updated by providing a boolean parameter: update : True"
-
-    build = req_data.get("build")
-    if build not in ["GRCh37", "GRCh38"]:
-        return f"Dataset genome build '{build}' is not valid. Accepted values: 'GRCh37' or 'GRCh38'"
-
-    authlevel = req_data.get("authlevel")
-    if authlevel not in ["public", "registered", "controlled"]:
-        return f"Dataset authlevel build '{authlevel}' is not valid. Accepted values: 'public', 'registered' or 'controlled'"
-
-    for field in ["description", "url"]:
-        req_field = req_data.get("field")
-        if isinstance(dataset_id, string):
-            continue
-        return f"Field '{req_field}' is not valid. It should be a string"
-
-
 def validate_delete_data(req) -> Union[None, str]:
     """Validate the data specified in the parameters of a delete request received via the API.
 
