@@ -234,7 +234,7 @@ def add_dataset() -> Response:
         return resp
 
     except Exception as ex:
-        resp = jsonify({"message": validate_req_data})
+        resp = jsonify({"message": ex})
         resp.status_code = 422
         return resp
 
