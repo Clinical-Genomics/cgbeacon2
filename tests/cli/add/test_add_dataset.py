@@ -150,9 +150,7 @@ def test_update_non_existent_dataset(public_dataset, mock_app, database):
     )
     # Then the command should print error
     assert result.exit_code == 0
-    assert (
-        f"Update failed: couldn't find any dataset with the given ID in database" in result.output
-    )
+    assert "Update failed: couldn't find any dataset with the given ID in database" in result.output
 
 
 def test_update_dataset(public_dataset, mock_app, database):
