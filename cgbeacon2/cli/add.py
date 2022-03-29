@@ -37,6 +37,7 @@ def demo(ctx) -> None:
     # Creating public dataset
     ds_id = "test_public"
     ds_name = "Test public dataset"
+    desc = "Test dataset with variants in genome build GRCh37"
     authlevel = "public"
     sample = "ADM1059A1"
 
@@ -44,7 +45,7 @@ def demo(ctx) -> None:
     ctx.invoke(update_genes)
 
     # Invoke add dataset command
-    ctx.invoke(dataset, did=ds_id, name=ds_name, authlevel=authlevel)
+    ctx.invoke(dataset, did=ds_id, name=ds_name, desc=desc, authlevel=authlevel)
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
