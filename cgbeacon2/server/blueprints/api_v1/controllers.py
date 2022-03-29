@@ -46,7 +46,7 @@ def validate_add_data(req) -> Union[None, str]:
         req(flask.request): POST request received by server
 
     Returns:
-        validate_request: True if validated, a string describing errong if not validated
+        validate_request: None, a string describing errong if not validated
     """
     db = current_app.db
     req_data = req.json
@@ -76,6 +76,34 @@ def validate_add_data(req) -> Union[None, str]:
     filter_intervals = compute_filter_intervals(req_data)
     if filter_intervals is None:
         return "Could not create a gene filter using the provided gene list"
+
+
+def validate_delete_data(req) -> Union[None, str]:
+    """Validate the data specified in the parameters of a delete request received via the API.
+
+    Accepts:
+        req(flask.request): POST request received by server
+
+    Returns:
+        validate_request: None or a string describing errong if not validated
+    """
+    db = current_app.db
+    req_data = req.json
+
+    dataset_id = req_data.get("dataset_id")
+    dataset = db["dataset"].find_one({"_id": dataset_id})
+    samples = req_data.get("samples")
+
+    # Invalid dataset
+    if dataset is None:
+        return "Invalid request. Please specify a valid dataset ID"
+
+    # Invalid samples
+    if isinstance(samples, list) is False or not samples:
+        return "Please provide a valid list of samples"
+
+    if overlapping_samples(dataset.get("samples", []), samples) is False:
+        return "One or more provided samples was not found in the dataset"
 
 
 def add_variants_task(req) -> None:
@@ -128,34 +156,6 @@ def overlapping_samples(dataset_samples, request_samples) -> bool:
     sampleset = set(request_samples)
     # return False if not all samples in provided samples list are found in dataset
     return all(sample in ds_sampleset for sample in sampleset)
-
-
-def validate_delete_data(req) -> str:
-    """Validate the data specified in the paramaters of a delete request received via the API.
-
-    Accepts:
-        req(flask.request): POST request received by server
-
-    Returns:
-        validate_request: True if validated, a string describing errong if not validated
-    """
-    db = current_app.db
-    req_data = req.json
-
-    dataset_id = req_data.get("dataset_id")
-    dataset = db["dataset"].find_one({"_id": dataset_id})
-    samples = req_data.get("samples")
-
-    # Invalid dataset
-    if dataset is None:
-        return "Invalid request. Please specify a valid dataset ID"
-
-    # Invalid samples
-    if isinstance(samples, list) is False or not samples:
-        return "Please provide a valid list of samples"
-
-    if overlapping_samples(dataset.get("samples", []), samples) is False:
-        return "One or more provided samples was not found in the dataset"
 
 
 def delete_variants_task(req) -> None:

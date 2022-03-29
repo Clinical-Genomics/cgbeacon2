@@ -138,14 +138,15 @@ def query_form() -> str:
 @api1_bp.route("/apiv1.0/add", methods=["POST"])
 def add() -> Response:
     """
-    Endpoint accepting json data from POST requests. If request params are OK returns 200 (success).
+    Endpoint used to load variants into the database.
+    It is accepting json data from POST requests. If request params are OK returns 200 (success).
     Then start a Thread that will save variants to database.
 
     Example:
     ########### POST request ###########
     curl -X POST \
     -H 'Content-Type: application/json' \
-    -H 'X-Auth-Token: auth_token' \
+    -H 'X-Auth-Token: DEMO' \
     -d '{"dataset_id": "test_public",
     "vcf_path": "path/to/cgbeacon2/resources/demo/test_trio.vcf.gz",
     "samples" : ["ADM1059A1", "ADM1059A2"],
@@ -191,7 +192,7 @@ def delete() -> Response:
     ########### POST request ###########
     curl -X DELETE \
     -H 'Content-Type: application/json' \
-    -H 'X-Auth-Token: auth_token' \
+    -H 'X-Auth-Token: DEMO' \
     -d '{"dataset_id": "test_public",
     "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:5000/apiv1.0/delete
     """

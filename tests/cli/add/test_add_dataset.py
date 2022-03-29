@@ -89,8 +89,6 @@ def test_add_dataset_complete(public_dataset, mock_app, database):
             dataset["version"],
             "--url",
             dataset["url"],
-            "--cc",
-            dataset["consent_code"],
         ],
     )
 
@@ -108,54 +106,11 @@ def test_add_dataset_complete(public_dataset, mock_app, database):
     assert new_dataset["description"] == dataset["description"]
     assert new_dataset["version"] == dataset["version"]
     assert new_dataset["external_url"] == dataset["url"]
-    assert new_dataset["consent_code"] == dataset["consent_code"]
     assert new_dataset["created"]
 
     # And a new avent should have been created in the event collection
     event_obj = database["event"].find_one()
     assert event_obj
-
-
-def test_add_dataset_wrong_consent(public_dataset, mock_app, database):
-    """Test the cli command which adds a dataset to db without a valid consent code"""
-
-    # test add a dataset_obj using the app cli
-    runner = mock_app.test_cli_runner()
-
-    dataset = public_dataset
-
-    # When invoking the command providing all params + non valid consent code
-    result = runner.invoke(
-        cli,
-        [
-            "add",
-            "dataset",
-            "--did",
-            dataset["_id"],
-            "--name",
-            dataset["name"],
-            "--build",
-            dataset["assembly_id"],
-            "--authlevel",
-            dataset["authlevel"],
-            "--desc",
-            dataset["description"],
-            "--version",
-            dataset["version"],
-            "--url",
-            dataset["url"],
-            "--cc",
-            "MEH",  # Non valid consent code
-        ],
-    )
-
-    # Then the command should print error
-    assert result.exit_code == 1
-    assert "Consent code seem to have a non-standard value" in result.output
-
-    # and no dataset should be saved to database
-    new_dataset = database["dataset"].find_one()
-    assert new_dataset is None
 
 
 def test_update_non_existent_dataset(public_dataset, mock_app, database):
@@ -190,14 +145,12 @@ def test_update_non_existent_dataset(public_dataset, mock_app, database):
             dataset["version"],
             "--url",
             dataset["url"],
-            "--cc",
-            dataset["consent_code"],
             "--update",
         ],
     )
     # Then the command should print error
     assert result.exit_code == 0
-    assert "An error occurred while updating dataset collection" in result.output
+    assert "Update failed: couldn't find any dataset with the given ID in database" in result.output
 
 
 def test_update_dataset(public_dataset, mock_app, database):
@@ -210,8 +163,7 @@ def test_update_dataset(public_dataset, mock_app, database):
     dataset["created"] = datetime.datetime.now()
 
     # Having a database dataset collection with one item
-    result = database["dataset"].insert_one(dataset)
-    assert result is not None
+    assert database["dataset"].insert_one(dataset)
 
     # When invoking the add command with the update flag to update a dataset
     result = runner.invoke(
@@ -230,11 +182,9 @@ def test_update_dataset(public_dataset, mock_app, database):
             "--desc",
             dataset["description"],
             "--version",
-            2.0,  # update to version 2
+            "v2.0",  # update to version 2
             "--url",
             dataset["url"],
-            "--cc",
-            dataset["consent_code"],
             "--update",
         ],
     )
@@ -245,5 +195,5 @@ def test_update_dataset(public_dataset, mock_app, database):
 
     # And the dataset should be updated
     updated_dataset = database["dataset"].find_one({"_id": dataset["_id"]})
-    assert updated_dataset["version"] == 2
+    assert updated_dataset["version"] == "v2.0"
     assert updated_dataset["updated"] is not None

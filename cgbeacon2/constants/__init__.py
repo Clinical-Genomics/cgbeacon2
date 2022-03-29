@@ -1,4 +1,3 @@
-from .consent_codes import CONSENT_CODES
 from .oauth_errors import (
     EXPIRED_TOKEN_SIGNATURE,
     INVALID_TOKEN_AUTH,

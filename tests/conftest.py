@@ -132,7 +132,7 @@ def public_dataset():
         assembly_id="GRCh37",
         authlevel="public",
         description="Public dataset description",
-        version=1.0,
+        version="v1.0",
         url="external_url.url",
         consent_code="HMB",
     )

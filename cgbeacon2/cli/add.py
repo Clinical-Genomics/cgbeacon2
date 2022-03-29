@@ -5,12 +5,12 @@ import datetime
 
 import click
 from cgbeacon2.cli.update import genes as update_genes
-from cgbeacon2.constants import CONSENT_CODES
 from cgbeacon2.models.user import User
 from cgbeacon2.utils.add import add_dataset, add_user, add_variants
 from cgbeacon2.utils.parse import count_variants, extract_variants, get_vcf_samples, merge_intervals
 from cgbeacon2.utils.update import update_dataset, update_event
 from flask.cli import current_app, with_appcontext
+from pymongo.results import InsertOneResult
 
 
 @click.group()
@@ -37,6 +37,7 @@ def demo(ctx) -> None:
     # Creating public dataset
     ds_id = "test_public"
     ds_name = "Test public dataset"
+    desc = "Test dataset with variants in genome build GRCh37"
     authlevel = "public"
     sample = "ADM1059A1"
 
@@ -44,7 +45,7 @@ def demo(ctx) -> None:
     ctx.invoke(update_genes)
 
     # Invoke add dataset command
-    ctx.invoke(dataset, did=ds_id, name=ds_name, authlevel=authlevel)
+    ctx.invoke(dataset, did=ds_id, name=ds_name, desc=desc, authlevel=authlevel)
 
     # Invoke add variants command to import all SNV variants from demo sample
     ctx.invoke(
@@ -126,61 +127,38 @@ def user(uid, name, token, desc, url) -> User:
 @click.option("--desc", type=click.STRING, nargs=1, required=False, help="dataset description")
 @click.option(
     "--version",
-    type=click.FLOAT,
+    type=click.STRING,
     nargs=1,
     required=False,
-    help="dataset version, i.e. 1.0",
+    help="dataset version, i.e. v1.0",
 )
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="external url")
-@click.option("--cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None:
+def dataset(did, name, build, authlevel, desc, version, url, update) -> None:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
-    dataset_obj = {"_id": did, "name": name, "assembly_id": build}
+    dataset_obj = {
+        "_id": did,
+        "name": name,
+        "description": desc,
+        "assembly_id": build,
+        "authlevel": authlevel,
+        "desc": desc,
+        "version": version,
+        "external_url": url,
+    }
+    try:
+        inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
+        if inserted_id:
+            click.echo("Dataset collection was successfully updated")
+            # register the event in the event collection
+            update_event(current_app.db, did, "dataset", True)
+        else:
+            click.echo("An error occurred while updating dataset collection")
 
-    if update is True:
-        dataset_obj["updated"] = datetime.datetime.now()
-    else:
-        dataset_obj["created"] = datetime.datetime.now()
-
-    dataset_obj["authlevel"] = authlevel
-
-    if desc is not None:
-        dataset_obj["description"] = desc
-
-    if version is not None:
-        dataset_obj["version"] = version
-    else:
-        dataset_obj["version"] = 1.0
-
-    if url is not None:
-        dataset_obj["external_url"] = url
-
-    if cc is not None:
-        # This can be improved, doesn't consider Codes with XX yet
-        # Make sure consent code is among is an official consent code
-        if cc not in CONSENT_CODES:
-            click.echo(
-                "Consent code seem to have a non-standard value. Accepted consent code values:"
-            )
-            count = 1
-            for code, item in CONSENT_CODES.items():
-                click.echo(f'{count})\t{item["abbr"]}\t{item["name"]}\t{item["description"]}')
-                count += 1
-            raise click.Abort()
-
-        dataset_obj["consent_code"] = cc
-
-    inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
-
-    if inserted_id:
-        click.echo(f"Dataset collection was successfully updated with dataset '{inserted_id}'")
-        # register the event in the event collection
-        update_event(current_app.db, did, "dataset", True)
-    else:
-        click.echo("An error occurred while updating dataset collection")
+    except ValueError as vex:
+        click.echo(vex)
 
 
 @add.command()
