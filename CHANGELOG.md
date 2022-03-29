@@ -17,12 +17,9 @@
 - Refactored HTML query form to be more user friendly
 - Refactored query form page to better display dataset-specific results
 - Refactored cli options and params to be compliant with the GNU coding standards
-- Moved code checking parameters used to create a new dataset in a dedicated function under utils/add.py
-- Removed optional consent codes when creating a new dataset, as they are not required and complicate code
 ### Fixed
 - Return dataset-specific info even if allele is not found
 - Instructions on how to deploy the beacon with podman as a systemd service
-- Dataset version is saved as a string
 - Updated Black version used in GitHub action's to 22.3.0, to fix linting error in CI due to new Click release
 
 ## [3.3.1] - 2022.03.11
