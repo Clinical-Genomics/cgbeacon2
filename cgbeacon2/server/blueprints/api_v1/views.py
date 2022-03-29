@@ -4,7 +4,6 @@ import os
 from threading import Thread
 
 from cgbeacon2.__version__ import __version__
-from cgbeacon2.cli.add import add_dataset as add_dataset_cli
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
@@ -205,7 +204,7 @@ def add_dataset() -> Response:
     "url": "URL to dataset description",
     "update": False}' http://localhost:5000/apiv1.0/add_dataset
     """
-
+    """
     resp = None
     # Check request auth token
     valid_token = validate_token(request, current_app.db)
@@ -218,6 +217,10 @@ def add_dataset() -> Response:
         req_data = request.json
         did = req_data.get("dataset_id")
         version = req_data.get("version") or 1.0
+
+        new_dataset_dict = {
+
+        }
 
         if add_dataset_cli(
             did=did,
@@ -240,6 +243,8 @@ def add_dataset() -> Response:
         resp = jsonify({"message": ex})
         resp.status_code = 422
         return resp
+    """
+    return "nothing"
 
 
 @consumes("application/json")

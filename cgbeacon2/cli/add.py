@@ -126,10 +126,10 @@ def user(uid, name, token, desc, url) -> User:
 @click.option("--desc", type=click.STRING, nargs=1, required=False, help="dataset description")
 @click.option(
     "--version",
-    type=click.FLOAT,
+    type=click.STRING,
     nargs=1,
     required=False,
-    help="dataset version, i.e. 1.0",
+    help="dataset version, i.e. v1.0",
 )
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="external url")
 @click.option("--cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
@@ -138,8 +138,18 @@ def user(uid, name, token, desc, url) -> User:
 def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
-    dataset_obj = {"_id": did, "name": name, "assembly_id": build}
+    dataset_obj = {
+        "_id": did,
+        "name": name,
+        "assembly_id": build,
+        "authlevel": authlevel,
+        "desc": desc,
+        "version": version,
+        "url": url,
+        "cc": cc,
+    }
 
+    """
     if update is True:
         dataset_obj["updated"] = datetime.datetime.now()
     else:
@@ -172,6 +182,7 @@ def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None
             raise click.Abort()
 
         dataset_obj["consent_code"] = cc
+    """
 
     inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
 

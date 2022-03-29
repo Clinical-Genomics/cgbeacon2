@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+import datetime
 import logging
-from typing import Union
+from typing import Tuple, Union
 
 from cgbeacon2.constants import CHROMOSOMES
 from cgbeacon2.models.variant import Variant
@@ -32,6 +33,57 @@ def add_user(database, user) -> Union[None, InsertOneResult]:
     return result.inserted_id
 
 
+def check_dataset_data(dataset_dict) -> Tuple:
+    """Check data provided by user to creare/update a dataset in database
+
+    Accepts:
+        dataset_dict(dict): a dictionary containing the database data"
+
+    Returns:
+        validates (Tuple): True,None or False,Error Message(string)
+    """
+    # Chack that dataset ID has valid value
+    dataset_id = dataset_dict["_id"]
+    if (
+        isinstance(dataset_id, str) is False
+        or " " in dataset_id
+        or not dataset_id.replace("_", "").isalnum()
+    ):
+        return (
+            False,
+            "Invalid dataset ID. Dataset ID should be a string with alphanumeric characters and underscores",
+        )
+
+    # Check dataset name
+    dataset_name = dataset_dict["name"]
+    if isinstance(dataset_name, str) is False or dataset_name == "":
+        return False, "Dataset name must be a non-empty string"
+
+    # Check provided genome build
+    assembly = dataset_dict["assembly_id"]
+    if not assembly in ["GRCh37", "GRCh38"]:
+        return (
+            False,
+            f"Dataset genome build '{build}' is not valid. Accepted values are 'GRCh37' or 'GRCh38'",
+        )
+
+    authlevel = dataset_dict["authlevel"]
+    if authlevel not in ["public", "registered", "controlled"]:
+        return (
+            False,
+            f"Dataset authlevel build '{authlevel}' is not valid. Accepted values are 'public', 'registered' or 'controlled'",
+        )
+
+    dataset_desc = dataset_dict["desc"]
+    if dataset_desc and isinstance(dataset_desc, str) is False or dataset_desc == "":
+        return False, "Dataset description must be a non-empty string"
+
+    if dataset_dict["version"] is None:
+        dataset_dict["version"] = "v1.0"
+
+    return True, None
+
+
 def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneResult]:
     """Add/modify a dataset
 
@@ -42,28 +94,39 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
     Returns:
         inserted_id(str): the _id of the added/updated dataset
     """
-    collection = "dataset"
+    # Check validity of provided info
+    checked_ds = check_dataset_data(dataset_dict)
+    if checked_ds[0] is False:
+        raise ValueError(checked_ds[1])
 
-    if update:  # update an existing dataset
-        # LOG.info(f"Updating dataset collection with dataset id: {id}..")
-        old_dataset = database[collection].find_one({"_id": dataset_dict["_id"]})
-
+    ds_collection = database["dataset"]
+    if update:  # Check if a dataset with provided _id aready exists
+        old_dataset = ds_collection.find_one({"_id": dataset_dict["_id"]})
         if old_dataset is None:
-            LOG.fatal(
-                "Couldn't find any dataset with id '{}' in the database".format(dataset_dict["_id"])
+            raise ValueError(
+                "Update failed: couldn't find any dataset with id '{}' in the database".format(
+                    dataset_dict["_id"]
+                )
             )
-            return
-        dataset_dict["created"] = old_dataset["created"]
-        result = database[collection].replace_one({"_id": dataset_dict["_id"]}, dataset_dict)
-        if result.modified_count > 0:
-            return dataset_dict["_id"]
-        return
-
-    try:
-        result = database[collection].insert_one(dataset_dict)
-        return result.inserted_id
-    except Exception as err:
-        LOG.error(err)
+        return ds_collection.find_one_and_update(
+            {"_id": dataset_dict["_id"]},
+            {
+                "$set": {
+                    "updated": datetime.datetime.now(),
+                    "name": dataset_dict["name"],
+                    "assembly_id": dataset_dict["assembly"],
+                    "authlevel": dataset_dict["authlevel"],
+                    "description": dataset_dict["desc"],
+                    "version": dataset_dict["version"],
+                }
+            },
+        )
+    else:
+        dataset_dict["created"] = datetime.datetime.now()
+        try:
+            return ds_collection.insert_one(dataset_dict)
+        except Exception as err:
+            LOG.error(err)
 
 
 def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants) -> int:
