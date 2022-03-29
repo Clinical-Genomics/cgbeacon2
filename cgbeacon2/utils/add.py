@@ -106,8 +106,7 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
         old_dataset = ds_collection.find_one({"_id": dataset_dict["_id"]})
         if old_dataset is None:
             raise ValueError(
-                "Update failed: couldn't find any dataset with id '%s' in the database"
-                % (dataset_dict["_id"])
+                "Update failed: couldn't find any dataset with the given ID in database"
             )
         return ds_collection.find_one_and_update(
             {"_id": dataset_dict["_id"]},
