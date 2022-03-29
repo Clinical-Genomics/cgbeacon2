@@ -123,12 +123,12 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
                 }
             },
         )
-    else:
-        dataset_dict["created"] = datetime.datetime.now()
-        try:
-            return ds_collection.insert_one(dataset_dict)
-        except Exception as err:
-            LOG.error(err)
+
+    dataset_dict["created"] = datetime.datetime.now()
+    try:
+        return ds_collection.insert_one(dataset_dict)
+    except Exception as err:
+        LOG.error(err)
 
 
 def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants) -> int:
