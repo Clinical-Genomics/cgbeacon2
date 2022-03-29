@@ -156,8 +156,6 @@ def dataset(did, name, build, authlevel, desc, version, url, update) -> None:
         else:
             click.echo("An error occurred while updating dataset collection")
 
-        click.echo("Dataset collection was successfully updated")
-
     except ValueError as vex:
         click.echo(vex)
 

@@ -193,10 +193,10 @@ def test_update_dataset(public_dataset, mock_app, database):
     )
 
     # Then the command should NOT print error
-    # assert result.exit_code == 0
+    assert result.exit_code == 0
     assert "Dataset collection was successfully updated" in result.output
 
     # And the dataset should be updated
     updated_dataset = database["dataset"].find_one({"_id": dataset["_id"]})
-    assert updated_dataset["version"] == 2
+    assert updated_dataset["version"] == "v2.0"
     assert updated_dataset["updated"] is not None

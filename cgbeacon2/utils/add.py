@@ -64,7 +64,7 @@ def check_dataset_data(dataset_dict) -> Tuple:
     if not assembly in ["GRCh37", "GRCh38"]:
         return (
             False,
-            f"Dataset genome build '{build}' is not valid. Accepted values are 'GRCh37' or 'GRCh38'",
+            f"Dataset genome build '{assembly}' is not valid. Accepted values are 'GRCh37' or 'GRCh38'",
         )
 
     authlevel = dataset_dict["authlevel"]
@@ -116,7 +116,7 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
                 "$set": {
                     "updated": datetime.datetime.now(),
                     "name": dataset_dict["name"],
-                    "assembly_id": dataset_dict["assembly"],
+                    "assembly_id": dataset_dict["assembly_id"],
                     "authlevel": dataset_dict["authlevel"],
                     "description": dataset_dict["desc"],
                     "version": dataset_dict["version"],
