@@ -134,7 +134,7 @@ def user(uid, name, token, desc, url) -> User:
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="external url")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(did, name, build, authlevel, desc, version, url, update) -> [None, InsertOneResult]:
+def dataset(did, name, build, authlevel, desc, version, url, update) -> None:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
     dataset_obj = {
@@ -147,17 +147,19 @@ def dataset(did, name, build, authlevel, desc, version, url, update) -> [None, I
         "version": version,
         "external_url": url,
     }
+    try:
+        inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
+        if inserted_id:
+            click.echo("Dataset collection was successfully updated")
+            # register the event in the event collection
+            update_event(current_app.db, did, "dataset", True)
+        else:
+            click.echo("An error occurred while updating dataset collection")
 
-    inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
-
-    if inserted_id:
         click.echo("Dataset collection was successfully updated")
-        # register the event in the event collection
-        update_event(current_app.db, did, "dataset", True)
-    else:
-        click.echo("An error occurred while updating dataset collection")
 
-    return inserted_id
+    except ValueError as vex:
+        click.echo(vex)
 
 
 @add.command()
