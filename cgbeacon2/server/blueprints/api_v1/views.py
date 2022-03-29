@@ -4,7 +4,7 @@ import os
 from threading import Thread
 
 from cgbeacon2.__version__ import __version__
-from cgbeacon2.cli.add import dataset as add_dataset
+from cgbeacon2.cli.add import add_dataset as add_dataset_cli
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
 from cgbeacon2.utils.auth import authlevel, validate_token
@@ -147,7 +147,7 @@ def add() -> Response:
     ########### POST request ###########
     curl -X POST \
     -H 'Content-Type: application/json' \
-    -H 'X-Auth-Token: auth_token' \
+    -H 'X-Auth-Token: DEMO' \
     -d '{"dataset_id": "test_public",
     "vcf_path": "path/to/cgbeacon2/resources/demo/test_trio.vcf.gz",
     "samples" : ["ADM1059A1", "ADM1059A2"],
@@ -195,16 +195,17 @@ def add_dataset() -> Response:
     ########### POST request ###########
     curl -X POST \
     -H 'Content-Type: application/json' \
-    -H 'X-Auth-Token: auth_token' \
+    -H 'X-Auth-Token: DEMO' \
     -d '{"dataset_id": "new_dataset_id",
     "name": "A test dataset containing public data",
-    "build": GRCh37",
-    "authlevel", "public",
-    "description", "A string of text describing this dataset",
+    "build": "GRCh37",
+    "authlevel": "public",
+    "description": "A string of text describing this dataset",
     "version": 1,
-    "url": "URL to dataset description"
-     "update": False} http://localhost:5000/apiv1.0/add_dataset
+    "url": "URL to dataset description",
+    "update": False}' http://localhost:5000/apiv1.0/add_dataset
     """
+
     resp = None
     # Check request auth token
     valid_token = validate_token(request, current_app.db)
@@ -214,17 +215,19 @@ def add_dataset() -> Response:
         return resp
 
     try:
-        did = request.get("dataset_id")
-        version = request.get("version") or 1.0
-        if add_dataset(
+        req_data = request.json
+        did = req_data.get("dataset_id")
+        version = req_data.get("version") or 1.0
+
+        if add_dataset_cli(
             did=did,
-            name=request.get("name"),
-            build=request.get("build"),
-            authlevel=request.get("authlevel"),
-            desc=request.get("description"),
+            name=req_data.get("name"),
+            build=req_data.get("build"),
+            authlevel=req_data.get("authlevel"),
+            desc=req_data.get("description"),
             version=version,
-            url=request.get("url"),
-            update=request.get("update"),
+            url=req_data.get("url"),
+            update=req_data.get("update"),
         ):
             resp = jsonify({"message": "Dataset collection updated"})
         else:
@@ -248,7 +251,7 @@ def delete() -> Response:
     ########### POST request ###########
     curl -X DELETE \
     -H 'Content-Type: application/json' \
-    -H 'X-Auth-Token: auth_token' \
+    -H 'X-Auth-Token: DEMO' \
     -d '{"dataset_id": "test_public",
     "samples" : ["ADM1059A1", "ADM1059A2"]' http://localhost:5000/apiv1.0/delete
     """
