@@ -5,7 +5,6 @@ import datetime
 
 import click
 from cgbeacon2.cli.update import genes as update_genes
-from cgbeacon2.constants import CONSENT_CODES
 from cgbeacon2.models.user import User
 from cgbeacon2.utils.add import add_dataset, add_user, add_variants
 from cgbeacon2.utils.parse import count_variants, extract_variants, get_vcf_samples, merge_intervals
@@ -132,7 +131,6 @@ def user(uid, name, token, desc, url) -> User:
     help="dataset version, i.e. v1.0",
 )
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="external url")
-@click.option("--cc", type=click.STRING, nargs=1, required=False, help="consent code key. i.e. HMB")
 @click.option("--update", is_flag=True)
 @with_appcontext
 def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None:
@@ -146,43 +144,7 @@ def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None
         "desc": desc,
         "version": version,
         "url": url,
-        "cc": cc,
     }
-
-    """
-    if update is True:
-        dataset_obj["updated"] = datetime.datetime.now()
-    else:
-        dataset_obj["created"] = datetime.datetime.now()
-
-    dataset_obj["authlevel"] = authlevel
-
-    if desc is not None:
-        dataset_obj["description"] = desc
-
-    if version is not None:
-        dataset_obj["version"] = version
-    else:
-        dataset_obj["version"] = 1.0
-
-    if url is not None:
-        dataset_obj["external_url"] = url
-
-    if cc is not None:
-        # This can be improved, doesn't consider Codes with XX yet
-        # Make sure consent code is among is an official consent code
-        if cc not in CONSENT_CODES:
-            click.echo(
-                "Consent code seem to have a non-standard value. Accepted consent code values:"
-            )
-            count = 1
-            for code, item in CONSENT_CODES.items():
-                click.echo(f'{count})\t{item["abbr"]}\t{item["name"]}\t{item["description"]}')
-                count += 1
-            raise click.Abort()
-
-        dataset_obj["consent_code"] = cc
-    """
 
     inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
 
