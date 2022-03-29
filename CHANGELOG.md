@@ -22,6 +22,7 @@
 ### Fixed
 - Return dataset-specific info even if allele is not found
 - Instructions on how to deploy the beacon with podman as a systemd service
+- Updated Black version used in GitHub action's to 22.3.0, to fix linting error in CI due to new Click release
 - Dataset version is saved as a string
 
 ## [3.3.1] - 2022.03.11
