@@ -74,12 +74,14 @@ def check_dataset_data(dataset_dict) -> Tuple:
             f"Dataset authlevel build '{authlevel}' is not valid. Accepted values are 'public', 'registered' or 'controlled'",
         )
 
-    dataset_desc = dataset_dict["desc"]
+    dataset_desc = dataset_dict["description"]
     if dataset_desc and isinstance(dataset_desc, str) is False or dataset_desc == "":
         return False, "Dataset description must be a non-empty string"
 
     if dataset_dict["version"] is None:
         dataset_dict["version"] = "v1.0"
+
+    dataset_dict["version"] = str(dataset_dict["version"])
 
     return True, None
 

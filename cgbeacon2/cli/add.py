@@ -10,6 +10,7 @@ from cgbeacon2.utils.add import add_dataset, add_user, add_variants
 from cgbeacon2.utils.parse import count_variants, extract_variants, get_vcf_samples, merge_intervals
 from cgbeacon2.utils.update import update_dataset, update_event
 from flask.cli import current_app, with_appcontext
+from pymongo.results import InsertOneResult
 
 
 @click.group()
@@ -133,23 +134,24 @@ def user(uid, name, token, desc, url) -> User:
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="external url")
 @click.option("--update", is_flag=True)
 @with_appcontext
-def dataset(did, name, build, authlevel, desc, version, url, cc, update) -> None:
+def dataset(did, name, build, authlevel, desc, version, url, update) -> [None, InsertOneResult]:
     """Creates a dataset object in the database or updates a pre-existing one"""
 
     dataset_obj = {
         "_id": did,
         "name": name,
+        "description": desc,
         "assembly_id": build,
         "authlevel": authlevel,
         "desc": desc,
         "version": version,
-        "url": url,
+        "external_url": url,
     }
 
     inserted_id = add_dataset(database=current_app.db, dataset_dict=dataset_obj, update=update)
 
     if inserted_id:
-        click.echo(f"Dataset collection was successfully updated with dataset '{inserted_id}'")
+        click.echo("Dataset collection was successfully updated")
         # register the event in the event collection
         update_event(current_app.db, did, "dataset", True)
     else:
