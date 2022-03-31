@@ -3,7 +3,7 @@ import json
 from cgbeacon2.resources import test_snv_vcf_path
 
 
-def test_add_datasets_wrong_auth_token(mock_app, api_req_headers):
+def test_add_dataset_wrong_auth_token(mock_app, api_req_headers):
     """Test receiving an add_dataset request with an X-Auth-Token header key not registered in database"""
 
     # WHEN an add request with the wrong token is sent
