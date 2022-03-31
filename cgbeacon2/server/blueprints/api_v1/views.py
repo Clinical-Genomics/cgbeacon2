@@ -9,6 +9,7 @@ from cgbeacon2.models import Beacon
 from cgbeacon2.utils.add import add_dataset as add_dataset_util
 from cgbeacon2.utils.auth import authlevel, validate_token
 from cgbeacon2.utils.parse import validate_add_params
+from cgbeacon2.utils.update import update_event
 from flask import (
     Blueprint,
     Response,
@@ -174,6 +175,9 @@ def add_dataset() -> Response:
             database=current_app.db, dataset_dict=dataset_obj, update=bool(req_data.get("update"))
         )
         if inserted_id:
+            # register the event in the event collection
+            update_event(current_app.db, req_data.get("id"), "dataset", True)
+
             resp = jsonify({"message": "Dataset collection was successfully updated"})
             resp.status_code = 200
         else:

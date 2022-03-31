@@ -43,6 +43,8 @@ def test_add_dataset(mock_app, api_req_headers, public_dataset, api_user, databa
 
     # GIVEN a database with no dataset
     assert database["dataset"].find_one() is None
+    # AND with no events
+    assert database["event"].find_one() is None
 
     # GIVEN a request containing all the required params
     data = {
@@ -64,8 +66,13 @@ def test_add_dataset(mock_app, api_req_headers, public_dataset, api_user, databa
     resp_data = json.loads(response.data)
     assert resp_data["message"] == "Dataset collection was successfully updated"
 
-    # And the dataset should be created:
+    # the dataset should be created:
     assert database["dataset"].find_one({"_id": public_dataset["_id"]})
+
+    # and one event should be registered in events collection
+    assert database["event"].find_one(
+        {"updated_collection": "dataset", "dataset": public_dataset["_id"]}
+    )
 
 
 def test_add_dataset_existing(mock_app, api_req_headers, public_dataset, api_user, database):
