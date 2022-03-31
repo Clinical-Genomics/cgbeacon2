@@ -3,6 +3,8 @@
 - Load genes when initializing demo application
 - Instructions on how to load/update genes in database to filter uploaded VCFs by genes
 - Added an add_dataset endpoint to create or update datasets via the API
+### Fixed
+- Fixed code to remove all deprecation warnings
 
 ## [4.0] - 2022.03.21
 ### Added
