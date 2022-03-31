@@ -175,10 +175,10 @@ def add_dataset() -> Response:
         )
         if inserted_id:
             resp = jsonify({"message": "Dataset collection was successfully updated"})
-            resp.status_code = 422
+            resp.status_code = 200
         else:
             resp = jsonify({"message": "An error occurred while updating dataset collection"})
-            resp.status_code = 200
+            resp.status_code = 422
 
     except Exception as ex:
         resp = jsonify({"message": ex})

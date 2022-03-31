@@ -2,6 +2,7 @@
 ### Added
 - Load genes when initializing demo application
 - Instructions on how to load/update genes in database to filter uploaded VCFs by genes
+- Added an add_dataset endpoint to create or update datasets via the API
 
 ## [4.0] - 2022.03.21
 ### Added
@@ -18,7 +19,7 @@
 - Refactored query form page to better display dataset-specific results
 - Refactored cli options and params to be compliant with the GNU coding standards
 - Moved code checking parameters used to create a new dataset in a dedicated function under utils/add.py
-- Removed optional consent codes when creating a new dataset, as they are not required and complicate code 
+- Removed optional consent codes when creating a new dataset, as they are not required and complicate code
 ### Fixed
 - Return dataset-specific info even if allele is not found
 - Instructions on how to deploy the beacon with podman as a systemd service

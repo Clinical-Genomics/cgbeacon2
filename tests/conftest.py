@@ -134,7 +134,6 @@ def public_dataset():
         description="Public dataset description",
         version="v1.0",
         url="external_url.url",
-        consent_code="HMB",
     )
     return dataset
 
@@ -148,9 +147,8 @@ def registered_dataset():
         assembly_id="GRCh37",
         authlevel="registered",
         description="Registered dataset description",
-        version=1.0,
+        version="v1.0",
         url="external_registered_url.url",
-        consent_code="RUO",
     )
     return dataset
 
@@ -164,9 +162,8 @@ def controlled_dataset():
         assembly_id="GRCh37",
         authlevel="controlled",
         description="Controlled dataset description",
-        version=1.0,
+        version="v1.0",
         url="external_regostered_url.url",
-        consent_code="IRB",
     )
     return dataset
 
@@ -180,7 +177,7 @@ def public_dataset_no_variants():
         assembly_id="GRCh37",
         authlevel="public",
         description="Test dataset 2 description",
-        version=1.0,
+        version="v1.0",
         url="external_url2.url",
         consent_code="FOO",
     )
