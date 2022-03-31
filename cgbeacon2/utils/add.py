@@ -92,6 +92,7 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
     Accepts:
         database(pymongo.database.Database)
         dataset_dict(dict)
+        update(bool): if an existing dataset should be updated
 
     Returns:
         inserted_id(str): the _id of the added/updated dataset

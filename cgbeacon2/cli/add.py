@@ -144,7 +144,6 @@ def dataset(did, name, build, authlevel, desc, version, url, update) -> None:
         "description": desc,
         "assembly_id": build,
         "authlevel": authlevel,
-        "desc": desc,
         "version": version,
         "external_url": url,
     }
