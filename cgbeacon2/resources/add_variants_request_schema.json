@@ -1,5 +1,4 @@
 {
-    "$schema": "http://json-schema.org/schema#",
     "title": "Validate cgbeacon2 add endpoint",
     "description": "Validates a variants add POST request content",
     "type": "object",
