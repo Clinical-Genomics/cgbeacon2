@@ -1,5 +1,110 @@
-from cgbeacon2.resources import test_snv_vcf_path
 import json
+
+from cgbeacon2.resources import test_snv_vcf_path
+
+
+def test_add_dataset_wrong_auth_token(mock_app, api_req_headers):
+    """Test receiving an add_dataset request with an X-Auth-Token header key not registered in database"""
+
+    # WHEN an add request with the wrong token is sent
+    api_req_headers["X-Auth-Token"] = "FOO"
+    # GIVEN a POST request with data sent to the add_dataset endpoint
+    response = mock_app.test_client().post("/apiv1.0/add_dataset", json={}, headers=api_req_headers)
+    # then it should return not authorized
+    assert response.status_code == 403
+    resp_data = json.loads(response.data)
+    assert resp_data["message"] == "Invalid auth token error"
+
+
+def test_add_dataset_missing_data(mock_app, api_req_headers, database, api_user):
+    """Test receiving an add_dataset request with one of the mandatory params that is missing (genome build)"""
+
+    # GIVEN an authorized API user
+    database["user"].insert_one(api_user)
+
+    # GIVEN a request missing one mandatory parameter (build)
+    data = {"id": "test_id", "name": "A new dataset"}
+
+    # GIVEN a POST request with data sent to the add_dataset endpoint
+    response = mock_app.test_client().post(
+        "/apiv1.0/add_dataset", json=data, headers=api_req_headers
+    )
+    # then it should return not authorized
+    assert response.status_code == 422
+    resp_data = json.loads(response.data)
+    assert "Dataset genome build 'None' is not valid" in resp_data["message"]
+
+
+def test_add_dataset(mock_app, api_req_headers, public_dataset, api_user, database):
+    """Test receiving an add_dataset request for adding a new dataset"""
+
+    # GIVEN an authorized API user
+    database["user"].insert_one(api_user)
+
+    # GIVEN a database with no dataset
+    assert database["dataset"].find_one() is None
+    # AND with no events
+    assert database["event"].find_one() is None
+
+    # GIVEN a request containing all the required params
+    data = {
+        "id": public_dataset["_id"],
+        "name": public_dataset["name"],
+        "build": public_dataset["assembly_id"],
+        "authlevel": public_dataset["authlevel"],
+        "description": public_dataset["description"],
+        "version": public_dataset["version"],
+        "url": public_dataset["url"],
+    }
+
+    # GIVEN a POST request with data sent to the add_dataset endpoint
+    response = mock_app.test_client().post(
+        "/apiv1.0/add_dataset", json=data, headers=api_req_headers
+    )
+    # THEN it should return a successful response
+    assert response.status_code == 200
+    resp_data = json.loads(response.data)
+    assert resp_data["message"] == "Dataset collection was successfully updated"
+
+    # the dataset should be created:
+    assert database["dataset"].find_one({"_id": public_dataset["_id"]})
+
+    # and one event should be registered in events collection
+    assert database["event"].find_one(
+        {"updated_collection": "dataset", "dataset": public_dataset["_id"]}
+    )
+
+
+def test_add_dataset_existing(mock_app, api_req_headers, public_dataset, api_user, database):
+    """Tested adding a dataset to the database when the new dataset ID already exists"""
+
+    # GIVEN an authorized API user
+    database["user"].insert_one(api_user)
+
+    # GIVEN a database with a dataset
+    assert database["dataset"].insert_one(public_dataset)
+
+    # GIVEN a request containing all the required params
+    data = {
+        "id": public_dataset["_id"],
+        "name": public_dataset["name"],
+        "build": public_dataset["assembly_id"],
+        "authlevel": public_dataset["authlevel"],
+        "description": public_dataset["description"],
+        "version": public_dataset["version"],
+        "url": public_dataset["url"],
+    }
+
+    # GIVEN a POST request with data sent to the add_dataset endpoint
+    response = mock_app.test_client().post(
+        "/apiv1.0/add_dataset", json=data, headers=api_req_headers
+    )
+
+    # THEN it should return an error response
+    assert response.status_code == 422
+    # CONTAINING the expected error message
+    resp_data = json.loads(response.data)
+    assert "Duplicate Key Error" in resp_data["message"]
 
 
 def test_add_variants_no_auth_token(mock_app, api_req_headers):

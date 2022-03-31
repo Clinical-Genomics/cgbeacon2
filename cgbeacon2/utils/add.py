@@ -92,6 +92,7 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
     Accepts:
         database(pymongo.database.Database)
         dataset_dict(dict)
+        update(bool): if an existing dataset should be updated
 
     Returns:
         inserted_id(str): the _id of the added/updated dataset
@@ -116,17 +117,14 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
                     "name": dataset_dict["name"],
                     "assembly_id": dataset_dict["assembly_id"],
                     "authlevel": dataset_dict["authlevel"],
-                    "description": dataset_dict["desc"],
+                    "description": dataset_dict["description"],
                     "version": dataset_dict["version"],
                 }
             },
         )
 
     dataset_dict["created"] = datetime.datetime.now()
-    try:
-        return ds_collection.insert_one(dataset_dict)
-    except Exception as err:
-        LOG.error(err)
+    return ds_collection.insert_one(dataset_dict)
 
 
 def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants) -> int:

@@ -6,8 +6,10 @@ from threading import Thread
 from cgbeacon2.__version__ import __version__
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
 from cgbeacon2.models import Beacon
+from cgbeacon2.utils.add import add_dataset as add_dataset_util
 from cgbeacon2.utils.auth import authlevel, validate_token
 from cgbeacon2.utils.parse import validate_add_params
+from cgbeacon2.utils.update import update_event
 from flask import (
     Blueprint,
     Response,
@@ -132,6 +134,61 @@ def query_form() -> str:
         stats=stats(),
         form=dict(request.form),
     )
+
+
+@consumes("application/json")
+@api1_bp.route("/apiv1.0/add_dataset", methods=["POST"])
+def add_dataset() -> Response:
+    """
+    Endpoint used to create a new dataset in database.
+    It is accepting json data from POST requests. If request params are OK returns 200 (success).
+    If an error occurrs it returns error code plus error message.
+
+    Example:
+    ########### POST request ###########
+    curl -X POST \
+    -H 'Content-Type: application/json' \
+    -H 'X-Auth-Token: DEMO' \
+    -d '{"id": "test_public",
+    "name": "Test public dataset", "description": "This is a test dataset",
+    "build": "GRCh37", "authlevel": "public", "version": "v1.0",
+    "url": "someurl.se", "update": False}' http://localhost:5000/apiv1.0/add_dataset
+    """
+    resp = None
+    if validate_token(request, current_app.db) is False:
+        resp = jsonify({"message": INVALID_TOKEN_AUTH["errorMessage"]})
+        resp.status_code = INVALID_TOKEN_AUTH["errorCode"]
+        return resp
+
+    try:
+        req_data = request.json
+        dataset_obj = {
+            "_id": req_data.get("id"),
+            "name": req_data.get("name"),
+            "description": req_data.get("description"),
+            "assembly_id": req_data.get("build"),
+            "authlevel": req_data.get("authlevel"),
+            "version": req_data.get("version"),
+            "external_url": req_data.get("url"),
+        }
+        inserted_id = add_dataset_util(
+            database=current_app.db, dataset_dict=dataset_obj, update=bool(req_data.get("update"))
+        )
+        if inserted_id:
+            # register the event in the event collection
+            update_event(current_app.db, req_data.get("id"), "dataset", True)
+
+            resp = jsonify({"message": "Dataset collection was successfully updated"})
+            resp.status_code = 200
+        else:
+            resp = jsonify({"message": "An error occurred while updating dataset collection"})
+            resp.status_code = 422
+
+    except Exception as ex:
+        resp = jsonify({"message": str(ex)})
+        resp.status_code = 422
+
+    return resp
 
 
 @consumes("application/json")
