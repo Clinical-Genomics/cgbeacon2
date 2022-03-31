@@ -117,7 +117,7 @@ def add_dataset(database, dataset_dict, update=False) -> Union[None, InsertOneRe
                     "name": dataset_dict["name"],
                     "assembly_id": dataset_dict["assembly_id"],
                     "authlevel": dataset_dict["authlevel"],
-                    "description": dataset_dict["desc"],
+                    "description": dataset_dict["description"],
                     "version": dataset_dict["version"],
                 }
             },
