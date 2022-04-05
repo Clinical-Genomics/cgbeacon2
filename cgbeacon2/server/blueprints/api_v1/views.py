@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from threading import Thread
+import threading
 
 from cgbeacon2.__version__ import __version__
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
@@ -197,7 +197,7 @@ def add() -> Response:
     """
     Endpoint used to load variants into the database.
     It is accepting json data from POST requests. If request params are OK returns 200 (success).
-    Then start a Thread that will save variants to database.
+    Then start a brackground thread that will save variants to database.
 
     Example:
     ########### POST request ###########
@@ -231,8 +231,10 @@ def add() -> Response:
         resp.status_code = 422
         return resp
 
-    # Start loading variants thread
-    Thread(target=add_variants_task(request)).start()
+    # Start loading variants thread in background
+    thread = threading.Thread(target=add_variants_task(request))
+    thread.daemon = True  # Daemonize
+    thread.start()
 
     # Return success response
     resp = jsonify({"message": "Saving variants to Beacon"})
