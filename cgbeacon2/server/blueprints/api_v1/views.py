@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-import threading
 
 from cgbeacon2.__version__ import __version__
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
@@ -20,6 +19,7 @@ from flask import (
     request,
     send_from_directory,
 )
+from flask_executor import Executor
 from flask_negotiate import consumes
 
 from .controllers import (
@@ -232,9 +232,8 @@ def add() -> Response:
         return resp
 
     # Start loading variants thread in background
-    thread = threading.Thread(target=add_variants_task(request))
-    thread.daemon = True  # Daemonize
-    thread.start()
+    executor = Executor(current_app)
+    executor.submit(add_variants_task(request))
     LOG.debug("Started loading variants in a background thread")
 
     # Return success response
@@ -272,9 +271,8 @@ def delete() -> Response:
         return resp
 
     # Start deleting variants thread
-    thread = threading.Thread(target=delete_variants_task(request))
-    thread.daemon = True  # Daemonize
-    thread.start()
+    executor = Executor(current_app)
+    executor.submit(delete_variants_task(request))
     LOG.debug("Started removing variants in a background thread")
 
     # Return success response
