@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
+from threading import Thread
 
 from cgbeacon2.__version__ import __version__
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
@@ -19,7 +20,6 @@ from flask import (
     request,
     send_from_directory,
 )
-from flask_executor import Executor
 from flask_negotiate import consumes
 
 from .controllers import (
@@ -197,7 +197,7 @@ def add() -> Response:
     """
     Endpoint used to load variants into the database.
     It is accepting json data from POST requests. If request params are OK returns 200 (success).
-    Then start a brackground thread that will save variants to database.
+    Then start a Thread that will save variants to database.
 
     Example:
     ########### POST request ###########
@@ -231,10 +231,8 @@ def add() -> Response:
         resp.status_code = 422
         return resp
 
-    # Start loading variants thread in background
-    executor = Executor(current_app)
-    executor.submit(add_variants_task(request))
-    LOG.debug("Started loading variants in a background thread")
+    # Start loading variants thread
+    Thread(target=add_variants_task(request)).start()
 
     # Return success response
     resp = jsonify({"message": "Saving variants to Beacon"})
@@ -271,9 +269,7 @@ def delete() -> Response:
         return resp
 
     # Start deleting variants thread
-    executor = Executor(current_app)
-    executor.submit(delete_variants_task(request))
-    LOG.debug("Started removing variants in a background thread")
+    Thread(target=delete_variants_task(request)).start()
 
     # Return success response
     resp = jsonify({"message": "Deleting variants from Beacon"})

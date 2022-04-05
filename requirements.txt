@@ -7,7 +7,6 @@ progress
 
 # server
 flask
-flask-executor
 requests
 flask_negotiate
 werkzeug

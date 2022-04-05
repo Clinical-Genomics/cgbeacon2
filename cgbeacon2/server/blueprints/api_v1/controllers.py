@@ -73,6 +73,10 @@ def validate_add_data(req) -> Union[None, str]:
     if genes.get("id_type") not in ["HGNC", "Ensembl"]:
         return "Please provide id_type (HGNC or Ensembl) for the given list of genes"
 
+    filter_intervals = compute_filter_intervals(req_data)
+    if filter_intervals is None:
+        return "Could not create a gene filter using the provided gene list"
+
 
 def validate_delete_data(req) -> Union[None, str]:
     """Validate the data specified in the parameters of a delete request received via the API.
