@@ -63,11 +63,11 @@ def validate_add_data(req) -> Union[None, str]:
 
     # Check that provided VCF file exists
     if exists(vcf_path) is False:
-        return f"VCF path was not found in the provided path:{vcf_path}"
+        return f"VCF file was not found at the provided path:{vcf_path}"
 
     vcf_samples = get_vcf_samples(vcf_path)
     if not vcf_samples:
-        return "Error extracting info from VCF file, please check path to VCF"
+        return f"Samples {vcf_samples} were not found in VCF files"
 
     samples = req_data.get("samples", [])
     if overlapping_samples(vcf_samples, samples) is False:

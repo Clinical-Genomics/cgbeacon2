@@ -206,7 +206,7 @@ def test_variants_add_invalid_vcf_path(
     assert response.status_code == 422
     # With message that VCF path is not valid
     data = json.loads(response.data)
-    assert data["message"] == "Error extracting info from VCF file, please check path to VCF"
+    assert "VCF file was not found at the provided path" in data["message"]
 
 
 def test_variants_add_invalid_samples(
