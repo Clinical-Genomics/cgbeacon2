@@ -6,7 +6,7 @@
 ### Fixed
 - Fixed code to remove all deprecation warnings
 - Dockerfile worker owns the workdir to prevent permission denied when writing temp filtered VCF file
-- Add variants endpoint starts loading variant in background thread
+- Adding and removing variants using API requests perform the actual tasks in background threads
 
 ## [4.0] - 2022.03.21
 ### Added

@@ -235,6 +235,7 @@ def add() -> Response:
     thread = threading.Thread(target=add_variants_task(request))
     thread.daemon = True  # Daemonize
     thread.start()
+    LOG.debug("Started loading variants in a background thread")
 
     # Return success response
     resp = jsonify({"message": "Saving variants to Beacon"})
@@ -274,9 +275,9 @@ def delete() -> Response:
     thread = threading.Thread(target=delete_variants_task(request))
     thread.daemon = True  # Daemonize
     thread.start()
+    LOG.debug("Started removing variants in a background thread")
 
     # Return success response
-    LOG.debug("Returning positive response (status code:200)")
     resp = jsonify({"message": "Deleting variants from Beacon"})
     resp.status_code = 200
     return resp
