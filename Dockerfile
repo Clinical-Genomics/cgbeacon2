@@ -37,7 +37,7 @@ RUN groupadd --gid 1000 worker && useradd -g worker --uid 1000 --shell /usr/sbin
 COPY --chown=worker:worker --from=python-builder /venv /venv
 
 # Copy app dir to image
-COPY --chown=worker:worker . /home/worker/app
+COPY . /home/worker/app
 
 WORKDIR /home/worker/app
 
