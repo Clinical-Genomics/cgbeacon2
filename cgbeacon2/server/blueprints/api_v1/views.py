@@ -271,7 +271,9 @@ def delete() -> Response:
         return resp
 
     # Start deleting variants thread
-    Thread(target=delete_variants_task(request)).start()
+    thread = threading.Thread(target=delete_variants_task(request))
+    thread.daemon = True  # Daemonize
+    thread.start()
 
     # Return success response
     LOG.debug("Returning positive response (status code:200)")
