@@ -1,4 +1,5 @@
 import json
+import time
 
 from cgbeacon2.resources import test_snv_vcf_path
 
@@ -126,6 +127,8 @@ def test_delete_variants_wrong_sample(
         "genes": {"ids": [17284], "id_type": "HGNC"},
     }
     response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    # wait some time for variants to be loaded
+    time.sleep(3)
     n_inserted = len(list(database["variant"].find()))
     assert n_inserted > 0
     updated_ds = database["dataset"].find_one()
@@ -163,6 +166,8 @@ def test_delete_variants_api(
         "genes": {"ids": [17284], "id_type": "HGNC"},
     }
     response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    # Wait for variants to be loaded
+    time.sleep(3)
     n_inserted = len(list(database["variant"].find()))
     assert n_inserted > 0
 
@@ -172,11 +177,14 @@ def test_delete_variants_api(
     # When the delete variants API is used to remove variants for one sample
     data = {"dataset_id": public_dataset["_id"], "samples": ["ADM1059A2"]}
     response = mock_app.test_client().delete("/apiv1.0/delete", json=data, headers=api_req_headers)
-    # Then the response should return success
-    assert response.status_code == 200
+    # Then the response should return 202 (accepted)
+    assert response.status_code == 202
     resp_data = json.loads(response.data)
     # Should contain the number of variants updates/removed
     assert resp_data["message"] == "Deleting variants from Beacon"
+
+    # After waiting for variants to be deleted from database
+    time.sleep(3)
 
     # Number of variants on server should change
     n_variants = len(list(database["variant"].find()))

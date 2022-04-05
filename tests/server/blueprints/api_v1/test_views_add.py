@@ -1,4 +1,5 @@
 import json
+import time
 
 from cgbeacon2.resources import test_snv_vcf_path
 
@@ -206,7 +207,7 @@ def test_variants_add_invalid_vcf_path(
     assert response.status_code == 422
     # With message that VCF path is not valid
     data = json.loads(response.data)
-    assert data["message"] == "Error extracting info from VCF file, please check path to VCF"
+    assert "VCF file was not found at the provided path" in data["message"]
 
 
 def test_variants_add_invalid_samples(
@@ -283,11 +284,12 @@ def test_variants_add_hgnc_genes(
         "genes": {"ids": [17284], "id_type": "HGNC"},
     }
     response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
-    # Then it should return a success response
-    assert response.status_code == 200
+    # Then it should return a 202 (accepted) response
+    assert response.status_code == 202
     resp_data = json.loads(response.data)
     assert resp_data["message"] == "Saving variants to Beacon"
     # And given some time to load variants
+    time.sleep(3)
     # Variants should be added
     assert database["variant"].find_one()
     updated_dataset = database["dataset"].find_one()
@@ -317,11 +319,12 @@ def test_variants_add_ensembl_genes(
         "genes": {"ids": ["ENSG00000128513"], "id_type": "Ensembl"},
     }
     response = mock_app.test_client().post("/apiv1.0/add?", json=data, headers=api_req_headers)
-    # Then it should return a success response
-    assert response.status_code == 200
+    # Then it should return a 202 (accepted) response
+    assert response.status_code == 202
     resp_data = json.loads(response.data)
     assert resp_data["message"] == "Saving variants to Beacon"
     # And given some time to load variants
+    time.sleep(3)
     # Variants should be added
     assert database["variant"].find_one()
     updated_dataset = database["dataset"].find_one()

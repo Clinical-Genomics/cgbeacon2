@@ -3,9 +3,13 @@
 - Load genes when initializing demo application
 - Instructions on how to load/update genes in database to filter uploaded VCFs by genes
 - Added an add_dataset endpoint to create or update datasets via the API
+- Return error if provided VCF path is not found before extracting genomic intervals of interest
 ### Fixed
 - Fixed code to remove all deprecation warnings
 - Dockerfile worker owns the workdir to prevent permission denied when writing temp filtered VCF file
+- Adding and removing variants in background after API calls
+### Changed
+- `add` and `delete` endpoints return response code 202 (accepted) instead of 200 (success)
 
 ## [4.0] - 2022.03.21
 ### Added
