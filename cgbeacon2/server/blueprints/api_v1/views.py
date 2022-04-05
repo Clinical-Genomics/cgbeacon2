@@ -272,6 +272,7 @@ def delete() -> Response:
     Thread(target=delete_variants_task(request)).start()
 
     # Return success response
+    LOG.debug("Returning positive response (status code:200)")
     resp = jsonify({"message": "Deleting variants from Beacon"})
     resp.status_code = 200
     return resp
