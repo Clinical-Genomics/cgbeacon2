@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from os.path import exists
 from typing import Union
 
 from cgbeacon2.constants import (
@@ -58,7 +59,13 @@ def validate_add_data(req) -> Union[None, str]:
     if dataset is None:
         return "Invalid request. Please specify a valid dataset ID"
 
-    vcf_samples = get_vcf_samples(req_data.get("vcf_path"))
+    vcf_path = req_data.get("vcf_path")
+
+    # Check that provided VCF file exists
+    if os.path.exists(vcf_path) is False:
+        return f"VCF path was not found in the provided path:{vcf_path}"
+
+    vcf_samples = get_vcf_samples(vcf_path)
     if not vcf_samples:
         return "Error extracting info from VCF file, please check path to VCF"
 
@@ -66,6 +73,7 @@ def validate_add_data(req) -> Union[None, str]:
     if overlapping_samples(vcf_samples, samples) is False:
         return f"One or more provided samples were not found in VCF. VCF samples:{vcf_samples}"
 
+    """
     genes = req_data.get("genes")
     if genes is None:  # Return validated OK and then load the entire VCF
         return
@@ -76,6 +84,7 @@ def validate_add_data(req) -> Union[None, str]:
     filter_intervals = compute_filter_intervals(req_data)
     if filter_intervals is None:
         return "Could not create a gene filter using the provided gene list"
+    """
 
 
 def validate_delete_data(req) -> Union[None, str]:
