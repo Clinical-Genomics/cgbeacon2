@@ -7,6 +7,9 @@
 ### Fixed
 - Fixed code to remove all deprecation warnings
 - Dockerfile worker owns the workdir to prevent permission denied when writing temp filtered VCF file
+- Adding and removing variants in background after API calls
+### Changed
+- `add` and `delete` endpoints return response code 202 (accepted) instead of 200 (success)
 
 ## [4.0] - 2022.03.21
 ### Added

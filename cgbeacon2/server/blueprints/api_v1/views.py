@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import os
-from threading import Thread
 
 from cgbeacon2.__version__ import __version__
 from cgbeacon2.constants import CHROMOSOMES, INVALID_TOKEN_AUTH
@@ -20,6 +19,7 @@ from flask import (
     request,
     send_from_directory,
 )
+from flask_executor import Executor
 from flask_negotiate import consumes
 
 from .controllers import (
@@ -232,11 +232,13 @@ def add() -> Response:
         return resp
 
     # Start loading variants thread
-    Thread(target=add_variants_task(request)).start()
+    executor = Executor()
+    executor.init_app(current_app)
+    executor.submit(add_variants_task, request)
 
     # Return success response
     resp = jsonify({"message": "Saving variants to Beacon"})
-    resp.status_code = 200
+    resp.status_code = 202
     return resp
 
 
@@ -269,11 +271,13 @@ def delete() -> Response:
         return resp
 
     # Start deleting variants thread
-    Thread(target=delete_variants_task(request)).start()
+    executor = Executor()
+    executor.init_app(current_app)
+    executor.submit(delete_variants_task, request)
 
     # Return success response
     resp = jsonify({"message": "Deleting variants from Beacon"})
-    resp.status_code = 200
+    resp.status_code = 202
     return resp
 
 
