@@ -1,4 +1,4 @@
-## [] -
+## [4.1] - 2022.04.20
 ### Added
 - Load genes when initializing demo application
 - Instructions on how to load/update genes in database to filter uploaded VCFs by genes
