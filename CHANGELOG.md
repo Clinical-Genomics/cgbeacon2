@@ -1,4 +1,6 @@
 ## [] -
+### Fixed
+- Validation errors against GA4GH's OpenAPI specification and CSCfi JSON schemas 
 ### Added
 - Explicit `/apiv1.0/info` endpoint
 
