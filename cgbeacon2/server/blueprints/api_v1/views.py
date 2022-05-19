@@ -99,7 +99,7 @@ def query_form() -> str:
             query_datasets = resp_obj["allelRequest"].get("datasetIds", [])
             exists, ds_allele_responses = dispatch_query(query, response_type, query_datasets)
             resp_obj["exists"] = exists
-            resp_obj["error"] = None
+            resp_obj["error"] = {"errorCode": 200}
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
             flash(f"<small>Request received->{resp_obj['allelRequest']}</small>")
@@ -331,14 +331,15 @@ def query() -> Response:
         resp_obj["apiVersion"] = API_VERSION
 
         # query database (it should return a datasetAlleleResponses object)
-        response_type = resp_obj["allelRequest"].get("includeDatasetResponses", "NONE")
-        query_datasets = resp_obj["allelRequest"].get("datasetIds", [])
+        # response_type = resp_obj["allelRequest"].get("includeDatasetResponses", "NONE")
+        # query_datasets = resp_obj["allelRequest"].get("datasetIds", [])
+
         exists, ds_allele_responses = dispatch_query(
             query, response_type, query_datasets, auth_levels
         )
 
         resp_obj["exists"] = exists
-        resp_obj["error"] = None
+        resp_obj["error"] = {"errorCode": 200}
         resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
     resp = jsonify(resp_obj)
