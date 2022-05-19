@@ -55,6 +55,7 @@ def send_img(filename) -> Response:
 
 
 @api1_bp.route("/", methods=["GET"])
+@api1_bp.route("/info", methods=["GET"])
 @api1_bp.route("/apiv1.0/", methods=["GET"])
 def info() -> Response:
     """Returns Beacon info data as a json object

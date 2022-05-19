@@ -1,3 +1,9 @@
+## [] -
+### Added
+- Explicit `/info` endpoint
+
+
+
 ## [4.1] - 2022.04.20
 ### Added
 - Load genes when initializing demo application
