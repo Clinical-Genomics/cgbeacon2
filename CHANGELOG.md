@@ -1,6 +1,6 @@
 ## [] -
 ### Added
-- Explicit `/info` endpoint
+- Explicit `/apiv1.0/info` endpoint
 
 
 
