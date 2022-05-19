@@ -96,7 +96,7 @@ This command will create 2 collections: "dataset" and "variant". Dataset collect
 - **/**.
 General info regarding this Beacon, including a description of its datasets, API version, sample count etc, can be obtained by sending a GET request using the following shell command:
 ```
-curl -X GET 'http://localhost:5000/apiv1.0/'
+curl -X GET 'http://localhost:5000/apiv1.0/info'
 ```
 
 Demo beacon will reply to this request with a JSON object like this:

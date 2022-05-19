@@ -1,3 +1,9 @@
+## [] -
+### Added
+- Explicit `/apiv1.0/info` endpoint
+
+
+
 ## [4.1] - 2022.04.20
 ### Added
 - Load genes when initializing demo application
