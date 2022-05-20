@@ -25,12 +25,10 @@ DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"  # standalone MongoDB instan
 ORGANIZATION = dict(
     id="scilifelab",  # mandatory
     name="Clinical Genomics, SciLifeLab",  # mandatory
-    description="A science lab",
-    address="",
-    contactUrl="mailto:someone@mail.com",
-    logoUrl="",
-    welcomeUrl="https://www.scilifelab.se/units/clinical-genomics-stockholm",
-    alternativeUrl="https://www.scilifelab.se/units/clinical-genomics-stockholm",
+    description="Science for Life Laboratory",
+    address="Tomtebodavägen 23, 17165 Solna, Sweden",
+    contactUrl="mailto:admin@scilifelab.beacon.com",
+    logoUrl="https://raw.githubusercontent.com/Clinical-Genomics/cgbeacon2/8370809507e08a4fa6724bbf0bc6e9b581d1fa76/cgbeacon2/server/static/scilifelab-logo.svg",
 )
 
 BEACON_OBJ = dict(
