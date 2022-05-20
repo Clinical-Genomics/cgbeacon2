@@ -228,15 +228,6 @@ def create_allele_query(resp_obj, req) -> dict:
     # check if the minimum required params were provided in query
     error = check_allele_request(resp_obj, customer_query, mongo_query)
 
-    """
-    # if an error occurred, do not query database and return error
-    if resp_obj.get("message") is not None:
-        resp_obj["message"]["allelRequest"] = customer_query
-        resp_obj["message"]["exists"] = None
-        resp_obj["message"]["datasetAlleleResponses"] = []
-        return
-    """
-
     resp_obj["allelRequest"] = customer_query
     return customer_query, mongo_query, error
 
