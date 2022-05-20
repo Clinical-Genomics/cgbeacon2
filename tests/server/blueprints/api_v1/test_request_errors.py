@@ -37,11 +37,10 @@ def test_query_get_request_missing_mandatory_params(mock_app):
     # Then it should return error
     assert response.status_code == 400
     data = json.loads(response.data)
-    assert data["message"]["error"] == NO_MANDATORY_PARAMS
-    assert data["message"]["exists"] is None
-    assert data["message"]["datasetAlleleResponses"] == []
-    assert data["message"]["beaconId"]
-    assert data["message"]["apiVersion"] == "1.0.0"
+    assert data["error"] == NO_MANDATORY_PARAMS
+    assert data["exists"] is None
+    assert data["beaconId"]
+    assert data["apiVersion"] == "1.0.0"
 
 
 def test_query_get_request_unknown_datasets(mock_app):
@@ -59,7 +58,7 @@ def test_query_get_request_unknown_datasets(mock_app):
     # THEN it should return the expected type of error
     assert response.status_code == 400
     data = json.loads(response.data)
-    assert data["message"]["error"] == UNKNOWN_DATASETS
+    assert data["error"] == UNKNOWN_DATASETS
 
 
 def test_query_get_request_build_mismatch(mock_app, public_dataset):
@@ -77,7 +76,7 @@ def test_query_get_request_build_mismatch(mock_app, public_dataset):
     # Then it should return error
     assert response.status_code == 400
     data = json.loads(response.data)
-    assert data["message"]["error"] == BUILD_MISMATCH
+    assert data["error"] == BUILD_MISMATCH
 
 
 def test_query_get_request_missing_secondary_params(mock_app):
@@ -91,7 +90,7 @@ def test_query_get_request_missing_secondary_params(mock_app):
     # Then it should return error
     assert response.status_code == 400
     data = json.loads(response.data)
-    assert data["message"]["error"] == NO_SECONDARY_PARAMS
+    assert data["error"] == NO_SECONDARY_PARAMS
 
 
 def test_query_get_request_non_numerical_sv_coordinates(mock_app):
@@ -103,7 +102,7 @@ def test_query_get_request_non_numerical_sv_coordinates(mock_app):
     data = json.loads(response.data)
     # Then it should return error
     assert response.status_code == 400
-    assert data["message"]["error"] == INVALID_COORDINATES
+    assert data["error"] == INVALID_COORDINATES
 
 
 def test_query_get_request_missing_positions_params(mock_app):
@@ -117,7 +116,7 @@ def test_query_get_request_missing_positions_params(mock_app):
     data = json.loads(response.data)
     # Then it should return error
     assert response.status_code == 400
-    assert data["message"]["error"] == NO_POSITION_PARAMS
+    assert data["error"] == NO_POSITION_PARAMS
 
 
 def test_query_get_request_non_numerical_range_coordinates(mock_app):
@@ -131,4 +130,4 @@ def test_query_get_request_non_numerical_range_coordinates(mock_app):
     data = json.loads(response.data)
     # Then it should return error
     assert response.status_code == 400
-    assert data["message"]["error"] == INVALID_COORDINATES
+    assert data["error"] == INVALID_COORDINATES
