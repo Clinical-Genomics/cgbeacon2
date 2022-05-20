@@ -195,6 +195,7 @@ def create_allele_query(resp_obj, req) -> dict:
     """
     customer_query = {}
     mongo_query = {}
+    error = None
     data = None
 
     if req.method == "GET":
@@ -225,15 +226,9 @@ def create_allele_query(resp_obj, req) -> dict:
         customer_query["includeDatasetResponses"] = "NONE"
 
     # check if the minimum required params were provided in query
-    check_allele_request(resp_obj, customer_query, mongo_query)
+    error = check_allele_request(resp_obj, customer_query, mongo_query)
 
-    # if an error occurred, do not query database and return error
-    if resp_obj.get("message") is not None:
-        resp_obj["message"]["allelRequest"] = customer_query
-        resp_obj["message"]["exists"] = None
-        resp_obj["message"]["datasetAlleleResponses"] = []
-
-    return customer_query, mongo_query
+    return customer_query, mongo_query, error
 
 
 def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
@@ -252,6 +247,8 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
     build = customer_query.get("assemblyId")
     datasets = customer_query.get("datasetIds", [])
     variant_type = customer_query.get("variantType")
+
+    error = None
 
     # If customer wants to match a SNV with precise coordinates, alt and ref
     if (
@@ -278,29 +275,17 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
         build,
     ]:
         # return a bad request 400 error with explanation message
-        resp_obj["message"] = dict(
-            error=NO_MANDATORY_PARAMS,
-            allelRequest=customer_query,
-        )
-        return
+        return NO_MANDATORY_PARAMS
 
     if len(datasets) > 0:
         # Check that requested datasets are contained in this beacon
         dsets = list(current_app.db["dataset"].find({"_id": {"$in": datasets}}))
         if len(dsets) == 0:  # requested dataset is not present in database
-            resp_obj["message"] = dict(
-                error=UNKNOWN_DATASETS,
-                allelRequest=customer_query,
-            )
-            return
+            return UNKNOWN_DATASETS
 
         if build not in [dset["assembly_id"] for dset in dsets]:
             # Requested genome build doesn't correspond to genome build of available datasets
-            resp_obj["message"] = dict(
-                error=BUILD_MISMATCH,
-                allelRequest=customer_query,
-            )
-            return
+            return BUILD_MISMATCH
 
     # alternateBases OR variantType is also required
     if all(
@@ -311,11 +296,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
         ]
     ):
         # return a bad request 400 error with explanation message
-        resp_obj["message"] = dict(
-            error=NO_SECONDARY_PARAMS,
-            allelRequest=customer_query,
-        )
-        return
+        return NO_SECONDARY_PARAMS
 
     # Check that genomic coordinates are provided (even rough)
     if (
@@ -323,11 +304,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
         and any([coord in customer_query.keys() for coord in RANGE_COORDINATES]) is False
     ):
         # return a bad request 400 error with explanation message
-        resp_obj["message"] = dict(
-            error=NO_POSITION_PARAMS,
-            allelRequest=customer_query,
-        )
-        return
+        return NO_POSITION_PARAMS
 
     if start:  # query for exact position
         try:
@@ -337,10 +314,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
 
         except ValueError:
             # return a bad request 400 error with explanation message
-            resp_obj["message"] = dict(
-                error=INVALID_COORDINATES,
-                allelRequest=customer_query,
-            )
+            return INVALID_COORDINATES
 
     # Range query
     elif any([coord in customer_query.keys() for coord in RANGE_COORDINATES]):  # range query
@@ -359,10 +333,7 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
                 fuzzy_end_query["$lte"] = int(customer_query["endMax"])
         except ValueError:
             # return a bad request 400 error with explanation message
-            resp_obj["message"] = dict(
-                error=INVALID_COORDINATES,
-                allelRequest=customer_query,
-            )
+            return INVALID_COORDINATES
 
         if fuzzy_start_query:
             mongo_query["start"] = fuzzy_start_query

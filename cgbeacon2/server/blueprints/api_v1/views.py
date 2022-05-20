@@ -88,16 +88,16 @@ def query_form() -> str:
 
     if request.method == "POST":
         # Create database query object
-        query = create_allele_query(resp_obj, request)
+        customer_query, mongo_query, error = create_allele_query(resp_obj, request)
 
-        if resp_obj.get("message") is not None:  # an error must have occurred
-            flash(resp_obj["message"]["error"], "danger")
+        if error:
+            flash(error, "danger")
 
         else:  # query database
             # query database (it should return a datasetAlleleResponses object)
             response_type = resp_obj["allelRequest"].get("includeDatasetResponses", "NONE")
             query_datasets = resp_obj["allelRequest"].get("datasetIds", [])
-            exists, ds_allele_responses = dispatch_query(query, response_type, query_datasets)
+            exists, ds_allele_responses = dispatch_query(mongo_query, response_type, query_datasets)
             resp_obj["exists"] = exists
             resp_obj["error"] = {"errorCode": 200}
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
@@ -318,29 +318,28 @@ def query() -> Response:
         return resp
 
     # Create database query object
-    customer_query, mongo_query = create_allele_query(resp_obj, request)
+    customer_query, mongo_query, error = create_allele_query(resp_obj, request)
 
-    if resp_obj.get("message") is not None:
-        # an error must have occurred
-        resp_status = resp_obj["message"]["error"]["errorCode"]
-        resp_obj["message"]["beaconId"] = beacon_obj.id
-        resp_obj["message"]["apiVersion"] = API_VERSION
+    resp_obj["beaconId"] = beacon_obj.id
+    resp_obj["apiVersion"] = API_VERSION
 
-    else:
-        resp_obj["beaconId"] = beacon_obj.id
-        resp_obj["apiVersion"] = API_VERSION
+    if error:
+        resp_obj["error"] = error
+        resp_obj["exists"] = None
+        resp = jsonify(resp_obj)
+        resp.status_code = error["errorCode"]
+        return resp
 
-        # query database (it should return a datasetAlleleResponses object)
-        response_type = customer_query.get("includeDatasetResponses", "NONE")
-        query_datasets = customer_query.get("datasetIds", [])
+    # query database (it should return a datasetAlleleResponses object)
+    response_type = customer_query.get("includeDatasetResponses", "NONE")
+    query_datasets = customer_query.get("datasetIds", [])
+    exists, ds_allele_responses = dispatch_query(
+        mongo_query, response_type, query_datasets, auth_levels
+    )
 
-        exists, ds_allele_responses = dispatch_query(
-            mongo_query, response_type, query_datasets, auth_levels
-        )
-
-        resp_obj["exists"] = exists
-        resp_obj["error"] = {"errorCode": 200}
-        resp_obj["datasetAlleleResponses"] = ds_allele_responses
+    resp_obj["exists"] = exists
+    resp_obj["error"] = None
+    resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
     resp = jsonify(resp_obj)
     resp.status_code = resp_status
