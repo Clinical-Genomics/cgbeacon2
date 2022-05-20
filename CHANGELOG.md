@@ -1,6 +1,8 @@
 ## [] -
 ### Added
 - Explicit `/apiv1.0/info` endpoint
+### Fixed
+- Response errors compliant with API
 
 
 
