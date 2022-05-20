@@ -170,7 +170,7 @@ def add_dataset() -> Response:
             "description": req_data.get("description"),
             "assembly_id": req_data.get("build"),
             "authlevel": req_data.get("authlevel"),
-            "version": req_data.get("version"),
+            "version": str(req_data.get("version", "v1.0")),
             "external_url": req_data.get("url"),
         }
         inserted_id = add_dataset_util(
