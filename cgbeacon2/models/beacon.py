@@ -7,11 +7,13 @@ from cgbeacon2 import __version__
 # MAP dataset internal keys to the keys expected in responses
 DATASET_MAPPING = {
     "id": "_id",
+    "name": "name",
     "variantCount": "variant_count",
     "callCount": "allele_count",
     "assemblyId": "assembly_id",
     "createDateTime": "created",
     "updateDateTime": "updated",
+    "version": "version",
 }
 
 
