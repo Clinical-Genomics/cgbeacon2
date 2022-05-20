@@ -1,8 +1,6 @@
 ## [] -
 ### Added
 - Explicit `/apiv1.0/info` endpoint
-### Changed
-- Set response headers to disable caching in Flask app
 ### Fixed
 - Response errors compliant with API
 - Validation errors against GA4GH's OpenAPI specification and CSCfi JSON schemas
