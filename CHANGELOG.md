@@ -3,7 +3,7 @@
 - Explicit `/apiv1.0/info` endpoint
 ### Fixed
 - Response errors compliant with API
-
+- Validation errors against GA4GH's OpenAPI specification and CSCfi JSON schemas
 
 
 ## [4.1] - 2022.04.20

@@ -22,26 +22,23 @@ DB_URI = f"mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}"  # standalone MongoDB instan
 # MAIL_PASSWORD = "password"
 # ADMINS = ["admin.email@email.com"]
 
-ORGANISATION = dict(
+ORGANIZATION = dict(
     id="scilifelab",  # mandatory
     name="Clinical Genomics, SciLifeLab",  # mandatory
-    description="A science lab",
-    address="",
-    contactUrl="",
-    info=[],
-    logoUrl="",
-    welcomeUrl="",
+    description="Science for Life Laboratory",
+    address="Tomtebodavägen 23, 17165 Solna, Sweden",
+    contactUrl="mailto:admin@scilifelab.beacon.com",
+    logoUrl="https://raw.githubusercontent.com/Clinical-Genomics/cgbeacon2/8370809507e08a4fa6724bbf0bc6e9b581d1fa76/cgbeacon2/server/static/scilifelab-logo.svg",
 )
 
 BEACON_OBJ = dict(
     id="SciLifeLab-beacon",  # mandatory
     name="SciLifeLab Stockholm Beacon",  # mandatory
-    organisation=ORGANISATION,  # mandatory
-    alternativeUrl="http//scilifelab.beacon_alt.se",
+    organization=ORGANIZATION,  # mandatory
     createDateTime="2015-06-15T00:00.000Z",
     description="Beacon description",
-    info=[],
-    welcomeUrl="http//scilifelab.beacon.se",
+    welcomeUrl="https://beacon-stage.scilifelab.se/apiv1.0/query_form",
+    alternativeUrl="https://beacon-stage.scilifelab.se/apiv1.0/",
 )
 
 ############## OAUTH2 permissions layer ##############

@@ -4,22 +4,34 @@ import datetime
 import pymongo
 from cgbeacon2 import __version__
 
+# MAP dataset internal keys to the keys expected in responses
+DATASET_MAPPING = {
+    "id": "_id",
+    "name": "name",
+    "variantCount": "variant_count",
+    "callCount": "allele_count",
+    "assemblyId": "assembly_id",
+    "createDateTime": "created",
+    "updateDateTime": "updated",
+    "version": "version",
+}
+
 
 class Beacon:
     """Represents a general beacon object"""
 
     def __init__(self, conf_obj, api_version="1.0.0", database=None) -> None:
-        self.alternativeUrl = conf_obj.get("alternative_url")
         self.apiVersion = f"v{api_version}"
         self.createDateTime = self._date_event(database, True)
         self.updateDateTime = self._date_event(database, False)
         self.description = conf_obj.get("description")
         self.id = conf_obj.get("id")
         self.name = conf_obj.get("name")
-        self.organisation = conf_obj.get("organisation")
+        self.organization = conf_obj.get("organization")
         self.sampleAlleleRequests = self._sample_allele_requests()
         self.version = f"v{__version__}"
-        self.welcomeUrl = conf_obj.get("welcome_url")
+        self.welcomeUrl = conf_obj.get("welcomeUrl")
+        self.alternativeUrl = conf_obj.get("alternativeUrl")
         self.datasets = self._datasets(database)
         self.datasets_by_auth_level = self._datasets_by_access_level(database)
 
@@ -43,7 +55,7 @@ class Beacon:
             for event in events:
                 return event.get("created")
 
-    def introduce(self) -> dict:
+    def info(self) -> dict:
         """Returns a the description of this beacon, with the fields required by the / endpoint"""
         beacon_obj = self.__dict__
         beacon_obj.pop("datasets_by_auth_level")
@@ -59,24 +71,16 @@ class Beacon:
         """
         if database is None:
             return []
-        datasets = list(database["dataset"].find())
-        for ds in datasets:
-            if ds.get("samples") is not None:
-                # return number of samples for each dataset, not sample names
-                ds["sampleCount"] = len(ds.get("samples"))
-                # return number of variants present for this dataset
-                ds["variantCount"] = ds.get("variant_count")
-                # return number of alleles present for this dataset
-                ds["callCount"] = ds.get("allele_count")
+        datasets = []
 
-            ds.pop("samples", None)
-            ds.pop("variant_count", None)
-            ds.pop("allele_count", None)
+        for db_ds in database["dataset"].find():
+            if db_ds.get("samples") is None:
+                continue
+            ds = {"sampleCount": len(db_ds.get("samples"))}
+            for key, db_key in DATASET_MAPPING.items():
+                ds[key] = db_ds.get(db_key)
 
-            ds["info"] = {"accessType": ds["authlevel"].upper()}
-            ds.pop("authlevel")
-            ds["id"] = ds["_id"]
-            ds.pop("_id")
+            datasets.append(ds)
 
         return datasets
 

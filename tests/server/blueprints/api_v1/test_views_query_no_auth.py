@@ -116,26 +116,29 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
     with mock_app.test_client() as client:
 
         # When calling the endpoing with the GET method
-        response = client.get("/apiv1.0/info", headers=HEADERS)
+        response = client.get("/", headers=HEADERS)
         assert response.status_code == 200
 
         # The returned data should contain all the expected fields
         data = json.loads(response.data)
-        fields = [
+        beacon_fields = [
             "id",
             "name",
             "apiVersion",
-            "organisation",
+            "organization",
             "datasets",
             "createDateTime",
             "updateDateTime",
         ]
-        for field in fields:
+        for field in beacon_fields:
             assert data[field] is not None
 
         # including the dataset info
-        assert data["datasets"][0]["id"]
-        assert data["datasets"][0]["info"]["accessType"] == "REGISTERED"
+        dataset_fields = ["id", "name", "assemblyId", "createDateTime", "updateDateTime"]
+        for dset in data["datasets"]:
+            for field in dataset_fields:
+                assert dset[field]
+
         assert len(data["sampleAlleleRequests"]) == 2  # 2 query examples provided
 
 
@@ -183,16 +186,6 @@ def test_get_request_exact_position_snv_return_ALL(
 
     # No error should be returned
     assert response.status_code == 200
-
-    # AllelRequest field should reflect the original query
-    assert data["allelRequest"]["referenceName"] == test_snv["referenceName"]
-    assert data["allelRequest"]["start"] == str(test_snv["start"])
-    assert data["allelRequest"]["end"] == str(test_snv["end"])
-    assert data["allelRequest"]["referenceBases"] == test_snv["referenceBases"]
-    assert data["allelRequest"]["alternateBases"] == test_snv["alternateBases"]
-    assert data["allelRequest"]["includeDatasetResponses"] == "ALL"
-
-    assert data.get("message") is None
 
     # Beacon info should be returned
     assert data["beaconId"]
@@ -298,7 +291,6 @@ def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):
 
     # No error should be returned
     assert response.status_code == 200
-    assert data["allelRequest"]["includeDatasetResponses"] == "NONE"
     # No specific dataset response should be prensent
     assert data["datasetAlleleResponses"] == []
     # But since variant is found, beacon responds: True
@@ -320,16 +312,8 @@ def test_get_snv_query_variant_not_found(mock_app, public_dataset):
     # No error should be returned
     assert response.status_code == 200
 
-    # AllelRequest field should reflect the original query
-    assert data["allelRequest"]["referenceName"] is not None
-    assert data["allelRequest"]["start"] is not None
-    assert data["allelRequest"]["referenceBases"] is not None
-    assert data["allelRequest"]["alternateBases"] is not None
-    assert data["allelRequest"]["includeDatasetResponses"] == "NONE"
-
     # and response should be negative (exists=False)
     assert data["exists"] is False
-    assert data["error"] is None
 
 
 ################## TESTS FOR HANDLING SV GET REQUESTS ################
@@ -422,14 +406,6 @@ def test_post_query(mock_app, test_snv, public_dataset):
     # Should not return error
     assert response.status_code == 200
     resp_data = json.loads(response.data)
-
-    # And all the expected fields should be present in the response
-    assert resp_data["allelRequest"]["referenceName"] == test_snv["referenceName"]
-    assert resp_data["allelRequest"]["start"] == test_snv["start"]
-    assert resp_data["allelRequest"]["referenceBases"] == test_snv["referenceBases"]
-    assert resp_data["allelRequest"]["alternateBases"] == test_snv["alternateBases"]
-    assert resp_data["allelRequest"]["assemblyId"] == test_snv["assemblyId"]
-    assert resp_data["allelRequest"]["includeDatasetResponses"] == "HIT"
 
     # Including the hit result
     assert resp_data["datasetAlleleResponses"][0]["datasetId"] == public_dataset["_id"]

@@ -228,7 +228,6 @@ def create_allele_query(resp_obj, req) -> dict:
     # check if the minimum required params were provided in query
     error = check_allele_request(resp_obj, customer_query, mongo_query)
 
-    resp_obj["allelRequest"] = customer_query
     return customer_query, mongo_query, error
 
 
