@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import ast
 import logging
 import os
 
@@ -177,7 +178,7 @@ def add_dataset() -> Response:
         inserted_id = add_dataset_util(
             database=current_app.db,
             dataset_dict=dataset_obj,
-            update=eval(req_data.get("update") or "False"),
+            update=ast.literal_eval(req_data.get("update", "False")),
         )
         if inserted_id:
             # register the event in the event collection
