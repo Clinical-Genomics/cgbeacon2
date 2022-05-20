@@ -62,12 +62,13 @@ def info() -> Response:
 
     Example:
         curl -X GET 'http://localhost:5000/apiv1.0/'
+        curl -X GET 'http://localhost:5000/apiv1.0/info'
         curl -X GET 'http://localhost:5000/'
     """
     beacon_config = current_app.config.get("BEACON_OBJ")
     beacon = Beacon(beacon_config, API_VERSION, current_app.db)
 
-    resp = jsonify(beacon.introduce())
+    resp = jsonify(beacon.info())
     resp.status_code = 200
     return resp
 
@@ -95,14 +96,14 @@ def query_form() -> str:
 
         else:  # query database
             # query database (it should return a datasetAlleleResponses object)
-            response_type = resp_obj["allelRequest"].get("includeDatasetResponses", "NONE")
-            query_datasets = resp_obj["allelRequest"].get("datasetIds", [])
+            response_type = customer_query.get("includeDatasetResponses", "NONE")
+            query_datasets = customer_query.get("datasetIds", [])
             exists, ds_allele_responses = dispatch_query(mongo_query, response_type, query_datasets)
             resp_obj["exists"] = exists
             resp_obj["error"] = {"errorCode": 200}
             resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
-            flash(f"<small>Request received->{resp_obj['allelRequest']}</small>")
+            flash(f"<small>Request received->{customer_query}</small>")
 
             if len(resp_obj.get("datasetAlleleResponses", [])) > 0:
                 ds_responses = []
@@ -338,7 +339,6 @@ def query() -> Response:
     )
 
     resp_obj["exists"] = exists
-    resp_obj["error"] = None
     resp_obj["datasetAlleleResponses"] = ds_allele_responses
 
     resp = jsonify(resp_obj)

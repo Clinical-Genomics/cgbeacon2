@@ -4,6 +4,16 @@ import datetime
 import pymongo
 from cgbeacon2 import __version__
 
+# MAP dataset internal keys to the keys expected in responses
+DATASET_MAPPING = {
+    "id": "_id",
+    "variantCount": "variant_count",
+    "callCount": "allele_count",
+    "assemblyId": "assembly_id",
+    "createDateTime": "created",
+    "updateDateTime": "updated",
+}
+
 
 class Beacon:
     """Represents a general beacon object"""
@@ -43,7 +53,7 @@ class Beacon:
             for event in events:
                 return event.get("created")
 
-    def introduce(self) -> dict:
+    def info(self) -> dict:
         """Returns a the description of this beacon, with the fields required by the / endpoint"""
         beacon_obj = self.__dict__
         beacon_obj.pop("datasets_by_auth_level")
@@ -59,26 +69,16 @@ class Beacon:
         """
         if database is None:
             return []
-        datasets = list(database["dataset"].find())
-        for ds in datasets:
-            if ds.get("samples") is None:
+        datasets = []
+
+        for db_ds in database["dataset"].find():
+            if db_ds.get("samples") is None:
                 continue
+            ds = {"sampleCount": len(db_ds.get("samples"))}
+            for key, db_key in DATASET_MAPPING.items():
+                ds[key] = db_ds.get(db_key)
 
-            ds["sampleCount"] = len(ds.get("samples"))
-            ds["variantCount"] = ds.get("variant_count")
-            ds["callCount"] = ds.get("allele_count")
-            ds["assemblyId"] = ds.get("assembly_id")
-            ds["createDateTime"] = ds.get("created")
-            ds["updateDateTime"] = ds.get("updated")
-
-            ds.pop("samples", None)
-            ds.pop("variant_count", None)
-            ds.pop("allele_count", None)
-            ds.pop("assembly_id", None)
-
-            ds.pop("authlevel")
-            ds["id"] = ds["_id"]
-            ds.pop("_id")
+            datasets.append(ds)
 
         return datasets
 
