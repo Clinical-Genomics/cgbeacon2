@@ -116,7 +116,7 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
     with mock_app.test_client() as client:
 
         # When calling the endpoing with the GET method
-        response = client.get("/apiv1.0/info", headers=HEADERS)
+        response = client.get("/", headers=HEADERS)
         assert response.status_code == 200
 
         # The returned data should contain all the expected fields
@@ -125,7 +125,7 @@ def test_beacon_entrypoint(mock_app, registered_dataset):
             "id",
             "name",
             "apiVersion",
-            "organisation",
+            "organization",
             "datasets",
             "createDateTime",
             "updateDateTime",

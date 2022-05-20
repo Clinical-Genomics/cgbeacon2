@@ -232,10 +232,8 @@ def create_allele_query(resp_obj, req) -> dict:
         resp_obj["message"]["allelRequest"] = customer_query
         resp_obj["message"]["exists"] = None
         resp_obj["message"]["datasetAlleleResponses"] = []
-        return
 
-    resp_obj["allelRequest"] = customer_query
-    return mongo_query
+    return customer_query, mongo_query
 
 
 def check_allele_request(resp_obj, customer_query, mongo_query) -> None:

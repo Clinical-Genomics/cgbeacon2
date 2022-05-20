@@ -318,7 +318,7 @@ def query() -> Response:
         return resp
 
     # Create database query object
-    query = create_allele_query(resp_obj, request)
+    customer_query, mongo_query = create_allele_query(resp_obj, request)
 
     if resp_obj.get("message") is not None:
         # an error must have occurred
@@ -331,11 +331,11 @@ def query() -> Response:
         resp_obj["apiVersion"] = API_VERSION
 
         # query database (it should return a datasetAlleleResponses object)
-        # response_type = resp_obj["allelRequest"].get("includeDatasetResponses", "NONE")
-        # query_datasets = resp_obj["allelRequest"].get("datasetIds", [])
+        response_type = customer_query.get("includeDatasetResponses", "NONE")
+        query_datasets = customer_query.get("datasetIds", [])
 
         exists, ds_allele_responses = dispatch_query(
-            query, response_type, query_datasets, auth_levels
+            mongo_query, response_type, query_datasets, auth_levels
         )
 
         resp_obj["exists"] = exists
