@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import ast
 import logging
 import os
 
@@ -154,7 +155,7 @@ def add_dataset() -> Response:
     -d '{"id": "test_public",
     "name": "Test public dataset", "description": "This is a test dataset",
     "build": "GRCh37", "authlevel": "public", "version": "v1.0",
-    "url": "someurl.se", "update": False}' http://localhost:5000/apiv1.0/add_dataset
+    "url": "someurl.se", "update": "True"}' http://localhost:5000/apiv1.0/add_dataset
     """
     resp = None
     if validate_token(request, current_app.db) is False:
@@ -170,11 +171,14 @@ def add_dataset() -> Response:
             "description": req_data.get("description"),
             "assembly_id": req_data.get("build"),
             "authlevel": req_data.get("authlevel"),
-            "version": req_data.get("version"),
+            "version": str(req_data.get("version", "v1.0")),
             "external_url": req_data.get("url"),
         }
+
         inserted_id = add_dataset_util(
-            database=current_app.db, dataset_dict=dataset_obj, update=bool(req_data.get("update"))
+            database=current_app.db,
+            dataset_dict=dataset_obj,
+            update=ast.literal_eval(req_data.get("update", "False")),
         )
         if inserted_id:
             # register the event in the event collection
