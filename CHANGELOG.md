@@ -1,11 +1,10 @@
-## [] -
+## [4.2] - 2022.05.23
 ### Added
 - Explicit `/apiv1.0/info` endpoint
 ### Fixed
 - Response errors compliant with API
 - Validation errors against GA4GH's OpenAPI specification and CSCfi JSON schemas
 - Make sure that dataset version created via API is of type string
-
 
 ## [4.1] - 2022.04.20
 ### Added
