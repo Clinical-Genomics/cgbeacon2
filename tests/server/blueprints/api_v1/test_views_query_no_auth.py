@@ -189,7 +189,7 @@ def test_get_request_exact_position_snv_return_ALL(
 
     # Beacon info should be returned
     assert data["beaconId"]
-    assert data["apiVersion"] == "1.0.0"
+    assert data["apiVersion"] == "v1.0.1"
 
     # Response should provide dataset-level detailed info
     assert len(data["datasetAlleleResponses"]) == 2
