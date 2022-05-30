@@ -3,6 +3,7 @@ import datetime
 
 import pymongo
 from cgbeacon2 import __version__
+from flask import current_app
 
 API_VERSION = "v1.0.1"
 
@@ -24,8 +25,10 @@ class Beacon:
 
     def __init__(self, conf_obj, database=None) -> None:
         self.apiVersion = API_VERSION
-        self.createDateTime = self._date_event(database, True)
-        self.updateDateTime = self._date_event(database, False)
+        self.createDateTime = conf_obj.get("createDateTime") or self._date_event(
+            database, pymongo.ASCENDING
+        )
+        self.updateDateTime = self._date_event(database, pymongo.DESCENDING)
         self.description = conf_obj.get("description")
         self.id = conf_obj.get("id")
         self.name = conf_obj.get("name")
@@ -37,25 +40,19 @@ class Beacon:
         self.datasets = self._datasets(database)
         self.datasets_by_auth_level = self._datasets_by_access_level(database)
 
-    def _date_event(self, database, order_asc) -> datetime.datetime:
+    def _date_event(self, database, events_ordering) -> datetime.datetime:
         """Return the date of the first event event created for this beacon
 
         Accepts:
             database(pymongo.database.Database)
-            order_asc(bool): if True get first event else get last event
+            events_ordering(pymongo.ASCENDING or ): if True get first event else get last event
 
         Returns
             event.created(datetime.datetime): date of creation of the event
         """
-        if database:
-            if order_asc is True:
-                order = pymongo.ASCENDING
-            else:
-                order = pymongo.DESCENDING
-
-            events = database["event"].find().sort([("created", order)]).limit(1)
-            for event in events:
-                return event.get("created")
+        events = database["event"].find().sort([("created", events_ordering)]).limit(1)
+        for event in events:
+            return event.get("created")
 
     def info(self) -> dict:
         """Returns a the description of this beacon, with the fields required by the / endpoint"""
