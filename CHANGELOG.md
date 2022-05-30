@@ -1,4 +1,4 @@
-## [] -
+## [4.2.1] - 2022.05.30
 ### Fixed
 - Beacon createDateTime collected from config file or from events collection
 
