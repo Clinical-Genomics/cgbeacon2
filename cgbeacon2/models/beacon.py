@@ -24,8 +24,10 @@ class Beacon:
 
     def __init__(self, conf_obj, database=None) -> None:
         self.apiVersion = API_VERSION
-        self.createDateTime = self._date_event(database, True)
-        self.updateDateTime = self._date_event(database, False)
+        self.createDateTime = conf_obj.get("createDateTime") or self._date_event(
+            database, pymongo.ASCENDING
+        )
+        self.updateDateTime = self._date_event(database, pymongo.DESCENDING)
         self.description = conf_obj.get("description")
         self.id = conf_obj.get("id")
         self.name = conf_obj.get("name")
@@ -37,23 +39,18 @@ class Beacon:
         self.datasets = self._datasets(database)
         self.datasets_by_auth_level = self._datasets_by_access_level(database)
 
-    def _date_event(self, database, order_asc) -> datetime.datetime:
+    def _date_event(self, database, ordering) -> datetime.datetime:
         """Return the date of the first event event created for this beacon
 
         Accepts:
             database(pymongo.database.Database)
-            order_asc(bool): if True get first event else get last event
+            ordering(pymongo.ASCENDING or pymongo.DESCENDING)
 
         Returns
             event.created(datetime.datetime): date of creation of the event
         """
         if database:
-            if order_asc is True:
-                order = pymongo.ASCENDING
-            else:
-                order = pymongo.DESCENDING
-
-            events = database["event"].find().sort([("created", order)]).limit(1)
+            events = database["event"].find().sort([("created", ordering)]).limit(1)
             for event in events:
                 return event.get("created")
 

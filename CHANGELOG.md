@@ -1,3 +1,7 @@
+## [] -
+### Fixed
+- Beacon createDateTime collected from config file or from events collection
+
 ## [4.2.1] - 2022.05.30
 ### Fixed
 - Modified the Beacon API version from `1.0` to `1.0.1`
