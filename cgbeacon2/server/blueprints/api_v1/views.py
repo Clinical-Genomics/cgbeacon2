@@ -35,7 +35,7 @@ from .controllers import (
 
 AUTHLEVEL = {"PUBLIC": "success", "REGISTERED": "warning", "CONTROLLED": "danger"}
 EXISTS = {True: "success", False: "secondary"}
-API_VERSION = "1.0.0"
+API_VERSION = "1.0.1"
 LOG = logging.getLogger(__name__)
 api1_bp = Blueprint(
     "api_v1",
