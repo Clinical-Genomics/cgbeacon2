@@ -1,3 +1,7 @@
+## [] -
+### Fixed
+- Modified the Beacon API version from `1.0` to `1.0.1`
+
 ## [4.2] - 2022.05.23
 ### Added
 - Explicit `/apiv1.0/info` endpoint
