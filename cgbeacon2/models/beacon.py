@@ -4,6 +4,8 @@ import datetime
 import pymongo
 from cgbeacon2 import __version__
 
+API_VERSION = "v1.0.1"
+
 # MAP dataset internal keys to the keys expected in responses
 DATASET_MAPPING = {
     "id": "_id",
@@ -20,8 +22,8 @@ DATASET_MAPPING = {
 class Beacon:
     """Represents a general beacon object"""
 
-    def __init__(self, conf_obj, api_version="1.0.0", database=None) -> None:
-        self.apiVersion = f"v{api_version}"
+    def __init__(self, conf_obj, database=None) -> None:
+        self.apiVersion = API_VERSION
         self.createDateTime = self._date_event(database, True)
         self.updateDateTime = self._date_event(database, False)
         self.description = conf_obj.get("description")

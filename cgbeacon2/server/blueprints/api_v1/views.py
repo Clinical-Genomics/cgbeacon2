@@ -35,7 +35,7 @@ from .controllers import (
 
 AUTHLEVEL = {"PUBLIC": "success", "REGISTERED": "warning", "CONTROLLED": "danger"}
 EXISTS = {True: "success", False: "secondary"}
-API_VERSION = "1.0.1"
+
 LOG = logging.getLogger(__name__)
 api1_bp = Blueprint(
     "api_v1",
@@ -67,7 +67,7 @@ def info() -> Response:
         curl -X GET 'http://localhost:5000/'
     """
     beacon_config = current_app.config.get("BEACON_OBJ")
-    beacon = Beacon(beacon_config, API_VERSION, current_app.db)
+    beacon = Beacon(beacon_config, current_app.db)
 
     resp = jsonify(beacon.info())
     resp.status_code = 200
@@ -308,7 +308,7 @@ def query() -> Response:
     """
 
     beacon_config = current_app.config.get("BEACON_OBJ")
-    beacon_obj = Beacon(beacon_config, API_VERSION, current_app.db)
+    beacon_obj = Beacon(beacon_config, current_app.db)
 
     resp_obj = {}
     resp_status = 200
@@ -326,7 +326,7 @@ def query() -> Response:
     customer_query, mongo_query, error = create_allele_query(resp_obj, request)
 
     resp_obj["beaconId"] = beacon_obj.id
-    resp_obj["apiVersion"] = API_VERSION
+    resp_obj["apiVersion"] = beacon_obj.apiVersion
 
     if error:
         resp_obj["error"] = error

@@ -40,7 +40,7 @@ def test_query_get_request_missing_mandatory_params(mock_app):
     assert data["error"] == NO_MANDATORY_PARAMS
     assert data["exists"] is None
     assert data["beaconId"]
-    assert data["apiVersion"] == "1.0.0"
+    assert data["apiVersion"] == "v1.0.1"
 
 
 def test_query_get_request_unknown_datasets(mock_app):

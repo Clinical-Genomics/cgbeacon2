@@ -9,7 +9,7 @@ def test_beacon_model_no_db_connection(mock_app, public_dataset):
     config_options = mock_app.config.get("BEACON_OBJ")
     beacon = Beacon(config_options)
 
-    assert beacon.apiVersion == "v1.0.0"
+    assert beacon.apiVersion == "v1.0.1"
     assert beacon.description == config_options["description"]
     assert beacon.id == config_options["id"]
     assert beacon.name == config_options["name"]
