@@ -11,6 +11,7 @@ The default procedure to add variants to the beacon is always the following:
 ## How to add:
 1. [ Demo data ](#demodata)
 1. [ Gene data ](#genes)
+1. [ Creating an authorized user for using the APIs](#user)
 1. [ A new dataset (custom data)](#dataset)
 1. [ Variants (custom data) using the command line](#variants_cli)
 1. [ Variants (custom data) using the REST API](#variants_api)
@@ -34,6 +35,24 @@ beacon update genes
 Options:
   -build [GRCh37|GRCh38]  Genome assembly (default:GRCh37)
 ```
+
+<a name="user"></a>
+### Creating an authorized user for using the APIs
+An API user is required whenever variants are by sending a request to the Beacon API.
+One or more API users can be created using the command:
+```
+beacon add user
+
+
+Options:
+  --uid TEXT    User ID  [required]
+  --name TEXT  User name  [required]
+  --desc TEXT  User description
+  --url TEXT   User url
+  --help      Show this message and exit.
+```
+Once a user is created, a random user token will be created in the database for this user.
+
 
 <a name="dataset"></a>
 ## Adding a new dataset
@@ -62,6 +81,7 @@ Other optional parameters that can be provided to improve the dataset descriptio
 The `--update` flag will allow to modify the information for a dataset that is already existing in the database.
 
 
+
 <a name="variants_cli"></a>
 ## Adding variant data using the command line
 Variant data can be loaded to the database using the following command:
@@ -86,27 +106,6 @@ Additional variants for the same sample(s) and the same dataset might be added a
 Variant data can be alternatively loaded to the Beacon by sending a request to the /apiv1.0/add endpoint.
 This Endpoint is accepting json data from POST requests. If the request parameters are correct it will return a response with code 200 (success) and message "Saving variants to Beacon", whole it will start the actual thread that will save variants to database.
 
-### Creating an authorized user for using the APIs
-One or more API users can be created using the command:
-```
-beacon add user
-
-
-Options:
-  --uid TEXT    User ID  [required]
-  --name TEXT  User name  [required]
-  --desc TEXT  User description
-  --url TEXT   User url
-  --help      Show this message and exit.
-```
-Once a user is created, a random user token will be created in the database for this user.
-
-
-The request to the add API should contain the following header parameters:
- - **Content-Type**: application/json
- - **X-Auth-Token**: auth_token
-
-Where the auth_token is the token created for the user in the step described above.
 
 ### Sending an add request to the API
 Apart from the header, an add request should contain the following parameters:
@@ -117,6 +116,13 @@ Apart from the header, an add request should contain the following parameters:
  - **genes**<sup>*</sup> (optional): an object containing two keys:
   - **ids**: list of genes ids to be used to filter VCF file (only variants included in these genes will be saved to database).
   - **id_type**: either "HGNC" or "Ensembl", to specify which type of ID format `ids` refers to. All genes in the list must be of the same type (for example all Ensembl IDs).
+
+HTML Requests to add variants should contain an `auth_token` header which corresponds to the token of a **pre-existing API user**. API users are created exclusively using the command line. Follow these [instructions](#user) to create a new API user.
+
+Once the user is created in the database, make sure the request to the add API contains the following header parameters:
+ - **Content-Type**: application/json
+ - **X-Auth-Token**: auth_token
+
 
 Example of a valid POST request to the add endpoint:
 ```
