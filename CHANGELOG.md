@@ -1,3 +1,7 @@
+## [] -
+### Added
+- Improved documentation on how to create an API user.
+
 ## [4.2.2] - 2022.05.30
 ### Fixed
 - Beacon createDateTime collected from config file or from events collection
