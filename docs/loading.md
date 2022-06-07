@@ -47,11 +47,12 @@ beacon add user
 Options:
   --uid TEXT    User ID  [required]
   --name TEXT  User name  [required]
+  --token TEXT  If not specified, the token will be created automatically
   --desc TEXT  User description
   --url TEXT   User url
   --help      Show this message and exit.
 ```
-Once a user is created, a random user token will be created in the database for this user.
+If no token is specified, a random user token will be created in the database for this user.
 
 
 <a name="dataset"></a>
