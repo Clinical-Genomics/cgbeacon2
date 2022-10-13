@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
 import copy
 import json
+
 import pytest
 from authlib.jose import jwt
 from authlib.jose.errors import ExpiredTokenError
 from cgbeacon2.constants import (
-    MISSING_TOKEN,
-    WRONG_SCHEME,
     EXPIRED_TOKEN_SIGNATURE,
     INVALID_TOKEN_CLAIMS,
-    MISSING_TOKEN_CLAIMS,
     MISSING_PUBLIC_KEY,
+    MISSING_TOKEN,
+    MISSING_TOKEN_CLAIMS,
     NO_GA4GH_USERDATA,
     PASSPORTS_ERROR,
+    WRONG_SCHEME,
 )
 from cgbeacon2.utils import auth
 
 HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
+
+API_QUERY = "/apiv1.0/query?"
+BEARER = "Bearer "
 
 
 def test_post_request_wrong_token_no_token(mock_app):
@@ -26,7 +30,7 @@ def test_post_request_wrong_token_no_token(mock_app):
     headers["Authorization"] = ""
 
     # When a POST request Authorization="" is sent
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
 
     # Then it should return unauthorized error 401
     assert response.status_code == 401
@@ -38,10 +42,10 @@ def test_post_request_wrong_token_null_token(mock_app):
     """test receiving a post request with Auth headers and wrong scheme"""
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer "
+    headers["Authorization"] = BEARER
 
     # When a POST request Authorization="" is sent
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
 
     # Then it should return unauthorized error 401
     assert response.status_code == 401
@@ -57,7 +61,7 @@ def test_post_request_wrong_token_wrong_scheme(mock_app, test_token):
     headers["Authorization"] = "Basic " + test_token
 
     # When a POST request Authorization="" is sent
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
 
     # Then it should return unauthorized error 401
     assert response.status_code == 401
@@ -101,10 +105,10 @@ def test_post_request_expired_token(mock_app, expired_token, pem, monkeypatch):
     monkeypatch.setattr(auth, "elixir_key", mock_public_server)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + expired_token
+    headers["Authorization"] = BEARER + expired_token
 
     # When the beacon receives a request with this token
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
     data = json.loads(response.data)
 
     # Should return expired token error
@@ -123,10 +127,10 @@ def test_post_request_wrong_issuers_token(mock_app, wrong_issuers_token, pem, mo
     monkeypatch.setattr(auth, "elixir_key", mock_public_server)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + wrong_issuers_token
+    headers["Authorization"] = BEARER + wrong_issuers_token
 
     # When a POST request with a token with wrong issuers is sent
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
     data = json.loads(response.data)
     # it should return invalid token claims error
     assert response.status_code == 403
@@ -144,10 +148,10 @@ def test_post_request_missing_claims_token(mock_app, no_claims_token, pem, monke
     monkeypatch.setattr(auth, "elixir_key", mock_public_server)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + no_claims_token
+    headers["Authorization"] = BEARER + no_claims_token
 
     # When a POST request with a token with missing claims
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
     data = json.loads(response.data)
 
     # it should return missing claims error
@@ -159,12 +163,12 @@ def test_post_request_missing_public_key(mock_app, test_token, monkeypatch, mock
     """test receiving a post request with a token when the public key to decode it is available"""
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + test_token
+    headers["Authorization"] = BEARER + test_token
 
     mock_app.config["ELIXIR_OAUTH2"] = mock_oauth2
 
     # When a POST request with token is sent, but public key is not available
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
     data = json.loads(response.data)
 
     # it should return missing public key error
@@ -187,12 +191,10 @@ def test_post_request_invalid_token_signature(mock_app, pem, monkeypatch, basic_
     monkeypatch.setattr(auth, "elixir_key", mock_public_server)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + wrong_token
+    headers["Authorization"] = BEARER + wrong_token
 
     # When a POST request with the wrong token is sent
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=headers, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=headers, data=json.dumps(basic_query))
     data = json.loads(response.data)
 
     # it should return bad signature error
@@ -213,14 +215,12 @@ def test_post_request_token_no_oidc(
     monkeypatch.setattr(auth, "elixir_key", mock_public_server)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + test_token
+    headers["Authorization"] = BEARER + test_token
 
     mock_app.config["ELIXIR_OAUTH2"]["userinfo"] = mock_oauth2["userinfo"]
 
     # When a POST request with a valid token, but in absence of OIDC provider is sent
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=headers, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=headers, data=json.dumps(basic_query))
     data = json.loads(response.data)
 
     # it should return a 403 error
@@ -247,12 +247,12 @@ def test_post_request_token_passports_error(mock_app, test_token, pem, monkeypat
     monkeypatch.setattr(auth, "ga4gh_userdata", mock_ga4gh_userdata)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + test_token
+    headers["Authorization"] = BEARER + test_token
 
     mock_app.config["ELIXIR_OAUTH2"]["userinfo"] = mock_oauth2["userinfo"]
 
     # When a POST request with a valid token is sent
-    response = mock_app.test_client().post("/apiv1.0/query?", headers=headers)
+    response = mock_app.test_client().post(API_QUERY, headers=headers)
     data = json.loads(response.data)
 
     # it should return the specific 403 passports error
@@ -278,14 +278,12 @@ def test_post_request_token_ok_oidc(
     monkeypatch.setattr(auth, "ga4gh_userdata", mock_ga4gh_userdata)
 
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + test_token
+    headers["Authorization"] = BEARER + test_token
 
     mock_app.config["ELIXIR_OAUTH2"]["userinfo"] = mock_oauth2["userinfo"]
 
     # When a POST request with a valid token is sent
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=headers, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=headers, data=json.dumps(basic_query))
 
     # it should return a valid response
     assert response.status_code == 200
@@ -306,9 +304,7 @@ def test_post_query_registered_dataset_no_token(
     database["variant"].insert_one(test_snv)
 
     # When a POST request is sent without auth token
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=HEADERS, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=HEADERS, data=json.dumps(basic_query))
     data = json.loads(response.data)
     # it should return a valid response
     assert response.status_code == 200
@@ -352,12 +348,10 @@ def test_post_query_registered_dataset_registered_token(
 
     # When a POST request with a valid token is sent
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + test_token
+    headers["Authorization"] = BEARER + test_token
     mock_app.config["ELIXIR_OAUTH2"]["userinfo"] = mock_oauth2["userinfo"]
 
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=headers, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=headers, data=json.dumps(basic_query))
 
     # it should return a valid response
     assert response.status_code == 200
@@ -381,9 +375,7 @@ def test_post_query_controlled_dataset_no_token(
     database["variant"].insert_one(test_snv)
 
     # When a POST request is sent without auth token
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=HEADERS, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=HEADERS, data=json.dumps(basic_query))
     data = json.loads(response.data)
     # it should return a valid response
     assert response.status_code == 200
@@ -427,15 +419,13 @@ def test_post_query_controlled_dataset_bona_fide_token(
 
     # When a POST request with a valid token is sent
     headers = copy.deepcopy(HEADERS)
-    headers["Authorization"] = "Bearer " + test_token
+    headers["Authorization"] = BEARER + test_token
     mock_app.config["ELIXIR_OAUTH2"]["userinfo"] = mock_oauth2["userinfo"]
     mock_app.config["ELIXIR_OAUTH2"][
         "bona_fide_requirements"
     ] = "https://doi.org/10.1038/s41431-018-0219-y"
 
-    response = mock_app.test_client().post(
-        "/apiv1.0/query?", headers=headers, data=json.dumps(basic_query)
-    )
+    response = mock_app.test_client().post(API_QUERY, headers=headers, data=json.dumps(basic_query))
 
     # it should return a valid response
     assert response.status_code == 200
