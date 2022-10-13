@@ -228,6 +228,94 @@ def create_allele_query(resp_obj, req) -> dict:
     return customer_query, mongo_query, error
 
 
+def _simple_search_id(customer_query, chrom, start, end, ref, alt, build) -> Union[None, str]:
+    """Check if query is simple query: SNV with precise coordinates, alt and ref
+
+    Accepts:
+        customer_query(dict): a dictionary with all the key/values provided in the external request
+        chrom(str)
+        start(int)
+        end(int)
+        ref(str)
+        alt(str)
+        build(str)
+
+    Returns:
+        str(md5_key) or None
+    """
+
+    # If customer wants to match a SNV with precise coordinates, alt and ref
+    if (
+        customer_query.get("variantType") is None
+        and all([chrom, start, end, ref, alt, build])
+        and not "N" in ref
+        and not "N" in alt
+    ):
+        # generate md5_key to quickly compare with our database
+        return md5_key(
+            chrom,
+            start,
+            end,
+            ref,
+            alt,
+            build,
+        )
+
+
+def _check_query_datasets(datasets, build) -> Union[None, dict]:
+    """Check that datasets present in user query are available in the database
+
+    Accepts:
+        datasets(list): a list of datasets present in the user query
+        build(str)
+
+    Returns:
+        dict(UNKNOWN_DATASETS or BUILD_MISMATCH) or None
+    """
+    if len(datasets) > 0:
+        # Check that requested datasets are contained in this beacon
+        dsets = list(current_app.db["dataset"].find({"_id": {"$in": datasets}}))
+        if len(dsets) == 0:  # requested dataset is not present in database
+            return UNKNOWN_DATASETS
+
+        if build not in [dset["assembly_id"] for dset in dsets]:
+            # Requested genome build doesn't correspond to genome build of available datasets
+            return BUILD_MISMATCH
+
+
+def _set_fuzzy_coord_query(customer_query, mongo_query) -> Union[None, dict]:
+    """Set up coordinates for a range query
+
+    Accepts:
+        customer_query(dict): dict with query items submitted by the user
+        mongo_query(dict): query to be submitted to MongoDB
+
+    Returns:
+        INVALID_COORDINATES or None
+    """
+
+    # In general startMin <= startMax <= endMin <= endMax, but allow fuzzy ends query
+    fuzzy_start_query = {}
+    fuzzy_end_query = {}
+    try:
+        if "startMin" in customer_query:
+            fuzzy_start_query["$gte"] = int(customer_query["startMin"])
+        if "startMax" in customer_query:
+            fuzzy_start_query["$lte"] = int(customer_query["startMax"])
+        if "endMin" in customer_query:
+            fuzzy_end_query["$gte"] = int(customer_query["endMin"])
+        if "endMax" in customer_query:
+            fuzzy_end_query["$lte"] = int(customer_query["endMax"])
+    except ValueError:
+        # return a bad request 400 error with explanation message
+        return INVALID_COORDINATES
+
+    if fuzzy_start_query:
+        mongo_query["start"] = fuzzy_start_query
+    if fuzzy_end_query:
+        mongo_query["end"] = fuzzy_end_query
+
+
 def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
     """Check that the query to the server is valid
 
@@ -248,21 +336,9 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
     error = None
 
     # If customer wants to match a SNV with precise coordinates, alt and ref
-    if (
-        customer_query.get("variantType") is None
-        and all([chrom, start, end, ref, alt, build])
-        and not "N" in ref
-        and not "N" in alt
-    ):
-        # generate md5_key to quickly compare with our database
-        mongo_query["_id"] = md5_key(
-            chrom,
-            start,
-            end,
-            ref,
-            alt,
-            build,
-        )
+    simple_search_id = _simple_search_id(customer_query, chrom, start, end, ref, alt, build)
+    if simple_search_id:
+        mongo_query["_id"] = simple_search_id
         return
 
     # Check that the 3 mandatory parameters are present in the query
@@ -274,15 +350,9 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
         # return a bad request 400 error with explanation message
         return NO_MANDATORY_PARAMS
 
-    if len(datasets) > 0:
-        # Check that requested datasets are contained in this beacon
-        dsets = list(current_app.db["dataset"].find({"_id": {"$in": datasets}}))
-        if len(dsets) == 0:  # requested dataset is not present in database
-            return UNKNOWN_DATASETS
-
-        if build not in [dset["assembly_id"] for dset in dsets]:
-            # Requested genome build doesn't correspond to genome build of available datasets
-            return BUILD_MISMATCH
+    dataset_error = _check_query_datasets(datasets, build)
+    if dataset_error:
+        return dataset_error
 
     # alternateBases OR variantType is also required
     if all(
@@ -315,27 +385,9 @@ def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
 
     # Range query
     elif any([coord in customer_query.keys() for coord in RANGE_COORDINATES]):  # range query
-        # In general startMin <= startMax <= endMin <= endMax, but allow fuzzy ends query
-
-        fuzzy_start_query = {}
-        fuzzy_end_query = {}
-        try:
-            if "startMin" in customer_query:
-                fuzzy_start_query["$gte"] = int(customer_query["startMin"])
-            if "startMax" in customer_query:
-                fuzzy_start_query["$lte"] = int(customer_query["startMax"])
-            if "endMin" in customer_query:
-                fuzzy_end_query["$gte"] = int(customer_query["endMin"])
-            if "endMax" in customer_query:
-                fuzzy_end_query["$lte"] = int(customer_query["endMax"])
-        except ValueError:
-            # return a bad request 400 error with explanation message
-            return INVALID_COORDINATES
-
-        if fuzzy_start_query:
-            mongo_query["start"] = fuzzy_start_query
-        if fuzzy_end_query:
-            mongo_query["end"] = fuzzy_end_query
+        fuzzy_query_error = _set_fuzzy_coord_query(customer_query, mongo_query)
+        if fuzzy_query_error:
+            return fuzzy_query_error
 
     mongo_query["assemblyId"] = build
     mongo_query["referenceName"] = chrom
