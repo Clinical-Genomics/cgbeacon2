@@ -128,7 +128,7 @@ def test_delete_variants_wrong_sample(
         "samples": [right_sample],
         "genes": {"ids": [17284], "id_type": "HGNC"},
     }
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
     # wait some time for variants to be loaded
     time.sleep(3)
     n_inserted = len(list(database["variant"].find()))
@@ -167,7 +167,7 @@ def test_delete_variants_api(
         "samples": ["ADM1059A1", "ADM1059A2"],
         "genes": {"ids": [17284], "id_type": "HGNC"},
     }
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
     # Wait for variants to be loaded
     time.sleep(3)
     n_inserted = len(list(database["variant"].find()))

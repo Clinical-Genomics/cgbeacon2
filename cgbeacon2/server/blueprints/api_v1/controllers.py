@@ -182,7 +182,7 @@ def delete_variants_task(req) -> None:
         LOG.info(f"Number of updated variants:{updated}. Number of deleted variants:{removed}")
 
 
-def create_allele_query(resp_obj, req) -> dict:
+def create_allele_query(resp_obj, req) -> tuple:
     """Populates a dictionary with the parameters provided in the request
 
     Accepts:
@@ -223,12 +223,12 @@ def create_allele_query(resp_obj, req) -> dict:
         customer_query["includeDatasetResponses"] = "NONE"
 
     # check if the minimum required params were provided in query
-    error = check_allele_request(resp_obj, customer_query, mongo_query)
+    error = check_allele_request(customer_query, mongo_query)
 
     return customer_query, mongo_query, error
 
 
-def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
+def check_allele_request(customer_query, mongo_query) -> None:
     """Check that the query to the server is valid
 
     Accepts:

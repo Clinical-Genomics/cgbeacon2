@@ -18,7 +18,7 @@ CHR_PATTERN = re.compile(r"(chr)?(.*)", re.IGNORECASE)
 LOG = logging.getLogger(__name__)
 
 
-def validate_add_params(req) -> Union[None, dict]:
+def validate_add_params(req) -> Union[dict, bool]:
     """Validated the parameters in the request sent to add new variants into the database
 
     Accepts:
@@ -102,9 +102,8 @@ def sv_end(pos, alt, svend=None, svlen=None) -> int:
         if match:
             end = int(match.group(2))
 
-    if svend == pos:
-        if svlen:
-            end = pos + svlen
+    if svlen and svend == pos:
+        end = pos + svlen
 
     return end - 1  # coordinate should be zero-based
 
