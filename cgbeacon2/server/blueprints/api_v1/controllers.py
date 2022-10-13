@@ -211,12 +211,9 @@ def create_allele_query(resp_obj, req) -> dict:
             customer_query["datasetIds"] = data.get("datasetIds", [])
 
         # Remove null parameters from the query
-        remove_keys = []
-        for key, value in data.items():
-            if value == "":
-                remove_keys.append(key)
-        for key in remove_keys:
-            data.pop(key)
+        filtered = {k: v for k, v in data.items() if v != ""}
+        data.clear()
+        data.update(filtered)
 
     # loop over all available query params
     for param in QUERY_PARAMS_API_V1:
