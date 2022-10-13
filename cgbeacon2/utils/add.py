@@ -176,22 +176,7 @@ def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants) 
             )
 
             if vcf_variant.var_type == "sv":
-                sv_type = vcf_variant.INFO["SVTYPE"]
-                parsed_variant["variant_type"] = sv_type
-
-                alt = vcf_variant.ALT[0]
-
-                # Check if a better variant end can be extracted from INFO field
-                end = sv_end(
-                    pos=vcf_variant.POS,
-                    alt=alt,
-                    svend=vcf_variant.INFO.get("END"),
-                    svlen=vcf_variant.INFO.get("SVLEN"),
-                )
-                parsed_variant["end"] = end
-
-                if sv_type == "BND":
-                    parsed_variant["mate_name"] = bnd_mate_name(alt, chrom)
+                _set_parsed_sv(chrom, vcf_variant, parsed_variant)
 
             else:
                 parsed_variant["variant_type"] = vcf_variant.var_type.upper()
@@ -208,6 +193,32 @@ def add_variants(database, vcf_obj, samples, assembly, dataset_id, nr_variants) 
             bar.next()
 
     return inserted_vars
+
+
+def _set_parsed_sv(chrom, vcf_variant, parsed_variant) -> None:
+    """Set parsed_variant key/values when vcf variant is a structural variant
+
+    Accepts:
+        chrom(str)
+        vcf_variant(cyvcf2.Variant)
+        parsed_variant(dict): dictionary containing parsed variant values
+    """
+    sv_type = vcf_variant.INFO["SVTYPE"]
+    parsed_variant["variant_type"] = sv_type
+
+    alt = vcf_variant.ALT[0]
+
+    # Check if a better variant end can be extracted from INFO field
+    end = sv_end(
+        pos=vcf_variant.POS,
+        alt=alt,
+        svend=vcf_variant.INFO.get("END"),
+        svlen=vcf_variant.INFO.get("SVLEN"),
+    )
+    parsed_variant["end"] = end
+
+    if sv_type == "BND":
+        parsed_variant["mate_name"] = bnd_mate_name(alt, chrom)
 
 
 def add_variant(database, variant, dataset_id) -> Union[int, InsertOneResult]:
