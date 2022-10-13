@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
+from typing import Union
 
 LOG = logging.getLogger(__name__)
 
 
-def delete_genes(collection, build="GRCh37") -> int:
+def delete_genes(collection, build="GRCh37") -> Union[int, None]:
     """Delete all genes from gene database collection
 
     Accepts:
@@ -22,7 +23,7 @@ def delete_genes(collection, build="GRCh37") -> int:
     return result.deleted_count
 
 
-def delete_dataset(database, id) -> int:
+def delete_dataset(database, id) -> Union[int, None]:
     """Delete a dataset from dataset collection
 
     Accepts:

@@ -402,7 +402,7 @@ def test_add_sv_variants(mock_app, public_dataset, database):
         assert var["variantType"] in valid_types
 
 
-def test_add_BND_SV_variants(mock_app, public_dataset, database):
+def test_add_bnd_sv_variants(mock_app, public_dataset, database):
     """Test that BND structural variants are correcly parsed and saved to database"""
 
     runner = mock_app.test_cli_runner()

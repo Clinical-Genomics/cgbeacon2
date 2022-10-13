@@ -55,7 +55,7 @@ def validate_token(request, database) -> bool:
 
 # Authentication code is based on:
 # https://elixir-europe.org/services/compute/aai
-def authlevel(request, oauth2_settings) -> tuple:
+def authlevel(request, oauth2_settings) -> Union[tuple, dict]:
     """Returns auth level from a request object
 
     Accepts:
@@ -109,7 +109,6 @@ def authlevel(request, oauth2_settings) -> tuple:
 
         # collect bona fide requirements from app config file
         bona_fide_terms = oauth2_settings.get("bona_fide_requirements")
-        # controlled_ds, bona_fide_ds = check_passports(g44gh_passports)
         auth_level = check_passports(all_passports, bona_fide_terms)
 
         if auth_level == PASSPORTS_ERROR:
@@ -312,7 +311,7 @@ def decode_passport(encoded) -> tuple:
     return header, payload
 
 
-def ga4gh_passports(decoded_token, token, oauth2_settings) -> Union[list, dict]:
+def ga4gh_passports(decoded_token, token, oauth2_settings) -> Union[list, dict, None]:
     """Check dataset permissions and bona fide status from ga4gh token payload info
 
     Auth system is described by this document: https://github.com/ga4gh/data-security/blob/master/AAI/AAIConnectProfile.md

@@ -259,7 +259,7 @@ def add_variant(database, variant, dataset_id) -> Union[int, InsertOneResult]:
         allele_count = cumulative_allele_count(current_samples)
 
     if allele_count > 0:  # changes in sample, allele count dictionary must be saved
-        result = database["variant"].find_one_and_update(
+        database["variant"].find_one_and_update(
             {"_id": old_variant["_id"]},
             {
                 "$set": {

@@ -29,7 +29,7 @@ def test_send_img(mock_app):
             assert resp.mimetype == "image/svg+xml"
 
 
-def test_post_range_coords_BND_SV_found(mock_app, public_dataset, database, test_bnd_sv):
+def test_post_range_coords_bnd_sv_found(mock_app, public_dataset, database, test_bnd_sv):
     """Test a POST request to search for an existing BND structural variant
 
     curl -X POST \
@@ -165,7 +165,7 @@ def test_get_request_snv_regex(mock_app, test_snv, public_dataset):
         assert ds_level_result["exists"] is True
 
 
-def test_get_request_exact_position_snv_return_ALL(
+def test_get_request_exact_position_snv_return_all(
     mock_app, test_snv, public_dataset, public_dataset_no_variants
 ):
     """Test the query endpoint by sending a GET request. Search for SNVs, exact position, return responses from ALL datasets"""
@@ -214,7 +214,7 @@ def test_get_request_exact_position_snv_return_ALL(
         assert ds_level_result["info"] == {"accessType": "PUBLIC"}
 
 
-def test_get_request_exact_position_snv_return_HIT(
+def test_get_request_exact_position_snv_return_hit(
     mock_app, test_snv, public_dataset, public_dataset_no_variants
 ):
     """Test the query endpoint by sending a GET request. Search for SNVs, exact position, return only responses from dataset with variant (HIT)"""
@@ -245,7 +245,7 @@ def test_get_request_exact_position_snv_return_HIT(
     assert data["datasetAlleleResponses"][0]["exists"]
 
 
-def test_get_request_exact_position_snv_return_MISS(
+def test_get_request_exact_position_snv_return_miss(
     mock_app, test_snv, public_dataset, public_dataset_no_variants
 ):
     """Test the query endpoint by sending a GET request. Search for SNVs, exact position, return only responses from dataset with no hits (MISS)"""
@@ -276,7 +276,7 @@ def test_get_request_exact_position_snv_return_MISS(
     assert data["datasetAlleleResponses"][0]["exists"] is False
 
 
-def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):
+def test_get_request_snv_return_none(mock_app, test_snv, public_dataset):
     """Test the query endpoint by sending a GET request. Search for SNVs, includeDatasetResponses=None"""
 
     # Having a database with a variant:
@@ -473,7 +473,7 @@ def test_query_form_post_snv_exact_coords_not_found(mock_app, test_snv, public_d
     assert "Allele could not be found" in str(response.data)
 
 
-def test_query_form_post_SV_exact_coords_found(mock_app, test_sv, public_dataset):
+def test_query_form_post_sv_exact_coords_found(mock_app, test_sv, public_dataset):
     """Test the interactive query interface, sv, exact coordinates"""
 
     # Having a database with a structural variant:
@@ -503,7 +503,7 @@ def test_query_form_post_SV_exact_coords_found(mock_app, test_sv, public_dataset
     assert "Allele was found in this beacon" in str(response.data)
 
 
-def test_query_post_range_coords_SV_found(mock_app, test_sv, public_dataset):
+def test_query_post_range_coords_sv_found(mock_app, test_sv, public_dataset):
     """Test the interactive query interface, sv, range coordinates"""
 
     # Having a database with a structural variant:

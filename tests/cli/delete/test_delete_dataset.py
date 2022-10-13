@@ -27,7 +27,7 @@ def test_delete_existing_dataset(public_dataset, mock_app, database):
     dataset = public_dataset
 
     # When a dataset is inserted into database
-    result = runner.invoke(
+    runner.invoke(
         cli,
         [
             "add",

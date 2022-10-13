@@ -17,9 +17,9 @@ def md5_key(chrom, start, end, ref, alt, assembly) -> str:
         md5_key(str): md5 unique key
 
     """
-    hash = hashlib.md5()
-    hash.update(
+    result = hashlib.md5()
+    result.update(
         (" ".join([chrom, str(start), str(end), str(ref), str(alt), assembly])).encode("utf-8")
     )
-    md5_key = hash.hexdigest()
+    md5_key = result.hexdigest()
     return md5_key

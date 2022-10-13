@@ -26,7 +26,7 @@ def configure_email_error_logging(app) -> None:
     mail_handler.setLevel(logging.ERROR)
     mail_handler.setFormatter(
         logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s: %(message)s " "[in %(pathname)s:%(lineno)d]"
+            "%(asctime)s - %(name)s - %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
         )
     )
     app.logger.addHandler(mail_handler)

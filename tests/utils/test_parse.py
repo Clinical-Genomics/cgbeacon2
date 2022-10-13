@@ -59,7 +59,7 @@ def test_bnd_mate_name():
     assert mate == "17"
 
 
-def test_sv_end_SVEND():
+def test_sv_end_svend():
     """Test the function that calculates the end coordinate of a structural variant in the presence of SVEND."""
     # Example:
     # 2 321682 . T <DEL> 6 PASS SVTYPE=DEL;END=321887;SVLEN=-205;CIPOS=-56,20;CIEND=-10,62 GT:GQ 0/1:12
@@ -67,7 +67,7 @@ def test_sv_end_SVEND():
     assert end == 321886
 
 
-def test_sv_end_BND():
+def test_sv_end_bnd():
     """Test the function that calculates the end coordinate of a BND structural variant."""
     # Example:
     # 2	321681	bnd_W	G	G]17:198982]	6	PASS	SVTYPE=BND;MATEID=bnd_Y	GT	0/1

@@ -25,7 +25,7 @@ LICENSE = "MIT"
 here = os.path.abspath(os.path.dirname(__file__))
 
 
-def parse_reqs(req_path="./requirements.txt"):
+def parse_reqs():
     """Recursively parse requirements from nested pip files."""
     install_requires = []
     with io.open(os.path.join(here, "requirements.txt"), encoding="utf-8") as handle:
@@ -33,14 +33,7 @@ def parse_reqs(req_path="./requirements.txt"):
         lines = (line.strip() for line in handle if line.strip() and not line.startswith("#"))
 
         for line in lines:
-            # check for nested requirements files
-            if line.startswith("-r"):
-                # recursively call this function
-                install_requires += parse_reqs(req_path=line[3:])
-
-            else:
-                # add the line as a new requirement
-                install_requires.append(line)
+            install_requires.append(line)
 
     return install_requires
 
