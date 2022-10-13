@@ -228,6 +228,105 @@ def create_allele_query(resp_obj, req) -> dict:
     return customer_query, mongo_query, error
 
 
+def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
+    """Check that the query to the server is valid
+
+    Accepts:
+        resp_obj(dict): response data that will be returned by server
+        customer_query(dict): a dictionary with all the key/values provided in the external request
+        mongo_query(dict): the query to collect variants from this server
+    """
+    chrom = customer_query.get("referenceName")
+    start = customer_query.get("start")
+    end = customer_query.get("end")
+    ref = customer_query.get("referenceBases")
+    alt = customer_query.get("alternateBases")
+    build = customer_query.get("assemblyId")
+    datasets = customer_query.get("datasetIds", [])
+    variant_type = customer_query.get("variantType")
+
+    error = None
+
+    # If customer wants to match a SNV with precise coordinates, alt and ref
+    simple_search_id = _simple_search_id(customer_query, chrom, start, end, ref, alt, build)
+    if simple_search_id:
+        mongo_query["_id"] = simple_search_id
+        return
+
+    # Check that the 3 mandatory parameters are present in the query
+    if None in [
+        chrom,
+        ref,
+        build,
+    ]:
+        # return a bad request 400 error with explanation message
+        return NO_MANDATORY_PARAMS
+
+    dataset_error = _check_query_datasets(datasets, build)
+    if dataset_error:
+        return dataset_error
+
+    # alternateBases OR variantType is also required
+    if all(
+        param is None
+        for param in [
+            alt,
+            variant_type,
+        ]
+    ):
+        # return a bad request 400 error with explanation message
+        return NO_SECONDARY_PARAMS
+
+    # Check that genomic coordinates are provided (even rough)
+    if (
+        start is None
+        and any([coord in customer_query.keys() for coord in RANGE_COORDINATES]) is False
+    ):
+        # return a bad request 400 error with explanation message
+        return NO_POSITION_PARAMS
+
+    if start:  # query for exact position
+        invalid_coords_error = _set_exact_position_query(start, end, mongo_query)
+        if invalid_coords_error:
+            return invalid_coords_error
+
+    # Range query
+    elif any([coord in customer_query.keys() for coord in RANGE_COORDINATES]):  # range query
+        fuzzy_query_error = _set_fuzzy_coord_query(customer_query, mongo_query)
+        if fuzzy_query_error:
+            return fuzzy_query_error
+
+    mongo_query["assemblyId"] = build
+    mongo_query["referenceName"] = chrom
+
+    add_coords_query(mongo_query, "referenceBases", ref)
+
+    if "alternateBases" in customer_query:
+        add_coords_query(mongo_query, "alternateBases", alt)
+
+    if "variantType" in customer_query:
+        mongo_query["variantType"] = variant_type
+
+
+def _set_exact_position_query(start, end, mongo_query) -> Union[None, dict]:
+    """Set up query dictionary for exact position query
+
+    Accepts:
+        start(int): start position
+        end(int): end position
+        mongo_query(dict): query to be submitted to MongoDB
+
+    """
+    try:
+        if end is not None:
+            mongo_query["end"] = int(end)
+        mongo_query["start"] = int(start)
+
+    except ValueError:
+        # return a bad request 400 error with explanation message
+        return INVALID_COORDINATES
+
+
 def _simple_search_id(customer_query, chrom, start, end, ref, alt, build) -> Union[None, str]:
     """Check if query is simple query: SNV with precise coordinates, alt and ref
 
@@ -314,91 +413,6 @@ def _set_fuzzy_coord_query(customer_query, mongo_query) -> Union[None, dict]:
         mongo_query["start"] = fuzzy_start_query
     if fuzzy_end_query:
         mongo_query["end"] = fuzzy_end_query
-
-
-def check_allele_request(resp_obj, customer_query, mongo_query) -> None:
-    """Check that the query to the server is valid
-
-    Accepts:
-        resp_obj(dict): response data that will be returned by server
-        customer_query(dict): a dictionary with all the key/values provided in the external request
-        mongo_query(dict): the query to collect variants from this server
-    """
-    chrom = customer_query.get("referenceName")
-    start = customer_query.get("start")
-    end = customer_query.get("end")
-    ref = customer_query.get("referenceBases")
-    alt = customer_query.get("alternateBases")
-    build = customer_query.get("assemblyId")
-    datasets = customer_query.get("datasetIds", [])
-    variant_type = customer_query.get("variantType")
-
-    error = None
-
-    # If customer wants to match a SNV with precise coordinates, alt and ref
-    simple_search_id = _simple_search_id(customer_query, chrom, start, end, ref, alt, build)
-    if simple_search_id:
-        mongo_query["_id"] = simple_search_id
-        return
-
-    # Check that the 3 mandatory parameters are present in the query
-    if None in [
-        chrom,
-        ref,
-        build,
-    ]:
-        # return a bad request 400 error with explanation message
-        return NO_MANDATORY_PARAMS
-
-    dataset_error = _check_query_datasets(datasets, build)
-    if dataset_error:
-        return dataset_error
-
-    # alternateBases OR variantType is also required
-    if all(
-        param is None
-        for param in [
-            alt,
-            variant_type,
-        ]
-    ):
-        # return a bad request 400 error with explanation message
-        return NO_SECONDARY_PARAMS
-
-    # Check that genomic coordinates are provided (even rough)
-    if (
-        start is None
-        and any([coord in customer_query.keys() for coord in RANGE_COORDINATES]) is False
-    ):
-        # return a bad request 400 error with explanation message
-        return NO_POSITION_PARAMS
-
-    if start:  # query for exact position
-        try:
-            if end is not None:
-                mongo_query["end"] = int(end)
-            mongo_query["start"] = int(start)
-
-        except ValueError:
-            # return a bad request 400 error with explanation message
-            return INVALID_COORDINATES
-
-    # Range query
-    elif any([coord in customer_query.keys() for coord in RANGE_COORDINATES]):  # range query
-        fuzzy_query_error = _set_fuzzy_coord_query(customer_query, mongo_query)
-        if fuzzy_query_error:
-            return fuzzy_query_error
-
-    mongo_query["assemblyId"] = build
-    mongo_query["referenceName"] = chrom
-
-    add_coords_query(mongo_query, "referenceBases", ref)
-
-    if "alternateBases" in customer_query:
-        add_coords_query(mongo_query, "alternateBases", alt)
-
-    if "variantType" in customer_query:
-        mongo_query["variantType"] = variant_type
 
 
 def add_coords_query(mongo_query, field, value) -> None:

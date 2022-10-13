@@ -2,7 +2,7 @@
 ### Added
 - Improved documentation on how to create an API user.
 ### Changed
-- Code refactoring to eliminate critical issue from SonarCloud
+- Code refactoring to eliminate all critical issues from SonarCloud
 
 ## [4.2.2] - 2022.05.30
 ### Fixed
