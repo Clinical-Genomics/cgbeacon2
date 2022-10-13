@@ -3,6 +3,11 @@ import time
 
 from cgbeacon2.resources import test_snv_vcf_path
 
+API_ADD_DATASET = "/apiv1.0/add_dataset"
+API_ADD = "/apiv1.0/add"
+INVALID_TOKEN = "Invalid auth token error"
+PATH_TO_VCF = "path/to/vcf"
+
 
 def test_add_dataset_wrong_auth_token(mock_app, api_req_headers):
     """Test receiving an add_dataset request with an X-Auth-Token header key not registered in database"""
@@ -10,11 +15,11 @@ def test_add_dataset_wrong_auth_token(mock_app, api_req_headers):
     # WHEN an add request with the wrong token is sent
     api_req_headers["X-Auth-Token"] = "FOO"
     # GIVEN a POST request with data sent to the add_dataset endpoint
-    response = mock_app.test_client().post("/apiv1.0/add_dataset", json={}, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD_DATASET, json={}, headers=api_req_headers)
     # then it should return not authorized
     assert response.status_code == 403
     resp_data = json.loads(response.data)
-    assert resp_data["message"] == "Invalid auth token error"
+    assert resp_data["message"] == INVALID_TOKEN
 
 
 def test_add_dataset_missing_data(mock_app, api_req_headers, database, api_user):
@@ -27,9 +32,7 @@ def test_add_dataset_missing_data(mock_app, api_req_headers, database, api_user)
     data = {"id": "test_id", "name": "A new dataset"}
 
     # GIVEN a POST request with data sent to the add_dataset endpoint
-    response = mock_app.test_client().post(
-        "/apiv1.0/add_dataset", json=data, headers=api_req_headers
-    )
+    response = mock_app.test_client().post(API_ADD_DATASET, json=data, headers=api_req_headers)
     # then it should return not authorized
     assert response.status_code == 422
     resp_data = json.loads(response.data)
@@ -59,9 +62,7 @@ def test_add_dataset(mock_app, api_req_headers, public_dataset, api_user, databa
     }
 
     # GIVEN a POST request with data sent to the add_dataset endpoint
-    response = mock_app.test_client().post(
-        "/apiv1.0/add_dataset", json=data, headers=api_req_headers
-    )
+    response = mock_app.test_client().post(API_ADD_DATASET, json=data, headers=api_req_headers)
     # THEN it should return a successful response
     assert response.status_code == 200
     resp_data = json.loads(response.data)
@@ -97,9 +98,7 @@ def test_add_dataset_existing(mock_app, api_req_headers, public_dataset, api_use
     }
 
     # GIVEN a POST request with data sent to the add_dataset endpoint
-    response = mock_app.test_client().post(
-        "/apiv1.0/add_dataset", json=data, headers=api_req_headers
-    )
+    response = mock_app.test_client().post(API_ADD_DATASET, json=data, headers=api_req_headers)
 
     # THEN it should return an error response
     assert response.status_code == 422
@@ -111,13 +110,13 @@ def test_add_dataset_existing(mock_app, api_req_headers, public_dataset, api_use
 def test_add_variants_no_auth_token(mock_app, api_req_headers):
     """Test receiving an add request with no X-Auth-Token header key"""
     api_req_headers.pop("X-Auth-Token")
-    data = dict(vcf_path="path/to/vcf", assemblyId="GRCh37")
+    data = dict(vcf_path=PATH_TO_VCF, assemblyId="GRCh37")
     # When a POST add request is missing the token in the header
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # then it should return not authorized
     assert response.status_code == 403
     resp_data = json.loads(response.data)
-    assert resp_data["message"] == "Invalid auth token error"
+    assert resp_data["message"] == INVALID_TOKEN
 
 
 def test_add_variants_wrong_auth_token(mock_app, database, api_user, api_req_headers):
@@ -126,12 +125,12 @@ def test_add_variants_wrong_auth_token(mock_app, database, api_user, api_req_hea
     database["user"].insert_one(api_user)
     # WHEN an add request with the wrong token is sent
     api_req_headers["X-Auth-Token"] = "FOO"
-    data = dict(vcf_path="path/to/vcf", assemblyId="GRCh37")
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    data = dict(vcf_path=PATH_TO_VCF, assemblyId="GRCh37")
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # then it should return not authorized
     assert response.status_code == 403
     resp_data = json.loads(response.data)
-    assert resp_data["message"] == "Invalid auth token error"
+    assert resp_data["message"] == INVALID_TOKEN
 
 
 def test_variants_add_no_dataset(mock_app, api_user, database, api_req_headers):
@@ -139,9 +138,9 @@ def test_variants_add_no_dataset(mock_app, api_user, database, api_req_headers):
     # GIVEN an authorized API user
     database["user"].insert_one(api_user)
 
-    data = dict(vcf_path="path/to/vcf", assemblyId="GRCh37")
+    data = dict(vcf_path=PATH_TO_VCF, assemblyId="GRCh37")
     # When a POST add request is missing dataset id param:
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error 422 (Unprocessable Entity)
     assert response.status_code == 422
     resp_data = json.loads(response.data)
@@ -155,7 +154,7 @@ def test_variants_add_no_vcf_path(mock_app, api_user, database, api_req_headers)
 
     data = dict(dataset_id="test_id", assemblyId="GRCh37")
     # When a POST add request is missing dataset path to vcf file
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error 422 (Unprocessable Entity)
     assert response.status_code == 422
     resp_data = json.loads(response.data)
@@ -167,9 +166,9 @@ def test_variants_add_wrong_assembly(mock_app, api_user, database, api_req_heade
     # GIVEN an authorized API user
     database["user"].insert_one(api_user)
 
-    data = dict(dataset_id="test_id", vcf_path="path/to/vcf", assemblyId="FOO")
+    data = dict(dataset_id="test_id", vcf_path=PATH_TO_VCF, assemblyId="FOO")
     # When a POST add request is sent with a non valid assembly id
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error 422 (Unprocessable Entity)
     assert response.status_code == 422
     resp_data = json.loads(response.data)
@@ -181,9 +180,9 @@ def test_variants_add_wrong_dataset(mock_app, api_user, database, api_req_header
     # GIVEN an authorized API user
     database["user"].insert_one(api_user)
 
-    data = dict(dataset_id="FOO", vcf_path="path/to/vcf", assemblyId="GRCh37")
+    data = dict(dataset_id="FOO", vcf_path=PATH_TO_VCF, assemblyId="GRCh37")
     # When a POST add request is sent with a non valid assembly id
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error
     assert response.status_code == 422
     # With message that dataset could not be found
@@ -200,9 +199,9 @@ def test_variants_add_invalid_vcf_path(
     # GIVEN a database containing a public dataset
     database["dataset"].insert_one(public_dataset)
 
-    data = dict(dataset_id=public_dataset["_id"], vcf_path="path/to/vcf", assemblyId="GRCh37")
+    data = dict(dataset_id=public_dataset["_id"], vcf_path=PATH_TO_VCF, assemblyId="GRCh37")
     # When a POST add request is sent with a non valid assembly id
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error
     assert response.status_code == 422
     # With message that VCF path is not valid
@@ -226,7 +225,7 @@ def test_variants_add_invalid_samples(
         samples=["FOO", "BAR"],
     )
     # When a POST add request is sent with non-valid samples
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error
     assert response.status_code == 422
     # With message that VCF files doesn't contain those samples
@@ -251,7 +250,7 @@ def test_variants_add_invalid_gene_list(
         genes={"ids": [17284]},
     )
     # When a POST add request is sent with non-valid genes object (missing id_type for instance)
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return error
     assert response.status_code == 422
     # With message that missing info should be provided
@@ -283,7 +282,7 @@ def test_variants_add_hgnc_genes(
         "samples": samples,
         "genes": {"ids": [17284], "id_type": "HGNC"},
     }
-    response = mock_app.test_client().post("/apiv1.0/add", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return a 202 (accepted) response
     assert response.status_code == 202
     resp_data = json.loads(response.data)
@@ -318,7 +317,7 @@ def test_variants_add_ensembl_genes(
         "samples": samples,
         "genes": {"ids": ["ENSG00000128513"], "id_type": "Ensembl"},
     }
-    response = mock_app.test_client().post("/apiv1.0/add?", json=data, headers=api_req_headers)
+    response = mock_app.test_client().post(API_ADD, json=data, headers=api_req_headers)
     # Then it should return a 202 (accepted) response
     assert response.status_code == 202
     resp_data = json.loads(response.data)

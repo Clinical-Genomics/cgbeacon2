@@ -8,6 +8,8 @@ from cgbeacon2.server import create_app
 
 DATABASE_NAME = "testdb"
 GA4GH_SCOPES = ["openid", "ga4gh_passport_v1"]
+OAUTH2_ISSUER = "https://login.elixir-czech.org/oidc/"
+CLAIM_SUB = "someone@somewhere.se"
 
 
 @pytest.fixture(scope="function")
@@ -246,7 +248,7 @@ def mock_oauth2(pem):
 
     mock_params = dict(
         server="FOO",
-        issuers=["https://login.elixir-czech.org/oidc/"],
+        issuers=[OAUTH2_ISSUER],
         userinfo="mock_oidc_server",  # Where to send access token to view user data (permissions, statuses, ...)
         audience=["audience"],
         verify_aud=True,
@@ -259,10 +261,10 @@ def payload():
     """Token payload"""
     expiry_time = round(time.time()) + 60
     claims = {
-        "iss": "https://login.elixir-czech.org/oidc/",
+        "iss": OAUTH2_ISSUER,
         "exp": expiry_time,
         "aud": "audience",
-        "sub": "someone@somewhere.se",
+        "sub": CLAIM_SUB,
         "scope": " ".join(GA4GH_SCOPES),
     }
     return claims
@@ -332,10 +334,10 @@ def expired_token(header, pem):
 
     expiry_time = round(time.time()) - 60
     claims = {
-        "iss": "https://login.elixir-czech.org/oidc/",
+        "iss": OAUTH2_ISSUER,
         "exp": expiry_time,
         "aud": "audience",
-        "sub": "someone@somewhere.se",
+        "sub": CLAIM_SUB,
     }
     token = jwt.encode(header, claims, pem)
     return token.decode("utf-8")
@@ -350,7 +352,7 @@ def wrong_issuers_token(header, pem):
         "iss": "wrong_issuers",
         "exp": expiry_time,
         "aud": "audience",
-        "sub": "someone@somewhere.se",
+        "sub": CLAIM_SUB,
     }
 
     token = jwt.encode(header, claims, pem)

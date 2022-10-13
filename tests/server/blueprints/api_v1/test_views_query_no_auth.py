@@ -10,6 +10,8 @@ HEADERS = {"Content-type": "application/json", "Accept": "application/json"}
 BASE_ARGS = "query?assemblyId=GRCh37&referenceName=1&referenceBases=G"
 COORDS_ARGS = "start=235878452&end=235878453"
 ALT_ARG = "alternateBases=GTTT"
+API_V1 = "/apiv1.0/"
+API_QUERY_FORM = "/apiv1.0/query_form"
 
 
 def test_send_img(mock_app):
@@ -157,7 +159,7 @@ def test_get_request_snv_regex(mock_app, test_snv, public_dataset):
     query_string = "&".join([BASE_ARGS, COORDS_ARGS, "alternateBases=NNTN"])
 
     # THEN server response should return a match
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
     data = json.loads(response.data)
     for ds_level_result in data["datasetAlleleResponses"]:
         assert ds_level_result["exists"] is True
@@ -181,7 +183,7 @@ def test_get_request_exact_position_snv_return_ALL(
     ds_reponse_type = "includeDatasetResponses=ALL"
     query_string = "&".join([BASE_ARGS, COORDS_ARGS, ALT_ARG, ds_reponse_type])
 
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
     data = json.loads(response.data)
 
     # No error should be returned
@@ -230,7 +232,7 @@ def test_get_request_exact_position_snv_return_HIT(
     ds_reponse_type = "includeDatasetResponses=HIT"
     query_string = "&".join([BASE_ARGS, COORDS_ARGS, ALT_ARG, ds_reponse_type])
 
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
     data = json.loads(response.data)
 
     # No error should be returned
@@ -261,7 +263,7 @@ def test_get_request_exact_position_snv_return_MISS(
     ds_reponse_type = "includeDatasetResponses=MISS"
     query_string = "&".join([BASE_ARGS, COORDS_ARGS, ALT_ARG, ds_reponse_type])
 
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
     data = json.loads(response.data)
 
     # No error should be returned
@@ -286,7 +288,7 @@ def test_get_request_snv_return_NONE(mock_app, test_snv, public_dataset):
 
     # when providing the required parameters in a SNV query with includeDatasetResponses=NONE (or omitting the param)
     query_string = "&".join([BASE_ARGS, COORDS_ARGS, ALT_ARG])
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
     data = json.loads(response.data)
 
     # No error should be returned
@@ -306,7 +308,7 @@ def test_get_snv_query_variant_not_found(mock_app, public_dataset):
 
     # when querying for a variant
     query_string = "&".join([BASE_ARGS, "start=235826381", ALT_ARG])
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
     data = json.loads(response.data)
 
     # No error should be returned
@@ -345,7 +347,7 @@ def test_get_request_svs_range_coordinates(mock_app, test_sv, public_dataset):
 
     query_string = "&".join([base_sv_coords, range_coords, vtype])
 
-    response = mock_app.test_client().get("".join(["/apiv1.0/", query_string]), headers=HEADERS)
+    response = mock_app.test_client().get("".join([API_V1, query_string]), headers=HEADERS)
 
     data = json.loads(response.data)
     # No error should be returned
@@ -358,7 +360,7 @@ def test_query_form_get(mock_app):
     """Test the interactive query interface page"""
 
     # When calling the endpoing with the GET method
-    response = mock_app.test_client().get("/apiv1.0/query_form")
+    response = mock_app.test_client().get(API_QUERY_FORM)
 
     # Should not return error
     assert response.status_code == 200
@@ -435,7 +437,7 @@ def test_query_form_post_snv_exact_coords_found(mock_app, test_snv, public_datas
     )
 
     # When calling the endpoing with the POST method
-    response = mock_app.test_client().post("/apiv1.0/query_form", data=form_data)
+    response = mock_app.test_client().post(API_QUERY_FORM, data=form_data)
 
     # Endpoint should NOT return error
     assert response.status_code == 200
@@ -462,7 +464,7 @@ def test_query_form_post_snv_exact_coords_not_found(mock_app, test_snv, public_d
     )
 
     # When calling the endpoing with the POST method
-    response = mock_app.test_client().post("/apiv1.0/query_form", data=form_data)
+    response = mock_app.test_client().post(API_QUERY_FORM, data=form_data)
 
     # Endpoint should NOT return error
     assert response.status_code == 200
@@ -492,7 +494,7 @@ def test_query_form_post_SV_exact_coords_found(mock_app, test_sv, public_dataset
     )
 
     # When calling the endpoing with the POST method,
-    response = mock_app.test_client().post("/apiv1.0/query_form", data=form_data)
+    response = mock_app.test_client().post(API_QUERY_FORM, data=form_data)
 
     # Endpoint should NOT return error
     assert response.status_code == 200
@@ -530,7 +532,7 @@ def test_query_post_range_coords_SV_found(mock_app, test_sv, public_dataset):
     )
 
     # When calling the endpoing with the POST method,
-    response = mock_app.test_client().post("/apiv1.0/query_form", data=form_data)
+    response = mock_app.test_client().post(API_QUERY_FORM, data=form_data)
 
     # Endpoint should NOT return error
     assert response.status_code == 200
@@ -551,7 +553,7 @@ def test_post_query_error(mock_app, test_snv, public_dataset):
     )
 
     # When calling the endpoing with the POST method,
-    response = mock_app.test_client().post("/apiv1.0/query_form", data=form_data)
+    response = mock_app.test_client().post(API_QUERY_FORM, data=form_data)
 
     # Endpoint should retun a page
     assert response.status_code == 200
