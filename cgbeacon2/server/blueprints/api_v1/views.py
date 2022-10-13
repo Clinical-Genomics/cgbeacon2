@@ -90,7 +90,7 @@ def query_form() -> str:
 
     if request.method == "POST":
         # Create database query object
-        customer_query, mongo_query, error = create_allele_query(resp_obj, request)
+        customer_query, mongo_query, error = create_allele_query(request)
 
         if error:
             flash(error, "danger")
@@ -323,7 +323,7 @@ def query() -> Response:
         return resp
 
     # Create database query object
-    customer_query, mongo_query, error = create_allele_query(resp_obj, request)
+    customer_query, mongo_query, error = create_allele_query(request)
 
     resp_obj["beaconId"] = beacon_obj.id
     resp_obj["apiVersion"] = beacon_obj.apiVersion

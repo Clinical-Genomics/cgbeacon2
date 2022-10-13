@@ -182,11 +182,10 @@ def delete_variants_task(req) -> None:
         LOG.info(f"Number of updated variants:{updated}. Number of deleted variants:{removed}")
 
 
-def create_allele_query(resp_obj, req) -> tuple:
+def create_allele_query(req) -> tuple:
     """Populates a dictionary with the parameters provided in the request
 
     Accepts:
-        resp_obj(dictionary): response data that will be returned by server
         req(flask.request): request received by server
 
     Returns:
