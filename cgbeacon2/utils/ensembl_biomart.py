@@ -3,8 +3,8 @@ import logging
 
 import requests
 
-BIOMART_37 = "http://grch37.ensembl.org/biomart/martservice?query="
-BIOMART_38 = "http://ensembl.org/biomart/martservice?query="
+BIOMART_37 = "https://grch37.ensembl.org/biomart/martservice?query="
+BIOMART_38 = "https://ensembl.org/biomart/martservice?query="
 CHROMOSOMES = [str(num) for num in range(1, 23)] + ["X", "Y", "MT"]
 ATTRIBUTES = [
     "chromosome_name",

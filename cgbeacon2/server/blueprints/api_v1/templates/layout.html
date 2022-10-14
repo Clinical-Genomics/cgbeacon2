@@ -20,8 +20,8 @@
 
 <header>
   <nav class="nav navbar-dark bg-dark justify-content-between">
-    <a class="nav-item nav-link text-white" href="https://www.scilifelab.se/facilities/clinical-genomics-stockholm/" target="_blank"><img class="mr-3" src="{{ url_for('api_v1.send_img', filename='logo.d59ae85.svg') }}" alt="Clinical Genomics logo" height="30">Clinical Genomics Beacon - SciLifeLab Stockholm</a>
-    <a class="nav-item nav-link text-white d-flex align-items-center" href="https://github.com/Clinical-Genomics/cgbeacon2" target="_blank"><i class="fab fa-github mr-3" style="font-size:30px;" align="middle"></i>Software v.{{software_version}}</a>
+    <a class="nav-item nav-link text-white" href="https://www.scilifelab.se/facilities/clinical-genomics-stockholm/" target="_blank" rel="noopener"><img class="mr-3" src="{{ url_for('api_v1.send_img', filename='logo.d59ae85.svg') }}" alt="Clinical Genomics logo" height="30">Clinical Genomics Beacon - SciLifeLab Stockholm</a>
+    <a class="nav-item nav-link text-white d-flex align-items-center" href="https://github.com/Clinical-Genomics/cgbeacon2" target="_blank" rel="noopener"><em class="fab fa-github mr-3" style="font-size:30px;" align="middle"></em>Software v.{{software_version}}</a>
   </nav>
 </header>
 <body>
@@ -36,19 +36,19 @@
 <footer class="footer mt-3">
   <div class="row d-flex justify-content-around">
     <div>
-      <a href="https://www.scilifelab.se" target=_blank><img src="{{url_for('api_v1.send_img', filename='scilifelab-logo.svg')}}" alt="SciLifeLab" height="50"></a>
+      <a href="https://www.scilifelab.se" target="_blank" rel="noopener"><img src="{{url_for('api_v1.send_img', filename='scilifelab-logo.svg')}}" alt="SciLifeLab" height="50"></a>
     </div>
     <div>
-      <a href="https://elixir-europe.org/" target=_blank><img src="{{url_for('api_v1.send_img', filename='elixir_logo.png')}}" alt="Elixir" height="50"></a>
+      <a href="https://elixir-europe.org/" target="_blank" rel="noopener"><img src="{{url_for('api_v1.send_img', filename='elixir_logo.png')}}" alt="Elixir" height="50"></a>
     </div>
     <div>
-      <a href="http://ki.se" target=_blank><img src="{{url_for('api_v1.send_img', filename='KI2.jpeg')}}" alt="Karolinska University Hospital" height="50"></a>
+      <a href="http://ki.se" target="_blank" rel="noopener"><img src="{{url_for('api_v1.send_img', filename='KI2.jpeg')}}" alt="Karolinska University Hospital" height="50"></a>
     </div>
     <div>
-      <a href="https://www.ga4gh.org/" target=_blank><img src="{{url_for('api_v1.send_img', filename='ga4gh.png')}}" alt="Global Alliance for Genomics and Health" height="50"></a>
+      <a href="https://www.ga4gh.org/" target="_blank" rel="noopener"><img src="{{url_for('api_v1.send_img', filename='ga4gh.png')}}" alt="Global Alliance for Genomics and Health" height="50"></a>
     </div>
     <div>
-      <a href="https://beacon-network.org/#/" target=_blank><img src="{{url_for('api_v1.send_img', filename='beacon-network-logo-dark.svg')}}" alt="The Beacon Network" height="50"></a>
+      <a href="https://beacon-network.org/#/" target="_blank" rel="noopener"><img src="{{url_for('api_v1.send_img', filename='beacon-network-logo-dark.svg')}}" alt="The Beacon Network" height="50"></a>
     </div>
   </div>
 </footer>
