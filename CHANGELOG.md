@@ -1,4 +1,4 @@
-## [] -
+## [4.3] - 2022.10.14
 ### Added
 - Improved documentation on how to create an API user.
 ### Changed
