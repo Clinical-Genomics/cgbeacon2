@@ -88,7 +88,7 @@ def demo(ctx) -> None:
 @click.option("--desc", type=click.STRING, nargs=1, required=False, help="User description")
 @click.option("--url", type=click.STRING, nargs=1, required=False, help="User url")
 @with_appcontext
-def user(uid, name, token, desc, url) -> None:
+def user(uid, name, token, desc, url):
     """Creates a new user for adding/removing variants using the REST API"""
 
     if " " in uid:
