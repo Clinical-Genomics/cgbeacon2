@@ -1,4 +1,4 @@
-## [unreleased]
+## [4.4] - 2023-03-17
 ### Changed
 - Updated version of several Docker images used in GitHub actions
 ### Fixed
