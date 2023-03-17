@@ -2,13 +2,13 @@ name: Tests and coverage
 on: [pull_request]
 jobs:
   Pytest_Codecov:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       CGBEACON2_CONFIG: ../instance/config.py
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python
-      uses: actions/setup-python@master
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
     - name: Install required linux libs
@@ -26,7 +26,7 @@ jobs:
         pytest --cov=./ --cov-report=xml
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         flags: unittests
         files: ./coverage.xml

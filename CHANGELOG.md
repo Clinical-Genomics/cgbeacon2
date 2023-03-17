@@ -1,3 +1,9 @@
+## [unreleased]
+### Changed
+- Updated version of several Docker images used in GitHub actions
+### Fixed
+- Replaced deprecated Ubuntu version with latest in GitHub actions
+
 ## [4.3] - 2022.10.14
 ### Added
 - Improved documentation on how to create an API user.
