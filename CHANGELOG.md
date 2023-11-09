@@ -1,4 +1,4 @@
-## [unreleased]
+## [4.5] - 2023-11-09
 ### Changed
 - Unfreeze pymongo lib in requirements.txt
 - Use MongoDB v7 in docker-compose file
