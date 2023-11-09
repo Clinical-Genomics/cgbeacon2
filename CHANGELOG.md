@@ -2,6 +2,7 @@
 ### Changed
 - Unfreeze pymongo lib in requirements.txt
 - Use MongoDB v7 in docker-compose file
+- Force Docker build to use the linux/amd64 architecture in docker-compose file
 
 ## [4.4] - 2023-03-17
 ### Changed

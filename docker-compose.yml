@@ -14,6 +14,7 @@ services:
       - '27013'
 
   beacon-cli:
+    platform: linux/amd64
     container_name: beacon-cli
     environment:
       MONGODB_HOST: mongodb
@@ -26,6 +27,7 @@ services:
     command: add demo
 
   beacon-web:
+    platform: linux/amd64
     container_name: beacon-web
     environment:
       MONGODB_HOST: mongodb
