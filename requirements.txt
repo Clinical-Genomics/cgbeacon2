@@ -1,5 +1,5 @@
 # database
-pymongo<4.0
+pymongo
 
 # command line
 click

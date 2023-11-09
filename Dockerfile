@@ -41,13 +41,13 @@ COPY --chown=worker:worker . /home/worker/app
 
 WORKDIR /home/worker/app
 
+# make sure all messages always reach console
+ENV PYTHONUNBUFFERED=1
+
 # Install the app
 RUN pip install --no-cache-dir -e .
 
 # Run the app as non-root user
 USER worker
-
-# make sure all messages always reach console
-ENV PYTHONUNBUFFERED=1
 
 ENTRYPOINT ["beacon"]
