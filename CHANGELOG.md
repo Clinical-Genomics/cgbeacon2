@@ -1,3 +1,8 @@
+## [unreleased]
+### Changed
+- Unfreeze pymongo lib in requirements.txt
+- Use MongoDB v7 in docker-compose file
+
 ## [4.4] - 2023-03-17
 ### Changed
 - Updated version of several Docker images used in GitHub actions
