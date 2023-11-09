@@ -49,7 +49,7 @@ class Beacon:
         Returns
             event.created(datetime.datetime): date of creation of the event
         """
-        if database:
+        if database is not None:
             events = database["event"].find().sort([("created", ordering)]).limit(1)
             for event in events:
                 return event.get("created")
