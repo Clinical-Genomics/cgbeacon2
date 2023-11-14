@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Loading datasets and variants - cgbeacon2 docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Loading datasets and variants";
+        var mkdocs_page_input_path = "loading.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> cgbeacon2 docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker_run/">Running the demo with Docker</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../systemd/">Deploying the app as a service using systemd and podman</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../env_install/">Deploying on a virtual environment</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Loading datasets and variants</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../removing/">Removing datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../queries/">Queries</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">cgbeacon2 docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Loading datasets and variants</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="adding-data-to-the-database">Adding data to the database</h2>
+<p>Dataset and variant data can be loaded into the database using specific the specific command line. To visualize command line options, from the terminal you can user the following command: <code>beacon --help</code>.</p>
+<p>The default procedure to add variants to the beacon is always the following:</p>
+<ul>
+<li>Create a dataset to link your variants to.</li>
+<li>Load variants from a VCF file for one or more samples, specifying which dataset these variants belong to.</li>
+</ul>
+<h2 id="how-to-add">How to add:</h2>
+<ol>
+<li><a href="#demodata"> Demo data </a></li>
+<li><a href="#genes"> Gene data </a></li>
+<li><a href="#user"> Creating an authorized user for using the APIs</a></li>
+<li><a href="#dataset"> A new dataset (custom data)</a></li>
+<li><a href="#variants_cli"> Variants (custom data) using the command line</a></li>
+<li><a href="#variants_api"> Variants (custom data) using the REST API</a></li>
+</ol>
+<p><a name="demodata"></a></p>
+<h2 id="demo-data">Demo data</h2>
+<p>Demo data consisting in a test dataset with public access and a set of variants (SNVs and structural variants of different type) is available under the cgbeacon2/resources/demo folder. You don't need to load this data manually since the following command will take care of everything:</p>
+<pre><code>beacon add demo
+</code></pre>
+<p><a name="genes"></a></p>
+<h2 id="addingupdating-gene-data">Adding/updating gene data</h2>
+<p>In order to accept add variants requests containing the <code>genes</code> option, the database should be pre-populated with gene data. VCF files can in fact be filtered by genes only if gene information containing chromosome, start and stop coordinates are already available when the variants load command is executed.</p>
+<p>To load genes into database or to update the database gene collection, run the following command:</p>
+<pre><code>beacon update genes
+
+Options:
+  -build [GRCh37|GRCh38]  Genome assembly (default:GRCh37)
+</code></pre>
+<p><a name="user"></a></p>
+<h3 id="creating-an-authorized-user-for-using-the-apis">Creating an authorized user for using the APIs</h3>
+<p>An API user is required whenever variants are by sending a request to the Beacon API.
+One or more API users can be created using the command:</p>
+<pre><code>beacon add user
+
+
+Options:
+  --uid TEXT    User ID  [required]
+  --name TEXT  User name  [required]
+  --token TEXT  If not specified, the token will be created automatically
+  --desc TEXT  User description
+  --url TEXT   User url
+  --help      Show this message and exit.
+</code></pre>
+<p>If no token is specified, a random user token will be created in the database for this user.</p>
+<p><a name="dataset"></a></p>
+<h2 id="adding-a-new-dataset">Adding a new dataset</h2>
+<p>A new dataset can be created with the following command:</p>
+<pre><code>beacon add dataset --did &lt;dataset_id&gt; --name &lt;&quot;A dataset name&quot;&gt; --build &lt;GRCh37|GRCh38&gt; --authlevel &lt;public|registered|controlled&gt;
+</code></pre>
+<p>The above parameters (ds-id, name, build, authlevel) are mandatory. If user doesn't specify any genome build then the default build used is GRCh37. One dataset can be associated to variants called using only one genome build.
+<code>authlevel</code> parameter will be used in queries to return results according to the request authentication level.</p>
+<ul>
+<li><strong>Public datasets</strong> can be interrogated by any beacon and any user in general and should not be used to store sensitive data such as individual phenotypes.</li>
+<li><strong>Bona fide researchers</strong> logged in via the Elixir AAI will be able to access data store in <strong>registered datasets</strong>.</li>
+<li><strong>Controlled access datasets</strong> might be used to store sensitive information and will be accessed only by users that have a signed agreement and their access approved by a Data Access Committee (DAC).</li>
+</ul>
+<p>More info about the Elixir AAI authentication is available <a href="https://elixir-europe.org/services/compute/aai">here</a></p>
+<p>Other optional parameters that can be provided to improve the dataset description are the following.</p>
+<pre><code>  --desc TEXT                      dataset description
+  --version FLOAT                  dataset version, i.e. 1.0
+  --url TEXT                       external url
+  --cc TEXT                        consent code key. i.e. HMB
+  --update
+</code></pre>
+<p>The <code>--update</code> flag will allow to modify the information for a dataset that is already existing in the database.</p>
+<p><a name="variants_cli"></a></p>
+<h2 id="adding-variant-data-using-the-command-line">Adding variant data using the command line</h2>
+<p>Variant data can be loaded to the database using the following command:</p>
+<pre><code>beacon add variants
+
+Options:
+  --ds TEXT      dataset ID  [required]
+  --vcf PATH     [required]
+  --sample TEXT  one or more samples to save variants for  [required]
+  --panel PATH   one or more bed files containing genomic intervals
+</code></pre>
+<p>ds (dataset id) and vcf (path to the VCF file containing the variants) are mandatory parameters. One or more samples included in the VCF file must also be specified. To specify multiple samples use the -sample parameter multiple times (example -sample sampleA -sample sampleB ..).</p>
+<p>VCF files might as well be filtered by genomic intervals prior to variant uploading. To upload variants filtered by multiple panels use the options -panel panelA -panel panelB, providing the path to a <a href="http://genome.ucsc.edu/FAQ/FAQformat#format1">bed file</a> containing the genomic intervals of interest.</p>
+<p>Additional variants for the same sample(s) and the same dataset might be added any time by running the same <code>beacon add variants</code> specifying another VCF file. Whenever the variant is already found for the same sample and the same dataset it will not be saved twice.</p>
+<p><a name="variants_api"></a></p>
+<h2 id="adding-variant-data-using-the-rest-api">Adding variant data using the REST API</h2>
+<p>Variant data can be alternatively loaded to the Beacon by sending a request to the /apiv1.0/add endpoint.
+This Endpoint is accepting json data from POST requests. If the request parameters are correct it will return a response with code 200 (success) and message "Saving variants to Beacon", whole it will start the actual thread that will save variants to database.</p>
+<h3 id="sending-an-add-request-to-the-api">Sending an add request to the API</h3>
+<p>Apart from the header, an add request should contain the following parameters:
+ - <strong>dataset_id</strong> (mandatory): string dentifier for a dataset
+ - <strong>vcf_path</strong> (mandatory): path to variants VCF file
+ - <strong>assemblyId</strong> (mandatory) : Genome build used in variant calling ("GRCh37", "GRCh38")
+ - <strong>samples</strong> (mandatory): list of samples to extract variants from in VCF file
+ - <strong>genes</strong><sup><em></sup> (optional): an object containing two keys:
+  - </em><em>ids</em><em>: list of genes ids to be used to filter VCF file (only variants included in these genes will be saved to database).
+  - </em><em>id_type</em>*: either "HGNC" or "Ensembl", to specify which type of ID format <code>ids</code> refers to. All genes in the list must be of the same type (for example all Ensembl IDs).</p>
+<p>HTML Requests to add variants should contain an <code>auth_token</code> header which corresponds to the token of a <strong>pre-existing API user</strong>. API users are created exclusively using the command line. Follow these <a href="#user">instructions</a> to create a new API user.</p>
+<p>Once the user is created in the database, make sure the request to the add API contains the following header parameters:
+ - <strong>Content-Type</strong>: application/json
+ - <strong>X-Auth-Token</strong>: auth_token</p>
+<p>Example of a valid POST request to the add endpoint:</p>
+<pre><code>curl -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'X-Auth-Token: auth_token' \
+  -d '{&quot;dataset_id&quot;: &quot;test_public&quot;,
+  &quot;vcf_path&quot;: &quot;path/to/cgbeacon2/cgbeacon2/resources/demo/test_trio.vcf.gz&quot;,
+  &quot;samples&quot; : [&quot;ADM1059A1&quot;, &quot;ADM1059A2&quot;],
+  &quot;genes&quot; : {&quot;ids&quot;: [17284, 29669, 11592], &quot;id_type&quot;:&quot;HGNC&quot;},
+  &quot;assemblyId&quot;: &quot;GRCh37&quot;}' http://localhost:5000/apiv1.0/add
+</code></pre>
+<p><sup><em></sup> </em><em>In order for the genes option to work, it is necessary to load genes data into the database via the command line</em>*. Instructions on how to load genes info into the database are available <a href="#genes">here</a></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../env_install/" class="btn btn-neutral float-left" title="Deploying on a virtual environment"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../removing/" class="btn btn-neutral float-right" title="Removing datasets and variants">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../env_install/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../removing/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

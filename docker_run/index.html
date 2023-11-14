@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Running the demo with Docker - cgbeacon2 docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Running the demo with Docker";
+        var mkdocs_page_input_path = "docker_run.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> cgbeacon2 docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Running the demo with Docker</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../systemd/">Deploying the app as a service using systemd and podman</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../env_install/">Deploying on a virtual environment</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../loading/">Loading datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../removing/">Removing datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../queries/">Queries</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">cgbeacon2 docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Running the demo with Docker</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="setting-up-a-server-from-a-docker-image">Setting up a server from a Docker image</h2>
+<p>The beacon app is consisting of a <strong>backend</strong> that is used for:
+- Creating and removing datasets
+- Adding or removing variants for one of more samples of a dataset
+- Loading demo data (not used in production, just in a test server)
+- Updating the genes in the database</p>
+<p>At the same time, the command <code>beacon run</code> starts a <strong>frontend</strong> server with the following API endpoints:</p>
+<pre><code>Endpoint           Methods    Rule
+-----------------  ---------  ------------------------------
+api_v1.add         POST       /apiv1.0/add
+api_v1.delete      POST       /apiv1.0/delete
+api_v1.info        GET        /apiv1.0/
+api_v1.query       GET, POST  /apiv1.0/query
+api_v1.query_form  GET, POST  /apiv1.0/query_form
+</code></pre>
+<p>A Docker image for creating both backend and frontend containers is available on <a href="https://hub.docker.com/repository/docker/clinicalgenomics/cgbeacon2">Docker Hub</a>.
+Alternatively the Dockerfile used for creating the image is available in this repositiory.</p>
+<p>A local image of the repository can be created by moving the Dockerfile in the root folder of the app and from the same location, in a terminal, running the following command:</p>
+<pre><code>docker build -t cgbeacon2 .
+</code></pre>
+<p>The container with the docker image contains only the beacon app and its required libraries. In order to work the container must be connected with at least one other container hosting a running mongodb instance.</p>
+<h2 id="setting-up-the-app-backend">Setting up the app backend:</h2>
+<p>A simple running instance of the app backend connected to the database and ready to execute commands could be created in different ways. This is an example using docker-compose:</p>
+<p>Create a file docker-compose.yml containing the following code:</p>
+<pre><code>version: '3'
+# usage:
+# sudo docker-compose build
+# sudo docker-compose up
+services:
+  mongodb:
+    image: mvertes/alpine-mongo
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    expose:
+      - '27017'
+
+  beacon-cli:
+    environment:
+      MONGODB_HOST: mongodb
+    image: clinicalgenomics/cgbeacon2
+    container_name: beacon-cli
+    links:
+      - mongodb
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+</code></pre>
+<p>Run the containers and open an interactive shell for the backend by typing:</p>
+<pre><code>docker-compose run beacon-cli /bin/bash
+</code></pre>
+<p>To populate the database with demo data (dataset + case variants) type:</p>
+<pre><code>beacon add demo
+</code></pre>
+<p>Exit from the execution of the images by typing <code>exit</code></p>
+<h2 id="starting-an-app-server-connected-to-the-database">Starting an app server connected to the database</h2>
+<p>An app server instance connected to the server might be started in a similar way using Docker Compose. This is an example of a such server, listening for incoming requests on port 6000, from hosts outside the container.</p>
+<p>Example of docker-compose.yml file:</p>
+<pre><code>version: '3'
+
+services:
+  mongodb:
+    image: mvertes/alpine-mongo
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    expose:
+      - '27017'
+
+  beacon-web:
+    environment:
+      MONGODB_HOST: mongodb
+    image: clinicalgenomics/cgbeacon2
+    container_name: beacon-web
+    links:
+      - mongodb
+    expose:
+      - '6000'
+    ports:
+      - '6000:6000'
+    command: bash -c 'beacon run --host 0.0.0.0'
+</code></pre>
+<p>Run the server as a service (detached mode) by typing</p>
+<pre><code>docker.compose up -d
+</code></pre>
+<p>The server should be now listing for requests. Test that it is working by sending a request to the beacon info endpoint from another terminal window:</p>
+<pre><code>curl -X GET 'http://127.0.0.1:6000/apiv1.0/'
+</code></pre>
+<p>Stop the server by typing:</p>
+<pre><code>docker.compose down
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../systemd/" class="btn btn-neutral float-right" title="Deploying the app as a service using systemd and podman">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../systemd/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

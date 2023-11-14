@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Queries - cgbeacon2 docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Queries";
+        var mkdocs_page_input_path = "queries.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> cgbeacon2 docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker_run/">Running the demo with Docker</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../systemd/">Deploying the app as a service using systemd and podman</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../env_install/">Deploying on a virtual environment</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../loading/">Loading datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../removing/">Removing datasets and variants</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Queries</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">cgbeacon2 docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Queries</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="beacon-endpoints-and-queries">Beacon endpoints and queries</h2>
+<ol>
+<li><a href="#info"> Info endpoint </a></li>
+<li><a href="#query"> Query endpoint </a></li>
+<li><a href="#webform"> Queries using the web interface </a></li>
+<li><a href="#advanced"> Advanced query parameters </a></li>
+</ol>
+<p><a name="endpoints"></a></p>
+<h2 id="server-endpoints">Server endpoints</h2>
+<p><a name="info"></a>
+- <strong>/info</strong>.
+General info regarding this Beacon, including a description of its datasets, API version, sample count etc, can be obtained by sending a GET request using the following shell command:</p>
+<pre><code>curl -X GET 'http://localhost:5000/apiv1.0/info'
+</code></pre>
+<p>Demo beacon will reply to this request with a JSON object like this:</p>
+<pre><code>{&quot;alternativeUrl&quot;:null,&quot;apiVersion&quot;:&quot;v1.0.0&quot;,&quot;createDateTime&quot;:&quot;Tue, 23 Jun 2020 14:33:52 GMT&quot;,&quot;datasets&quot;:[{&quot;assembly_id&quot;:&quot;GRCh37&quot;,&quot;callCount&quot;:483,&quot;created&quot;:&quot;Tue, 23 Jun 2020 14:33:52 GMT&quot;,&quot;id&quot;:&quot;test_public&quot;,&quot;info&quot;:{&quot;accessType&quot;:&quot;PUBLIC&quot;},&quot;name&quot;:&quot;Test public dataset&quot;,&quot;sampleCount&quot;:1,&quot;updated&quot;:&quot;Tue, 23 Jun 2020 14:33:53 GMT&quot;,&quot;variantCount&quot;:408,&quot;version&quot;:1.0}],&quot;description&quot;:&quot;Beacon description&quot;,&quot;id&quot;:&quot;SciLifeLab-beacon&quot;,&quot;name&quot;:&quot;SciLifeLab Stockholm Beacon&quot;,&quot;organisation&quot;:{&quot;address&quot;:&quot;&quot;,&quot;contactUrl&quot;:&quot;&quot;,&quot;description&quot;:&quot;A science lab&quot;,&quot;id&quot;:&quot;scilifelab&quot;,&quot;info&quot;:[],&quot;logoUrl&quot;:&quot;&quot;,&quot;name&quot;:&quot;Clinical Genomics, SciLifeLab&quot;,&quot;welcomeUrl&quot;:&quot;&quot;},&quot;sampleAlleleRequests&quot;:[{&quot;alternateBases&quot;:&quot;A&quot;,&quot;assemblyId&quot;:&quot;GRCh37&quot;,&quot;datasetIds&quot;:[&quot;test_public&quot;],&quot;includeDatasetResponses&quot;:&quot;HIT&quot;,&quot;referenceBases&quot;:&quot;C&quot;,&quot;referenceName&quot;:&quot;1&quot;,&quot;start&quot;:156146085},{&quot;assemblyId&quot;:&quot;GRCh37&quot;,&quot;includeDatasetResponses&quot;:&quot;ALL&quot;,&quot;referenceBases&quot;:&quot;C&quot;,&quot;referenceName&quot;:&quot;20&quot;,&quot;start&quot;:54963148,&quot;variantType&quot;:&quot;DUP&quot;}],&quot;updateDateTime&quot;:&quot;Tue, 23 Jun 2020 14:33:53 GMT&quot;,&quot;version&quot;:&quot;v1.1&quot;,&quot;welcomeUrl&quot;:null}
+</code></pre>
+<p><a name="query"></a>
+- <strong>/query</strong>.
+Query endpoint supports both GET and POST requests.
+Example of a GET request:</p>
+<pre><code>curl -X GET \
+  'http://localhost:5000/apiv1.0/query?referenceName=1&amp;referenceBases=C&amp;start=156146085&amp;assemblyId=GRCh37&amp;alternateBases=A'
+</code></pre>
+<p>Example of a POST request:</p>
+<pre><code>curl -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;referenceName&quot;: &quot;1&quot;,
+  &quot;start&quot;: 156146085,
+  &quot;referenceBases&quot;: &quot;C&quot;,
+  &quot;alternateBases&quot;: &quot;A&quot;,
+  &quot;assemblyId&quot;: &quot;GRCh37&quot;,
+  &quot;includeDatasetResponses&quot;: &quot;HIT&quot;}' http://localhost:5000/apiv1.0/query
+</code></pre>
+<p>The Beacon reply to a query of this type would be a json object where the "exist" key will be true if the allele is found, otherwise it will be false.</p>
+<pre><code>{&quot;allelRequest&quot;:{&quot;alternateBases&quot;:&quot;A&quot;,&quot;assemblyId&quot;:&quot;GRCh37&quot;,&quot;datasetIds&quot;:[],&quot;includeDatasetResponses&quot;:&quot;NONE&quot;,&quot;referenceBases&quot;:&quot;C&quot;,&quot;referenceName&quot;:&quot;1&quot;,&quot;start&quot;:&quot;156146085&quot;},&quot;apiVersion&quot;:&quot;1.0.0&quot;,&quot;beaconId&quot;:&quot;SciLifeLab-beacon&quot;,&quot;datasetAlleleResponses&quot;:[],&quot;error&quot;:null,&quot;exists&quot;:true}
+</code></pre>
+<p><a name="webform"></a></p>
+<h2 id="web-interface">Web interface</h2>
+<p>A simple web interface to perform interactive queries can be used by typing the following address in any browser window: <code>http://127.0.0.1:5000/apiv1.0/query_form</code></p>
+<p><img alt="Interface picture" src="../pics/beacon2_interface.jpg" /></p>
+<p>At the moment this interface is disconnected with Elixir AAI so all queries will be limited to the available public datasets in the Beacon.</p>
+<p><a name="advanced"></a></p>
+<h2 id="advanced-queries">Advanced queries</h2>
+<h3 id="required-parameters">Required parameters</h3>
+<ul>
+<li><code>assemblyId</code>: Genome build (GRC notation, example: GRCh37).  </li>
+<li><code>referenceName</code>: Chromosome name () 1-22, X, Y, MT).</li>
+<li><code>referenceBases</code>: Reference bases for a variant. Accepted values: <code>[ACGT]*</code>.  </li>
+<li><code>start</code>: Precise start coordinate position, allele locus (0-based).  </li>
+<li><code>start</code> coordinate:  <ul>
+<li>for single positions, in general for retrieving information on SNVs and InDels.</li>
+<li>the use of <code>start</code> without an <code>end</code> parameter requires the use of <code>referenceBases</code>.  </li>
+</ul>
+</li>
+<li><code>start</code> and <code>end</code> coordinates:  <ul>
+<li>In general used to retrieve information for structural variants where start and end exact positions are known.</li>
+</ul>
+</li>
+<li><code>startMin</code>: Minimum start coordinate<ul>
+<li>for querying imprecise positions, for instance when a structural variants is suspected to have a breakpoint within a <code>startMin</code> and <code>startMax</code> interval. Similarly variants with the other breakpoint ending in another interval can be found by specifying <code>endMin</code> and <code>endMax</code> coordinates.  </li>
+</ul>
+</li>
+<li><code>startMax</code>: Maximum start coordinate. See <code>startMin</code>.  </li>
+<li><code>end</code>: Precise end coordinate (0-based, exclusive). See <code>start</code>.  </li>
+<li><code>endMin</code>: Minimum end coordinate. See <code>startMin</code>.  </li>
+<li><code>endMax</code>: Maximum end coordinate. See <code>startMin</code>.  </li>
+</ul>
+<p>Either Start and/or End coordinates or range coordinates must be specified in the query.</p>
+<h3 id="additional-optional-parameters">Additional optional parameters</h3>
+<ul>
+<li><code>variantType</code>: is used especially to query structural variants.
+    Examples: SNV, DEL, DUP, BND ..</li>
+<li><code>alternateBases</code>: The bases that appear instead of the reference bases. Accepted values:<code>[ACGT]*</code></li>
+</ul>
+<p>Either <code>alternateBases</code> or <code>variantType</code> is required in all queries</p>
+<ul>
+<li><code>datasetIds</code>: specific dataset IDs to search in. If this parameter is not provided then all datasets of a beacon will be searched.</li>
+<li><code>includeDatasetResponses</code>: whether if the beacon should return a dataset-specific response or a simple yes/no reply. Accepted values:</li>
+<li><code>ALL</code>: return a specific result from all available datasets in the beacon.</li>
+<li><code>HIT</code>: return a specific result from from all dataset where there is a positive match for the variant.</li>
+<li><code>MISS</code>: return a specific result from from all dataset where the variant was not found.</li>
+<li><code>NONE</code>: do not include dataset-specific info in the request. The same type of request is obtained when <code>includeDatasetResponses</code> parameter is not provided.</li>
+</ul>
+<p>The advantage of including <code>includeDatasetResponses</code> in query is that in case of positive match, other useful statistics will be returned at the dataset level, such as <code>variantCount</code>, <code>callCount</code> and <code>sampleCount</code>.</p>
+<p>This is an example of a positive match response from this beacon populated with demo data:</p>
+<pre><code>{&quot;allelRequest&quot;:{&quot;alternateBases&quot;:&quot;A&quot;,&quot;assemblyId&quot;:&quot;GRCh37&quot;,&quot;datasetIds&quot;:[],&quot;includeDatasetResponses&quot;:&quot;HIT&quot;,&quot;referenceBases&quot;:&quot;C&quot;,&quot;referenceName&quot;:&quot;1&quot;,&quot;start&quot;:156146085},&quot;apiVersion&quot;:&quot;1.0.0&quot;,&quot;beaconId&quot;:&quot;SciLifeLab-beacon&quot;,&quot;datasetAlleleResponses&quot;:[{&quot;callCount&quot;:1,&quot;datasetId&quot;:&quot;test_public&quot;,&quot;exists&quot;:true,&quot;info&quot;:{&quot;accessType&quot;:&quot;PUBLIC&quot;},&quot;sampleCount&quot;:1,&quot;variantCount&quot;:1}],&quot;error&quot;:null,&quot;exists&quot;:true}
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../removing/" class="btn btn-neutral float-left" title="Removing datasets and variants"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../removing/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Deploying the app as a service using systemd and podman - cgbeacon2 docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Deploying the app as a service using systemd and podman";
+        var mkdocs_page_input_path = "systemd.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> cgbeacon2 docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker_run/">Running the demo with Docker</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Deploying the app as a service using systemd and podman</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#creating-a-common-directory-for-service-files">Creating a common directory for service files</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mongodb-service-file">MongoDB service file</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#beacon-cli-service-file">Beacon cli service file</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#beacon-web-service-file">Beacon web service file</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../env_install/">Deploying on a virtual environment</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../loading/">Loading datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../removing/">Removing datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../queries/">Queries</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">cgbeacon2 docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Deploying the app as a service using systemd and podman</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="deploying-the-app-as-a-service-using-systemd-and-podman">Deploying the app as a service using systemd and Podman</h2>
+<p>This short guide is intended as an example of configuration (please note that it is experimental and as such not to be used in production!) for system admins who would like to deploy the Beacon as a service using Linux systemd unit config files.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Linux OS</li>
+<li>Podman version &gt;= 2.0.4</li>
+</ul>
+<p>To run Podman from Windows or MacOS you either use a <a href="https://github.com/containers/podman/blob/master/docs/tutorials/mac_win_client.md#podman-remote-clients-for-macos-and-windows">remote client</a> or run Linux inside a <a href="https://github.com/northwestwitch/howtos/blob/master/containers/podman_on_mac.md">virtual machine</a>.</p>
+<h3 id="creating-a-common-directory-for-service-files">Creating a common directory for service files</h3>
+<p>After having installed podman on your linux-like machine, ssh into this machine and create a folder in the user's home directory. This directory will contain all systemd unit config files:</p>
+<pre><code>mkdir -p ~/.config/systemd/user
+</code></pre>
+<h3 id="mongodb-service-file">MongoDB service file</h3>
+<p>First thing to do is choosing a MongoDB image to use as database. You could use either the <a href="https://hub.docker.com/_/mongo">official MongoDB image</a> or any other MongoDB image you prefer. For the sake of this documentation, let's use the lightweight MongoDB image(mvertes/alpine-mongo). Pull the image from Docker Hub:</p>
+<pre><code>podman pull mvertes/alpine-mongo
+</code></pre>
+<p>Assign the image a name, so it will be later used in the systemd service file. In this case the name will be <code>beacon-mongo</code>:</p>
+<pre><code>podman run --security-opt=seccomp=unconfined -d --name beacon-mongo -p 27017:27017 alpine-mongo
+</code></pre>
+<p>Create a service file for MongoDB with the following command:</p>
+<pre><code>podman generate systemd --name beacon-mongo
+</code></pre>
+<p>The content of this file will look like this:</p>
+<pre><code># container-beacon-mongo.service
+# autogenerated by Podman 3.2.3
+# Mon Mar 21 08:51:43 UTC 2022
+
+[Unit]
+Description=Podman container-beacon-mongo.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network.target
+After=network-online.target
+RequiresMountsFor=/run/user/1000/containers
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/bin/podman start beacon-mongo
+ExecStop=/usr/bin/podman stop -t 10 beacon-mongo
+ExecStopPost=/usr/bin/podman stop -t 10 beacon-mongo
+PIDFile=/run/user/1000/containers/overlay-containers/2414fc2edfaf56869d7f31367ba23caf5f2a247d2ae88b62fc8d797362232878/userdata/conmon.pid
+Type=forking
+
+[Install]
+WantedBy=multi-user.target default.target
+</code></pre>
+<p>Add the following line to this file, in the [Unit] section:</p>
+<pre><code>BindsTo=beacon-mongo.service
+</code></pre>
+<p>Create a service config file under ~/.config/systemd/user:</p>
+<pre><code>touch ~/.config/systemd/user/beacon-mongo.service
+</code></pre>
+<p>And copy the generated file content into this service file.</p>
+<p>After creating the unit file, to start the container automatically at boot time, type the following:</p>
+<pre><code>systemctl --user daemon-reload
+systemctl --user enable beacon-mongo.service
+</code></pre>
+<p>Once the service is enabled, it will start at boot time. To start it immediately and check the status of the service, type the following:</p>
+<pre><code>systemctl --user start beacon-mongo.service
+systemctl --user status beacon-mongo.service
+</code></pre>
+<p>To stop the service type the following command:</p>
+<pre><code>systemctl --user stop beacon-mongo.service
+</code></pre>
+<h3 id="beacon-cli-service-file">Beacon cli service file</h3>
+<pre><code>podman create --name beacon clinicalgenomics/cgbeacon2
+</code></pre>
+<p>Create the service file under ~/.config/systemd/user:</p>
+<pre><code>touch ~/.config/systemd/user/beacon-cli.service
+</code></pre>
+<p>Generate the systemd file content:</p>
+<pre><code>podman generate systemd --name beacon
+</code></pre>
+<p>Add the content of the service file to the service file:</p>
+<pre><code>vi ~/.config/systemd/user/beacon-cli.service
+</code></pre>
+<p>Don't forget to include this line under the [Unit] section:</p>
+<pre><code>Requires= beacon-mongo.service
+</code></pre>
+<p>Reload services and enable beacon-cli</p>
+<pre><code>systemctl --user daemon-reload
+systemctl --user enable beacon-cli.service
+</code></pre>
+<h3 id="beacon-web-service-file">Beacon web service file</h3>
+<p>Let's create a service config file to start the Beacon web app and keep it running.</p>
+<pre><code>podman create --name beacon-web clinicalgenomics/cgbeacon2-server
+</code></pre>
+<p>Create the service file under ~/.config/systemd/user:
+Let's add the following unit file to the ~/.config/systemd/user folder:</p>
+<pre><code>touch ~/.config/systemd/user/beacon-web.service
+</code></pre>
+<p>Let's add the following content to the file</p>
+<pre><code># beacon-web.service
+
+[Unit]
+Description=Podman beacon-web.service
+Documentation=man:podman-generate-systemd(1)
+Requires= beacon-mongo.service
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=no # Eventually turn this into on-failure
+ExecStart=/usr/bin/podman run \
+            --env &quot;MONGODB_HOST=mongodb&quot; \
+            --security-opt=seccomp=unconfined \
+            --log-driver=journald \
+            --name beacon-web \
+            --tz local \
+            -p 8000:8000 \
+            clinicalgenomics/cgbeacon2-server
+ExecStop=/usr/bin/podman stop beacon-web
+ExecStopPost=/usr/bin/podman rm --ignore -f beacon-web
+TimeoutStartSec=1800s
+Type=forking
+
+[Install]
+WantedBy=multi-user.target default.target
+</code></pre>
+<p>Reload services and enable beacon-cli</p>
+<pre><code>systemctl --user daemon-reload
+systemctl --user enable beacon-web.service
+</code></pre>
+<p>Once the service is enabled, it will start at boot time. To start it immediately and check the status of the service, type the following:</p>
+<pre><code>systemctl --user start beacon-web.service
+systemctl --user status beacon-web.service
+</code></pre>
+<p>Output from the command above:</p>
+<pre><code>● beacon-web.service - Podman beacon-web.service
+   Loaded: loaded (/home/vagrant/.config/systemd/user/beacon-web.service; enabled; vendor preset: enabled)
+   Active: activating (start) since Mon 2022-03-21 10:48:00 UTC; 3min 23s ago
+     Docs: man:podman-generate-systemd(1)
+Cntrl PID: 5390 (podman)
+   CGroup: /user.slice/user-1000.slice/user@1000.service/beacon-web.service
+           ├─5390 /usr/bin/podman run --env MONGODB_HOST=mongodb --security-opt=seccomp=unconfined --log-driver=journald --name beacon-web --tz local -p 8000:&gt;
+           ├─5402 /usr/bin/slirp4netns --disable-host-loopback --mtu=65520 --enable-sandbox --enable-seccomp -c -e 3 -r 4 --netns-type=path /run/user/1000/net&gt;
+           ├─5404 containers-rootlessport
+           ├─5408 /usr/bin/fuse-overlayfs -o ,lowerdir=/home/vagrant/.local/share/containers/storage/overlay/l/UVIOW4TMABJJK5NP2TTAZQXCND:/home/vagrant/.local&gt;
+           ├─5412 containers-rootlessport-child
+           ├─5419 /usr/bin/conmon --api-version 1 -c 5fc523663bdf26efee7af191ad4c70e184e05c3c1ec43bfd2c8541b23638c599 -u 5fc523663bdf26efee7af191ad4c70e184e05&gt;
+           └─5fc523663bdf26efee7af191ad4c70e184e05c3c1ec43bfd2c8541b23638c599
+             ├─5427 /bin/sh -c gunicorn     --workers=$GUNICORN_WORKERS     --bind=$GUNICORN_BIND      --threads=$GUNICORN_THREADS     --timeout=$GUNICORN_TIM&gt;
+             ├─5438 /venv/bin/python /venv/bin/gunicorn --workers=1 --bind=0.0.0.0:8000 --threads=1 --timeout=400 --proxy-protocol --forwarded-allow-ips=10.0.&gt;
+             └─5440 /venv/bin/python /venv/bin/gunicorn --workers=1 --bind=0.0.0.0:8000 --thread
+</code></pre>
+<p>To stop the service type the following command:</p>
+<pre><code>systemctl --user stop beacon-web.service
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../docker_run/" class="btn btn-neutral float-left" title="Running the demo with Docker"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../env_install/" class="btn btn-neutral float-right" title="Deploying on a virtual environment">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../docker_run/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../env_install/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

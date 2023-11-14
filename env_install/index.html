@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Deploying on a virtual environment - cgbeacon2 docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Deploying on a virtual environment";
+        var mkdocs_page_input_path = "env_install.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> cgbeacon2 docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker_run/">Running the demo with Docker</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../systemd/">Deploying the app as a service using systemd and podman</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Deploying on a virtual environment</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../loading/">Loading datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../removing/">Removing datasets and variants</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../queries/">Queries</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">cgbeacon2 docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Deploying on a virtual environment</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="beacon-setup">Beacon setup</h2>
+<ol>
+<li><a href="#prerequisites"> Prerequisites </a></li>
+<li><a href="#installation-pip"> Installation - on a virtual environment using pip</a></li>
+<li><a href="#settings"> Server settings </a></li>
+<li><a href="#running"> Running the server</a></li>
+</ol>
+<p><a name="installation-pip"></a></p>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>A virtual environment containing Python 3.6+</li>
+<li>Bedtools installed in the virtual environment. To install it using the bioconda channel type:</li>
+</ul>
+<pre><code>conda install -n your_beacon_environment -c bioconda bedtools
+</code></pre>
+<ul>
+<li>A working instance of <strong>MongoDB</strong>. From the mongo shell you can create a database using this syntax:</li>
+</ul>
+<pre><code>use &lt;name_of_database&gt;
+</code></pre>
+<p>Database name can be customized. If you don't have any preferences, <code>cgbeacon2</code> will work just fine.</p>
+<h2 id="installation">Installation</h2>
+<p>Once activated the virtual environment, clone this repository from github using this command:</p>
+<pre><code>git clone https://github.com/Clinical-Genomics/cgbeacon2.git
+</code></pre>
+<p>Change directory to the cloned folder and from there, install the software using the following command:</p>
+<pre><code>pip install -e .
+</code></pre>
+<p>To make sure the software is installed, from the terminal, you can run the following command: <code>beacon --version</code></p>
+<p><a name="settings"></a></p>
+<h2 id="server-settings">Server settings</h2>
+<p>Default server settings are specified in the <code>config.py</code> file under cgbeacon2/instance</p>
+<p>Secret key and database connection parameters depend on your server implementation, and for the purpose of testing the software they might be left unchanged.</p>
+<pre><code># secret key:
+SECRET_KEY = &quot;MySuperSecretKey&quot;
+
+# Database connection parameters
+DB_HOST = &quot;127.0.0.1&quot;
+DB_PORT = 27017
+DB_NAME = &quot;cgbeacon2-test&quot;
+DB_URI = f&quot;mongodb://{DB_HOST}:{DB_PORT}/{DB_NAME}&quot;
+</code></pre>
+<p><code>ORGANISATION</code> and <code>BEACON_OBJ</code> dictionaries contain values that are returned by the server when users or other beacons send a request to the info endpoint(/), so they should be filled in properly in a production environment:</p>
+<pre><code>ORGANISATION = dict(
+    id=&quot;scilifelab&quot;,  # mandatory
+    name=&quot;Clinical Genomics, SciLifeLab&quot;,  # mandatory
+    description=&quot;A science lab&quot;,
+    address=&quot;&quot;,
+    contactUrl=&quot;&quot;,
+    info=[],
+    logoUrl=&quot;&quot;,
+    welcomeUrl=&quot;&quot;,
+)
+
+BEACON_OBJ = dict(
+    id=&quot;SciLifeLab-beacon&quot;,  # mandatory
+    name=&quot;SciLifeLab Stockholm Beacon&quot;,  # mandatory
+    organisation=ORGANISATION,  # mandatory
+    alternativeUrl=&quot;http//scilifelab.beacon_alt.se&quot;,
+    createDateTime=&quot;2015-06-15T00:00.000Z&quot;,
+    description=&quot;Beacon description&quot;,
+    info=[],
+    welcomeUrl=&quot;http//scilifelab.beacon.se&quot;,
+)
+</code></pre>
+<p>The <code>info</code> field of both object can contain a series of custom key/values that better describe your organisation and its beacon server.</p>
+<p><strong>OAUTH2 permissions layer</strong> parameters are responsible for the authentication of incoming requests bearing a auth token, and should be left unchanged:</p>
+<pre><code>ELIXIR_OAUTH2 = dict(
+    server=&quot;https://login.elixir-czech.org/oidc/jwk&quot;,  # OAuth2 server that returns JWK public key
+    issuers=[
+        &quot;https://login.elixir-czech.org/oidc/&quot;
+    ],  # Authenticated Bearer token issuers
+    userinfo=&quot;https://login.elixir-czech.org/oidc/userinfo&quot;,  # Where to send access token to view user data (permissions, statuses, ...)
+    audience=[],  # List of strings. Service(s) the token is intended for. (key provided by the Beacon Network administrator)
+    verify_aud=False,  # if True, force verify audience for provided token
+    bona_fide_requirements=&quot;https://doi.org/10.1038/s41431-018-0219-y&quot;,
+)
+</code></pre>
+<p><a name="running"></a></p>
+<h2 id="running-the-server">Running the server</h2>
+<p>To run the server, from the command line, you can use the following command:</p>
+<pre><code>beacon run
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../systemd/" class="btn btn-neutral float-left" title="Deploying the app as a service using systemd and podman"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../loading/" class="btn btn-neutral float-right" title="Loading datasets and variants">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../systemd/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../loading/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
