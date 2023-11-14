@@ -1,3 +1,7 @@
+## [4.5.1] - 2023-11-14
+### Fixed
+- Fixed Gunicorn worked not booting by switching to a `python3.8-slim-bullseye` - based image in Dockerfiles
+
 ## [4.5] - 2023-11-09
 ### Changed
 - Unfreeze pymongo lib in requirements.txt

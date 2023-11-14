@@ -1,7 +1,7 @@
 ###########
 # BUILDER #
 ###########
-FROM clinicalgenomics/python3.8-slim-bedtools-venv:1.0 AS python-builder
+FROM clinicalgenomics/python3.8-slim-bullseye-bedtools-venv:1.0 AS python-builder
 
 ENV PATH="/venv/bin:$PATH"
 
