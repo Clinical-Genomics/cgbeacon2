@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 #########
 # FINAL #
 #########
-FROM python3.8-slim-bullseye:latest
+FROM clinicalgenomics/python3.8-slim-bullseye-venv:1.0 
 
 LABEL about.license="MIT License (MIT)"
 LABEL about.home="https://github.com/Clinical-Genomics/cgbeacon2"
